@@ -21,6 +21,15 @@
           return array;
       }
 
+      class Pop extends React.Component {
+        clicked() {
+          console.log("clicked ", this.props.name)
+        }
+        render() {
+          return <button type="button" onClick={this.clicked}>{"Draw " + this.props.name + " Event"}</button>
+        }
+      }
+
       class App extends React.Component {
         constructor(props) {
           super(props);
@@ -51,7 +60,11 @@
         }
 
         render() {
-          return <pre>{JSON.stringify(this.state)}</pre>;
+          return [
+            <Pop key="city" name="City" events={this.state.cityEvents} />,
+            <Pop key="road" name="Road" events={this.state.roadEvents} />,
+            <pre key="pre">{JSON.stringify(this.state)}</pre>,
+          ];
         }
       };
 
