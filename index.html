@@ -22,6 +22,11 @@
       }
 
       class Pop extends React.Component {
+        constructor(props) {
+          super(props);
+          this.clicked = this.clicked.bind(this);
+        }
+
         clicked() {
           console.log("clicked ", this.props.name)
         }
@@ -33,8 +38,13 @@
       class App extends React.Component {
         constructor(props) {
           super(props);
-          this.state = JSON.parse(window.localStorage.getItem("state")) || this.initialState();
-          this.save()
+
+          this.showImportExport = this.showImportExport.bind(this);
+
+          this.state = {
+            stacks: JSON.parse(window.localStorage.getItem("state")) || this.initialState()
+          };
+          this.save();
         }
 
         initialState() {
@@ -55,15 +65,23 @@
           };
         }
 
+        showImportExport() {
+          console.log("showImportExport")
+        }
+
         save() {
-          window.localStorage.setItem("state", JSON.stringify(this.state))
+          window.localStorage.setItem("state", JSON.stringify(this.state.stacks))
         }
 
         render() {
           return [
-            <Pop key="city" name="City" events={this.state.cityEvents} />,
-            <Pop key="road" name="Road" events={this.state.roadEvents} />,
-            <pre key="pre">{JSON.stringify(this.state)}</pre>,
+            <div key="button-frame" className="frame">
+              <Pop key="city" name="City" events={this.state.stacks.cityEvents} />
+              <Pop key="road" name="Road" events={this.state.stacks.roadEvents} />
+              <button type="button" onClick={this.showImportExport}>{"Import / Export"}</button>
+            </div>,
+            <div key="event-frame" className="frame">
+            </div>
           ];
         }
       };
@@ -77,15 +95,10 @@
     </script>
     <!--
       Note: this page is a great way to try React but it's not suitable for production.
-      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+      But for this very small app it should be ok ;)
 
       To set up a production-ready React build environment, follow these instructions:
       * https://reactjs.org/docs/add-react-to-a-new-app.html
-      * https://reactjs.org/docs/add-react-to-an-existing-app.html
-
-      You can also use React without JSX, in which case you can remove Babel:
-      * https://reactjs.org/docs/react-without-jsx.html
-      * https://reactjs.org/docs/cdn-links.html
     -->
   </body>
 </html>
