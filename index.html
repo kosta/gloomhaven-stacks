@@ -38,10 +38,10 @@
       class ImportExport extends React.Component {
         render() {
           return [
-            <h2>Import / Export</h2>,
-            <textarea />,
-            <button type="submit" onClick={this.clicked}>{"Import"}</button>,
-            <button type="submit" onClick={this.clicked}>{"Cancel"}</button>,
+            <h2 key="h2">Import / Export</h2>,
+            <textarea key="textarea" />,
+            <button key="import" type="submit" onClick={this.clicked}>{"Import"}</button>,
+            <button key="cancel" type="submit" onClick={this.clicked}>{"Cancel"}</button>,
           ];
         }
       }
