@@ -35,6 +35,17 @@
         }
       }
 
+      class ImportExport extends React.Component {
+        render() {
+          return [
+            <h2>Import / Export</h2>,
+            <textarea />,
+            <button type="submit" onClick={this.clicked}>{"Import"}</button>,
+            <button type="submit" onClick={this.clicked}>{"Cancel"}</button>,
+          ];
+        }
+      }
+
       class App extends React.Component {
         constructor(props) {
           super(props);
@@ -42,7 +53,8 @@
           this.showImportExport = this.showImportExport.bind(this);
 
           this.state = {
-            stacks: JSON.parse(window.localStorage.getItem("state")) || this.initialState()
+            stacks: JSON.parse(window.localStorage.getItem("state")) || this.initialState(),
+            dialog: null,
           };
           this.save();
         }
@@ -66,7 +78,11 @@
         }
 
         showImportExport() {
-          console.log("showImportExport")
+          this.setState({dialog: <ImportExport />});
+        }
+
+        importClicked() {
+
         }
 
         save() {
@@ -80,7 +96,8 @@
               <Pop key="road" name="Road" events={this.state.stacks.roadEvents} />
               <button type="button" onClick={this.showImportExport}>{"Import / Export"}</button>
             </div>,
-            <div key="event-frame" className="frame">
+            <div key="dialog-frame" className="frame">
+              {this.state.dialog}
             </div>
           ];
         }
