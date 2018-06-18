@@ -32,6 +32,8 @@
 
           this.selectA = this.selectA.bind(this);
           this.selectB = this.selectB.bind(this);
+          this.returnToBottom = this.returnToBottom.bind(this);
+          this.removeFromGame = this.removeFromGame.bind(this);
 
           this.state = {};
         }
@@ -48,12 +50,30 @@
           return false;
         }
 
+        returnToBottom(e) {
+          this.props.stackPopped(this.props.name, true);
+          e.preventDefault();
+          return false;
+        }
+
+        removeFromGame(e) {
+          this.props.stackPopped(this.props.name, false);
+          e.preventDefault();
+          return false;
+        }
+
         render() {
           let r = [
             <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
             <div key="div-a"><button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button></div>,
             <div key="div-b"><button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button></div>,
           ];
+          if (this.state.selected) {
+            r = r.concat([
+              <div key="div-ret"><button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button></div>,
+              <div key="div-rem"><button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button></div>,
+            ])
+          }
           return r;
         }
       }
@@ -69,6 +89,7 @@
             <EventCard
               name={this.props.name}
               number={this.props.events.stack[0]}
+              stackPopped={this.props.stackPopped}
             />
           );
         }
@@ -108,6 +129,7 @@
         constructor(props) {
           super(props);
 
+          this.stackPopped = this.stackPopped.bind(this);
           this.showImportExport = this.showImportExport.bind(this);
           this.setDialog = this.setDialog.bind(this);
           this.import = this.import.bind(this);
@@ -150,6 +172,29 @@
             });
         }
 
+        stackPopped(name, returnToBottom) {
+          this.setState((prevState, props) => {
+            let state = prevState;
+            let events = this.state.stacks[name.toLowerCase() + "Events"];
+            console.log("events", events)
+            let event = events.stack.shift();
+            let action = "removed from game";
+            if (returnToBottom) {
+              events.stack.push(event);
+              action = "returned to bottom";
+            }
+            events.history.push({
+              event: event,
+              action: action,
+            });
+
+            // reset ui (?)
+            state.dialog = null;
+
+            return state;
+          }, this.save)
+        }
+
         import(text) {
           try {
             let stacks = JSON.parse(text);
@@ -176,14 +221,15 @@
         }
 
         save() {
+          console.log("saving", this.state.stacks);
           window.localStorage.setItem("state", JSON.stringify(this.state.stacks))
         }
 
         render() {
           return [
             <div key="button-frame" className="frame">
-              <Pop key="city" name="City" events={this.state.stacks.cityEvents} setDialog={this.setDialog}/>
-              <Pop key="road" name="Road" events={this.state.stacks.roadEvents} setDialog={this.setDialog} />
+              <Pop key="city" name="City" events={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
+              <Pop key="road" name="Road" events={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
               <button type="button" onClick={this.showImportExport}>Import / Export</button>
             </div>,
             <div key="dialog-frame" className="frame">
