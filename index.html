@@ -68,6 +68,7 @@
           this.showImportExport = this.showImportExport.bind(this);
           this.import = this.import.bind(this);
           this.cancel = this.cancel.bind(this);
+          this.save = this.save.bind(this);
 
           this.state = {
             stacks: JSON.parse(window.localStorage.getItem("state")) || this.initialState(),
@@ -112,7 +113,7 @@
             this.setState({
               stacks: stacks,
               dialog: null,
-            });
+            }, this.save);
           } catch(e) {
             //TODO :(
             alert(e.message)
