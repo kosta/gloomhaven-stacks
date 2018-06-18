@@ -6,6 +6,11 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <style>
+      .selected {
+        border-color: red;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
@@ -21,6 +26,38 @@
           return array;
       }
 
+      class EventCard extends React.Component {
+        constructor(props) {
+          super(props);
+
+          this.selectA = this.selectA.bind(this);
+          this.selectB = this.selectB.bind(this);
+
+          this.state = {};
+        }
+
+        selectA(e) {
+          this.setState({selected: "a"})
+          e.preventDefault();
+          return false;
+        }
+
+        selectB(e) {
+          this.setState({selected: "b"})
+          e.preventDefault();
+          return false;
+        }
+
+        render() {
+          let r = [
+            <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
+            <div key="div-a"><button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button></div>,
+            <div key="div-b"><button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button></div>,
+          ];
+          return r;
+        }
+      }
+
       class Pop extends React.Component {
         constructor(props) {
           super(props);
@@ -28,10 +65,16 @@
         }
 
         clicked() {
-          console.log("clicked ", this.props.name)
+          this.props.setDialog(
+            <EventCard
+              name={this.props.name}
+              number={this.props.events.stack[0]}
+            />
+          );
         }
+
         render() {
-          return <button type="button" onClick={this.clicked}>{"Draw " + this.props.name + " Event"}</button>
+          return <button type="button" onClick={this.clicked} disabled={this.props.events.stack.length === 0}>{"Draw " + this.props.name + " Event"}</button>
         }
       }
 
@@ -53,7 +96,7 @@
             <textarea
               key="textarea" rows="20" cols="20"
               defaultValue={JSON.stringify(this.props.stacks, null, 2)}
-              ref={(textarea) => {that._textarea = textarea; console.log("textarea", textarea, this)}}
+              ref={(textarea) => that._textarea = textarea}
             />,
             <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>,
             <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
@@ -66,6 +109,7 @@
           super(props);
 
           this.showImportExport = this.showImportExport.bind(this);
+          this.setDialog = this.setDialog.bind(this);
           this.import = this.import.bind(this);
           this.cancel = this.cancel.bind(this);
           this.save = this.save.bind(this);
@@ -96,7 +140,6 @@
         }
 
         showImportExport() {
-          console.log("state", this.state);
           let importExport = <ImportExport
               stacks={this.state.stacks}
               import={this.import}
@@ -120,6 +163,12 @@
           }
         }
 
+        setDialog(dialog) {
+          this.setState({
+            dialog: dialog
+          });
+        }
+
         cancel() {
           this.setState({
             dialog: null
@@ -133,8 +182,8 @@
         render() {
           return [
             <div key="button-frame" className="frame">
-              <Pop key="city" name="City" events={this.state.stacks.cityEvents} />
-              <Pop key="road" name="Road" events={this.state.stacks.roadEvents} />
+              <Pop key="city" name="City" events={this.state.stacks.cityEvents} setDialog={this.setDialog}/>
+              <Pop key="road" name="Road" events={this.state.stacks.roadEvents} setDialog={this.setDialog} />
               <button type="button" onClick={this.showImportExport}>Import / Export</button>
             </div>,
             <div key="dialog-frame" className="frame">
