@@ -12,6 +12,12 @@
         n: 9,
     }
 
+    const personalGoals = {
+        offset: 510,
+        n: 24,
+        divWidth: "605px",
+    }
+
     // from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
     function shuffle(array) {
         for (var i = array.length - 1; i > 0; i--) {
@@ -34,20 +40,27 @@
     }
 
     function cardToDiv(i, props) {
-        let n = i - props.offset;
-        let row = Math.floor(n / props.cols);
-        let col = n % props.cols;
-        let style = {
-        background: "url(" + props.url + ") no-repeat scroll top -" + (row * props.height) + "px left -" + (col * props.width) + "px",
-        width: (props.width - 14) + "px",
-        maxWidth: (props.width - 14) + "px",
-        height: (props.height - 3) + "px",
-        marginLeft: "10px",
-        color: "white",
-        padding: "0 0 3px 14px",
-        display: "inline-block",
-        };
-        return <div key={i} style={style}>{i}</div>;
+        if (i >= 510) {
+            //sorry for this spaghetti special case :(
+            return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + i}>
+                    <img key={i} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + i + ".png"} />
+                </div>;
+        } else {
+            let n = i - props.offset;
+            let row = Math.floor(n / props.cols);
+            let col = n % props.cols;
+            let style = {
+            background: "url(" + props.url + ") no-repeat scroll top -" + (row * props.height) + "px left -" + (col * props.width) + "px",
+            width: (props.width - 14) + "px",
+            maxWidth: (props.width - 14) + "px",
+            height: (props.height - 3) + "px",
+            marginLeft: "10px",
+            color: "white",
+            padding: "0 0 3px 14px",
+            display: "inline-block",
+            };
+            return <div key={i} style={style}>{i}</div>;
+        }
     }
 
     class RandomItemDesigns extends React.Component {
@@ -99,8 +112,12 @@
         this.selectB = this.selectB.bind(this);
         this.returnToBottom = this.returnToBottom.bind(this);
         this.removeFromGame = this.removeFromGame.bind(this);
+        this.state={};
+        }
 
-        this.state = {};
+        componentDidMount() {
+            console.log("componentDidMount")
+            this.setState({});
         }
 
         selectA(e) {
@@ -128,8 +145,16 @@
         }
 
         render() {
+            let no = this.props.number;
+            if (no.length === 1) {
+                no = "0" + no;
+            }
+            let imgName = this.props.name.toLowerCase();
+            let imgUrlBase = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imgName + "/" + imgName.charAt(0) + "e-" + no + "-";
         let r = [
             <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
+            <img key="image-front" src={imgUrlBase + "f.png"} />,
+            this.state.selected && <img key="image-back" src={imgUrlBase + "b.png"} />,
             <div key="div-a"><button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button></div>,
             <div key="div-b"><button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button></div>,
         ];
@@ -144,21 +169,22 @@
     }
 
     class RandomCard extends React.Component {
-        constructor(props) {
-        super(props);
-        this.clicked = this.clicked.bind(this);
-        }
-
-        clicked() {
-            this.props.drawn(this.props.name, this.props.cards, this.props.cardNo);
+        clicked(cardNo) {
+            this.props.drawn(this.props.name, this.props.cards, cardNo);
         }
 
         render() {
-        return [
-            <h2 key="h2">Drawn {this.props.name}: {this.props.cardNo}</h2>,
-            <p key="button-div"><button key="button" type="button" onClick={this.clicked}>Accept {this.props.name}</button></p>,
-            this.props.cardProps && cardToDiv(this.props.cardNo, this.props.cardProps)
-        ]
+            return [
+                <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>,
+                <div key="button-div">
+                    {this.props.drawnCards.map(cardNo => {
+                        return <div key={"span-" + cardNo} style={({display: "inline-block", width: this.props.cardProps && this.props.cardProps.divWidth})}>
+                            <div key={"button-div-" + cardNo}><button key={"button-"+cardNo} type="button" onClick={()=>this.clicked(cardNo)}>Accept {cardNo}</button></div>
+                            {this.props.cardProps && cardToDiv(cardNo, this.props.cardProps)}
+                            </div>
+                    })}
+                </div>,
+            ]
         }
     }
 
@@ -170,12 +196,20 @@
         }
 
         clicked() {
-        let cardNo = this.props.cards.stack[Math.floor(Math.random() * this.props.cards.stack.length)];
+        let drawnCards = []
+        var next;
+        for(let i = 0; (i < (this.props.n || 1)) && (drawnCards.length < this.props.cards.stack.length); i++) {
+            do {
+                next = this.props.cards.stack[Math.floor(Math.random() * this.props.cards.stack.length)];
+            } while(drawnCards.indexOf(next) > -1);
+            drawnCards.push(next);
+        }
+        drawnCards.sort();
         // console.log("cardNo", cardNo);
         this.props.setDialog(
             <RandomCard
             name={this.props.name}
-            cardNo={cardNo}
+            drawnCards={drawnCards}
             cards={this.props.cards}
             drawn={this.props.drawn}
             cardProps={this.props.cardProps}
@@ -265,6 +299,7 @@
             ];
         let initialRandomItems = [...Array(randomItemDesigns.n).keys()].map(i => i+randomItemDesigns.offset)
         let initialRandomScenarios = [...Array(randomScenarios.n).keys()].map(i => i+randomScenarios.offset)
+        let initialPersonalGoals = [...Array(personalGoals.n).keys()].map(i => i+personalGoals.offset)
 
         s.cityEvents = s.cityEvents || {};
         s.cityEvents.stack = s.cityEvents.stack || shuffle(thirty.slice(0));
@@ -290,6 +325,11 @@
         s.randomScenarios.stack = s.randomScenarios.stack || initialRandomScenarios;
         s.randomScenarios.list = s.randomScenarios.list || [];
         s.randomScenarios.history = s.randomScenarios.history || [];
+
+        s.personalGoals = s.personalGoals || {};
+        s.personalGoals.stack = s.personalGoals.stack || initialPersonalGoals;
+        s.personalGoals.list = s.personalGoals.list || [];
+        s.personalGoals.history = s.personalGoals.history || [];
 
         return s;
         }
@@ -403,9 +443,16 @@
         }
 
         setDialog(dialog) {
-        this.setState({
-            dialog: dialog
-        });
+            // first remove, then add so that the component doesnt get recycled
+            this.setState({
+                dialog: null
+            }, () => {
+                if (dialog) {
+                    this.setState({
+                        dialog: dialog
+                    })
+                }
+            });
         }
 
         cancel() {
@@ -426,6 +473,7 @@
             <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
             <Draw key="randomItem" name="Random Item Design" cards={this.state.stacks.randomItemDesigns} cardProps={randomItemDesigns} setDialog={this.setDialog} drawn={this.stackDrawn} />
             <Draw key="randomScenario" name="Random Side Scenario" cards={this.state.stacks.randomScenarios} setDialog={this.setDialog} drawn={this.stackDrawn} />
+            <Draw key="personalGoal" name="Personal Goal" n={2} cards={this.state.stacks.personalGoals} cardProps={personalGoals} setDialog={this.setDialog} drawn={this.stackDrawn} />
             <button type="button" onClick={this.showAddCards}>Add Cards</button>
             <button type="button" onClick={this.showImportExport}>Import / Export</button>
             </div>,
