@@ -115,11 +115,6 @@
         this.state={};
         }
 
-        componentDidMount() {
-            console.log("componentDidMount")
-            this.setState({});
-        }
-
         selectA(e) {
         this.setState({selected: "a"})
         e.preventDefault();
@@ -146,7 +141,7 @@
 
         render() {
             let no = this.props.number;
-            if (no.length === 1) {
+            if (no < 9) {
                 no = "0" + no;
             }
             let imgName = this.props.name.toLowerCase();
