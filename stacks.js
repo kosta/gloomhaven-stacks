@@ -7,6 +7,11 @@
         n: 25,
     };
 
+    const randomScenarios = {
+        offset: 63,
+        n: 9,
+    }
+
     // from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
     function shuffle(array) {
         for (var i = array.length - 1; i > 0; i--) {
@@ -145,14 +150,14 @@
         }
 
         clicked() {
-        this.props.drawn(this.props.name, this.props.cards, this.props.cardNo);
+            this.props.drawn(this.props.name, this.props.cards, this.props.cardNo);
         }
 
         render() {
         return [
             <h2 key="h2">Drawn {this.props.name}: {this.props.cardNo}</h2>,
             <p key="button-div"><button key="button" type="button" onClick={this.clicked}>Accept {this.props.name}</button></p>,
-            cardToDiv(this.props.cardNo, this.props.cardProps)
+            this.props.cardProps && cardToDiv(this.props.cardNo, this.props.cardProps)
         ]
         }
     }
@@ -259,6 +264,7 @@
             21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
             ];
         let initialRandomItems = [...Array(randomItemDesigns.n).keys()].map(i => i+randomItemDesigns.offset)
+        let initialRandomScenarios = [...Array(randomScenarios.n).keys()].map(i => i+randomScenarios.offset)
 
         s.cityEvents = s.cityEvents || {};
         s.cityEvents.stack = s.cityEvents.stack || shuffle(thirty.slice(0));
@@ -279,6 +285,11 @@
             removeFromArray(s.randomItemDesigns.stack, c);
         }
         s.randomItemDesigns.history = s.randomItemDesigns.history || [];
+
+        s.randomScenarios = s.randomScenarios || {};
+        s.randomScenarios.stack = s.randomScenarios.stack || initialRandomScenarios;
+        s.randomScenarios.list = s.randomScenarios.list || [];
+        s.randomScenarios.history = s.randomScenarios.history || [];
 
         return s;
         }
@@ -414,6 +425,7 @@
             <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
             <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
             <Draw key="randomItem" name="Random Item Design" cards={this.state.stacks.randomItemDesigns} cardProps={randomItemDesigns} setDialog={this.setDialog} drawn={this.stackDrawn} />
+            <Draw key="randomScenario" name="Random Side Scenario" cards={this.state.stacks.randomScenarios} setDialog={this.setDialog} drawn={this.stackDrawn} />
             <button type="button" onClick={this.showAddCards}>Add Cards</button>
             <button type="button" onClick={this.showImportExport}>Import / Export</button>
             </div>,
