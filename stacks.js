@@ -296,6 +296,7 @@
         let initialRandomScenarios = [...Array(randomScenarios.n).keys()].map(i => i+randomScenarios.offset)
         let initialPersonalGoals = [...Array(personalGoals.n).keys()].map(i => i+personalGoals.offset)
 
+        s = s || {};
         s.cityEvents = s.cityEvents || {};
         s.cityEvents.stack = s.cityEvents.stack || shuffle(thirty.slice(0));
         s.cityEvents.history = s.cityEvents.history || [];
