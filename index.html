@@ -21,6 +21,7 @@
         height: 635,
         offset: 71,
         cols: 10,
+        n: 25,
       };
 
       // from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
@@ -44,7 +45,6 @@
                   let n = i - randomItems.offset;
                   let row = Math.floor(n / randomItems.cols);
                   let col = n % randomItems.cols;
-                  console.log(n, row, col)
                   let style = {
                     background: "url(" + randomItems.url + ") no-repeat scroll top -" + (row * randomItems.height) + "px left -" + (col * randomItems.width) + "px",
                     width: randomItems.width + "px",
@@ -69,7 +69,7 @@
 
         handleClick(e, s) {
           e.preventDefault;
-          this.props.addCards(s.split(" ")[0], this.inputs[s].value.split(/\D+/))
+          this.props.addCards(s, this.inputs[s].value.split(/\D+/))
           return false;
         }
 
@@ -82,6 +82,12 @@
                 <input ref={(i) => this.inputs[s] = i}/>
             </div>
           ));
+        }
+      }
+
+      class RandomCard extends React.Component {
+        render() {
+          return [];
         }
       }
 
@@ -137,6 +143,29 @@
         }
       }
 
+      // Draw draws a _random_ card from the deck
+      class Draw extends React.Component {
+        constructor(props) {
+          super(props);
+          this.clicked = this.clicked.bind(this);
+        }
+
+        clicked() {
+          this.props.setDialog(
+            <RandomCard
+              // name={this.props.name}
+              // number={this.props.events.stack[0]}
+              // stackPopped={this.props.stackPopped}
+            />
+          );
+        }
+
+        render() {
+          return <button type="button" onClick={this.clicked} disabled={this.props.cards.stack.length === 0}>{"Draw " + this.props.name}</button>
+        }
+      }
+
+      // Pop draws the _top_ card of the deck
       class Pop extends React.Component {
         constructor(props) {
           super(props);
@@ -154,7 +183,7 @@
         }
 
         render() {
-          return <button type="button" onClick={this.clicked} disabled={this.props.events.stack.length === 0}>{"Draw " + this.props.name + " Event"}</button>
+          return <button type="button" onClick={this.clicked} disabled={this.props.cards.stack.length === 0}>{"Draw " + this.props.name + " Event"}</button>
         }
       }
 
@@ -210,6 +239,7 @@
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
             21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
             ];
+          let initialRandomItems = [...Array(randomItems.n).keys()].map(i => i+randomItems.offset)
 
           s.cityEvents = s.cityEvents || {};
           s.cityEvents.stack = s.cityEvents.stack || shuffle(thirty.slice(0));
@@ -221,6 +251,8 @@
 
           s.randomItemDesigns = s.randomItemDesigns || {};
           s.randomItemDesigns.list = s.randomItemDesigns.list || [];
+          s.randomItemDesigns.list.sort();
+          s.randomItemDesigns.stack = s.randomItemDesigns.stack || initialRandomItems;
           s.randomItemDesigns.history = s.randomItemDesigns.history || [];
 
           return s;
@@ -272,9 +304,8 @@
 
         addCards(name, cards) {
           console.log("addCards", name, cards);
-          name = name.toLowerCase();
           cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
-          if (name === "random") {
+          if (name === "Random Items") {
             this.setState((prevState, props) => {
               let state = prevState;
 
@@ -315,8 +346,9 @@
         render() {
           return [
             <div key="button-frame" className="frame">
-              <Pop key="city" name="City" events={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
-              <Pop key="road" name="Road" events={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
+              <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
+              <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} />
+              <Draw key="randomItem" name="Random Item Design" cards={this.state.stacks.randomItemDesigns} setDialog={this.setDialog} drawn={this.drawn} />
               <button type="button" onClick={this.showAddCards}>Add Cards</button>
               <button type="button" onClick={this.showImportExport}>Import / Export</button>
             </div>,
