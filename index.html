@@ -94,7 +94,7 @@
         render() {
           return [
             <h2 key="h2">Add Cards</h2>,
-          ].concat(["City Events", "Road Events", "Random Items"].map((s) =>
+          ].concat(["City Events", "Road Events"].map((s) =>
             <div key={"div" + s}>
                 <button key={s} type="button" onClick={(e) => this.handleClick(e, s)}>{s}</button>:
                 <input ref={(i) => this.inputs[s] = i}/>
@@ -363,7 +363,9 @@
         addCards(name, cards) {
           console.log("addCards", name, cards);
           cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
-          if (name === "Random Items") {
+          var stack;
+          if (name === "Random Item Designs") {
+            stack = this.state.stacks.randomItemDesigns;
             this.setState((prevState, props) => {
               let state = prevState;
 
@@ -373,8 +375,30 @@
               list = list.filter((el, idx, arr) => el !== arr[idx-1]);
               state.stacks.randomItemDesigns.list = list;
 
+              state.stacks.randomItemDesigns.history.push({
+                action: "added cards & shuffled",
+                cards: cards,
+              })
+
               return state;
             }, this.save);
+          } else {
+            // assuming "City Event" or "Road Event"
+            stack = this.state.stacks[name.split(" ")[0].toLowerCase()+"Events"];
+            if (!stack) {
+              throw "Unknown name for addCards: " + name;
+            }
+            this.setState((state, props) => {
+              stack.stack = stack.stack.concat(cards);
+              shuffle(stack.stack);
+
+              stack.history.push({
+                action: "added cards & shuffled",
+                cards: cards,
+              });
+
+              return state;
+            }, this.save)
           }
           console.log("addCards", name, cards);
           this.cancel();
