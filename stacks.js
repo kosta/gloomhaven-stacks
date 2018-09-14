@@ -241,27 +241,47 @@
 
     class ImportExport extends React.Component {
         constructor(props) {
-        super(props);
-        this.importClicked = this.importClicked.bind(this)
-        this._textarea = null;
+            super(props);
+            this.importClicked = this.importClicked.bind(this);
+            this.stacksToJsonString = this.stacksToJsonString.bind(this);
+            this.copyToClipboard = this.copyToClipboard.bind(this);
+            this.importFromClipboard = this.importFromClipboard.bind(this);
+            this._textarea = null;
         }
 
         importClicked() {
-        this.props.import(this._textarea.value)
+            this.props.import(this._textarea.value)
+        }
+
+        stacksToJsonString() {
+            return JSON.stringify(this.props.stacks, null, 2)
+        }
+
+        copyToClipboard() {
+            navigator.clipboard.writeText(this.stacksToJsonString())
+                .then(() => console.log("copied to clipboard"))
+                .catch((error) => alert(error));
+        }
+
+        importFromClipboard() {
+            //console.log('asfasfd')
+            navigator.clipboard.readText().then(this.props.import);
         }
 
         render() {
-        let that = this;
-        return [
-            <h2 key="h2">Import / Export</h2>,
-            <textarea
-            key="textarea" rows="20" cols="20"
-            defaultValue={JSON.stringify(this.props.stacks, null, 2)}
-            ref={(textarea) => that._textarea = textarea}
-            />,
-            <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>,
-            <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
-        ];
+            let that = this;
+            return [
+                <h2 key="h2">Import / Export</h2>,
+                <textarea
+                    key="textarea" rows="20" cols="20"
+                    defaultValue={this.stacksToJsonString()}
+                    ref={(textarea) => that._textarea = textarea}
+                />,
+                <button key="to-clipboard" type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>,
+                <button key="from-clipboard" type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>,
+                <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>,
+                <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
+            ];
         }
     }
 
