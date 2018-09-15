@@ -10,13 +10,13 @@
     const randomScenarios = {
         offset: 63,
         n: 9,
-    }
+    };
 
     const personalGoals = {
         offset: 510,
         n: 24,
         divWidth: "605px",
-    }
+    };
 
     // from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
     function shuffle(array) {
@@ -88,7 +88,7 @@
 
         handleClick(e, s) {
         e.preventDefault;
-        this.props.addCards(s, this.inputs[s].value.split(/\D+/))
+        this.props.addCards(s, this.inputs[s].value.split(/\D+/));
         return false;
         }
 
@@ -116,13 +116,13 @@
         }
 
         selectA(e) {
-        this.setState({selected: "a"})
+        this.setState({selected: "a"});
         e.preventDefault();
         return false;
         }
 
         selectB(e) {
-        this.setState({selected: "b"})
+        this.setState({selected: "b"});
         e.preventDefault();
         return false;
         }
@@ -191,7 +191,7 @@
         }
 
         clicked() {
-        let drawnCards = []
+        let drawnCards = [];
         var next;
         for(let i = 0; (i < (this.props.n || 1)) && (drawnCards.length < this.props.cards.stack.length); i++) {
             do {
@@ -312,9 +312,9 @@
             11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
             21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
             ];
-        let initialRandomItems = [...Array(randomItemDesigns.n).keys()].map(i => i+randomItemDesigns.offset)
-        let initialRandomScenarios = [...Array(randomScenarios.n).keys()].map(i => i+randomScenarios.offset)
-        let initialPersonalGoals = [...Array(personalGoals.n).keys()].map(i => i+personalGoals.offset)
+        let initialRandomItems = [...Array(randomItemDesigns.n).keys()].map(i => i+randomItemDesigns.offset);
+        let initialRandomScenarios = [...Array(randomScenarios.n).keys()].map(i => i+randomScenarios.offset);
+        let initialPersonalGoals = [...Array(personalGoals.n).keys()].map(i => i+personalGoals.offset);
 
         s = s || {};
         s.cityEvents = s.cityEvents || {};
@@ -362,7 +362,7 @@
         this.setState((prevState, props) => {
             let state = prevState;
             let events = this.state.stacks[name.toLowerCase() + "Events"];
-            console.log("events", events)
+            console.log("events", events);
             let event = events.stack.shift();
             let action = "removed from game";
             if (returnToBottom) {
@@ -428,7 +428,7 @@
             state.stacks.randomItemDesigns.history.push({
                 action: "added cards & shuffled",
                 cards: cards,
-            })
+            });
 
             return state;
             }, this.save);
@@ -501,7 +501,7 @@
             </div>
         ];
         }
-    };
+    }
 
     let app = <App />;
     ReactDOM.render(
