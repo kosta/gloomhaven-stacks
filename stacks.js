@@ -20,9 +20,9 @@
 
     // from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
     function shuffle(array) {
-        for (var i = array.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = array[i];
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = array[i];
             array[i] = array[j];
             array[j] = temp;
         }
@@ -192,8 +192,8 @@
 
         clicked() {
         let drawnCards = [];
-        var next;
-        for(let i = 0; (i < (this.props.n || 1)) && (drawnCards.length < this.props.cards.stack.length); i++) {
+            let next;
+            for(let i = 0; (i < (this.props.n || 1)) && (drawnCards.length < this.props.cards.stack.length); i++) {
             do {
                 next = this.props.cards.stack[Math.floor(Math.random() * this.props.cards.stack.length)];
             } while(drawnCards.indexOf(next) > -1);
@@ -413,8 +413,8 @@
         addCards(name, cards) {
         console.log("addCards", name, cards);
         cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
-        var stack;
-        if (name === "Random Item Designs") {
+            let stack;
+            if (name === "Random Item Designs") {
             stack = this.state.stacks.randomItemDesigns;
             this.setState((prevState, props) => {
             let state = prevState;
