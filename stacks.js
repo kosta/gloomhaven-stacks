@@ -7,6 +7,51 @@ const randomItemDesigns = {
   n: 25,
 };
 
+const itemUrls = function(){
+  const itemCounts = [0,2,2,2,2,2,2,2,2,2,2,2,4,4,4,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,2,2,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+  const itemUrls = [{
+    maxItem: 20,
+    url: "https://lh3.googleusercontent.com/u/0/d/1P0bd7vtA_SVwC7Qm9dJ_YmZkQPNDLOCk=s3200-k-iv2",
+  },{
+    maxItem: 40,
+    url: "https://lh3.googleusercontent.com/u/0/d/1uHYherEvc9bv3Jpl2TpA2DlRPgGT8l3z=s3200-k-iv2",
+  },{
+    maxItem: 60,
+    url: "https://lh3.googleusercontent.com/u/0/d/172NPm8x9T8zPE2Vd672_10rZ3ieFHHOX=s3200-k-iv2",
+  },{
+    maxItem: 90,
+    url: "https://lh3.googleusercontent.com/u/0/d/1XAabPK_Hs8gBXXJVpaBaSsAv6_NioEyu=s3200-k-iv2",
+  },{
+    maxItem: 133,
+    url: "https://lh3.googleusercontent.com/u/0/d/1KW0TZOs7SDVl5frTM9y-ISR-4dZFIex4=s3200-k-iv2",
+  },{
+    maxItem: 150,
+    url: "https://lh3.googleusercontent.com/u/0/d/1BHfEwqmC_dax5dV4RFFP5MlfJ76eS7KZ=s3200-k-iv2",
+  }];
+
+  let acc = 0;
+  let itemSheet = 0;
+  return itemCounts.map((num, i) => {
+    if (i >= 71 && i <= 95) {
+      // there are two random items but only one of them is "red", i.e. in this picture
+      num -= 1;
+    }
+    let numberInPicture = acc;
+    if (i > itemUrls[itemSheet].maxItem) {
+      itemSheet += 1;
+      numberInPicture = 0;
+      acc = num;
+    } else {
+      acc += num;
+    }
+    return {
+      url: itemUrls[itemSheet].url,
+      numberInPicture: numberInPicture,
+      n: itemUrls[itemSheet].maxItem - (itemUrls[itemSheet-1] && itemUrls[itemSheet-1].maxItem || 0),
+    };
+  });
+}();
+
 const randomScenarios = {
   offset: 63,
   n: 9,
@@ -37,6 +82,18 @@ function removeFromArray(a, v) {
     }
     a.splice(i, 1);
   }
+}
+
+function itemToDiv(i) {
+  let item = itemUrls[i];
+  return cardToDiv(i, {
+    url: item.url,
+    width: 292,
+    height: 456,
+    offset: i - item.numberInPicture,
+    cols: 10,
+    n: item.n,
+  });
 }
 
 function cardToDiv(i, props) {
@@ -71,7 +128,7 @@ class RandomItemDesigns extends React.Component {
       return [
         <h2 key="h2">Random Item Designs</h2>,
         <div key="cards">
-          {this.props.list.map(i => cardToDiv(i, randomItemDesigns))}
+          {this.props.list.map(i => itemToDiv(i))}
         </div>
       ]
     }
@@ -309,6 +366,7 @@ class App extends React.Component {
     this.import = this.import.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.increaseProsperity = this.increaseProsperity.bind(this);
 
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
@@ -357,6 +415,8 @@ class App extends React.Component {
     s.personalGoals.stack = s.personalGoals.stack || initialPersonalGoals;
     s.personalGoals.list = s.personalGoals.list || [];
     s.personalGoals.history = s.personalGoals.history || [];
+
+    s.prosperity = s.prosperity || 1;
 
     return s;
   }
@@ -469,6 +529,17 @@ class App extends React.Component {
     this.setDialog(<AddCards addCards={this.addCards}/>);
   }
 
+  increaseProsperity() {
+    this.setState((prevState, props) => {
+      let state = prevState;
+      if (state.stacks.prosperity < 9) {
+        state.stacks.prosperity += 1;
+      };
+      return state;
+    });
+    this.save();
+  }
+
   setDialog(dialog) {
     // first remove, then add so that the component doesnt get recycled
     this.setState({
@@ -494,6 +565,7 @@ class App extends React.Component {
   }
 
   render() {
+    let prosperity = this.state.stacks.prosperity;
     return [
       <div key="button-frame" className="frame">
         <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped}/>
@@ -509,6 +581,15 @@ class App extends React.Component {
       </div>,
       <div key="random-items-div">
         <RandomItemDesigns list={this.state.stacks.randomItemDesigns.list}/>
+      </div>,
+      <div key="prosperity-items-div">
+        <h2 key="h2">
+          Prosperity {prosperity}
+          { (prosperity < 9) && <button type="button" onClick={this.increaseProsperity}>Increase Prosperity</button> }
+        </h2>
+        <div key="cards">
+          {[...Array((prosperity+1)*7).keys()].map(i => itemToDiv(i+1))}
+        </div>
       </div>
     ];
   }
