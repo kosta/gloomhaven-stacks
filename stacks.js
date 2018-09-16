@@ -366,6 +366,7 @@ class App extends React.Component {
     this.import = this.import.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.increaseProsperity = this.increaseProsperity.bind(this);
 
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
@@ -414,6 +415,8 @@ class App extends React.Component {
     s.personalGoals.stack = s.personalGoals.stack || initialPersonalGoals;
     s.personalGoals.list = s.personalGoals.list || [];
     s.personalGoals.history = s.personalGoals.history || [];
+
+    s.prosperity = s.prosperity || 1;
 
     return s;
   }
@@ -526,6 +529,17 @@ class App extends React.Component {
     this.setDialog(<AddCards addCards={this.addCards}/>);
   }
 
+  increaseProsperity() {
+    this.setState((prevState, props) => {
+      let state = prevState;
+      if (state.stacks.prosperity < 9) {
+        state.stacks.prosperity += 1;
+      };
+      return state;
+    });
+    this.save();
+  }
+
   setDialog(dialog) {
     // first remove, then add so that the component doesnt get recycled
     this.setState({
@@ -551,6 +565,7 @@ class App extends React.Component {
   }
 
   render() {
+    let prosperity = this.state.stacks.prosperity;
     return [
       <div key="button-frame" className="frame">
         <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped}/>
@@ -566,6 +581,15 @@ class App extends React.Component {
       </div>,
       <div key="random-items-div">
         <RandomItemDesigns list={this.state.stacks.randomItemDesigns.list}/>
+      </div>,
+      <div key="prosperity-items-div">
+        <h2 key="h2">
+          Prosperity {prosperity}
+          { (prosperity < 9) && <button type="button" onClick={this.increaseProsperity}>Increase Prosperity</button> }
+        </h2>
+        <div key="cards">
+          {[...Array((prosperity+1)*7).keys()].map(i => itemToDiv(i+1))}
+        </div>
       </div>
     ];
   }
