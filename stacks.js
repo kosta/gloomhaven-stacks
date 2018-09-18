@@ -198,12 +198,12 @@ class EventCard extends React.Component {
   }
 
   render() {
-    let no = this.props.number;
-    if (no < 9) {
-      no = "0" + no;
+    let number = this.props.number;
+    if (number <= 9) {
+      number = "0" + number;
     }
-    let imgName = this.props.name.toLowerCase();
-    let imgUrlBase = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imgName + "/" + imgName.charAt(0) + "e-" + no + "-";
+    let imageName = this.props.name.toLowerCase();
+    let imgUrlBase = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
     let r = [
       <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
       <img key="image-front" src={imgUrlBase + "f.png"}/>,
