@@ -144,7 +144,7 @@ class AddCards extends React.Component {
   }
 
   handleClick(e, s) {
-    e.preventDefault;
+    e.preventDefault();
     this.props.addCards(s, this.inputs[s].value.split(/\D+/));
     return false;
   }
