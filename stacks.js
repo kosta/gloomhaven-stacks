@@ -367,6 +367,7 @@ class App extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
+    this.decreaseProsperity = this.decreaseProsperity.bind(this);
 
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
@@ -529,15 +530,24 @@ class App extends React.Component {
     this.setDialog(<AddCards addCards={this.addCards}/>);
   }
 
+  decreaseProsperity() {
+    this.setState((prevState, props) => {
+      let state = prevState;
+      if (1 < state.stacks.prosperity) {
+        state.stacks.prosperity -= 1;
+      }
+      return state;
+    }, this.save);
+  }
+
   increaseProsperity() {
     this.setState((prevState, props) => {
       let state = prevState;
       if (state.stacks.prosperity < 9) {
         state.stacks.prosperity += 1;
-      };
+      }
       return state;
-    });
-    this.save();
+    }, this.save);
   }
 
   setDialog(dialog) {
@@ -584,11 +594,12 @@ class App extends React.Component {
       </div>,
       <div key="prosperity-items-div">
         <h2 key="h2">
+          <button disabled={( prosperity <= 1)} type="button" onClick={this.decreaseProsperity}>-</button>
           Prosperity {prosperity}
-          { (prosperity < 9) && <button type="button" onClick={this.increaseProsperity}>Increase Prosperity</button> }
+          <button disabled={(prosperity >= 9) } type="button" onClick={this.increaseProsperity}>+</button>
         </h2>
         <div key="cards">
-          {[...Array((prosperity+1)*7).keys()].map(i => itemToDiv(i+1))}
+          {[...Array((prosperity + 1) * 7).keys()].map(i => itemToDiv(i + 1))}
         </div>
       </div>
     ];
