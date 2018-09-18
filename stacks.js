@@ -534,7 +534,7 @@ class App extends React.Component {
       let state = prevState;
       if (state.stacks.prosperity < 9) {
         state.stacks.prosperity += 1;
-      };
+      }
       return state;
     });
     this.save();
