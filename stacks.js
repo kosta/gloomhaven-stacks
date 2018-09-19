@@ -390,7 +390,6 @@ class App extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
-    this.decreaseProsperity = this.decreaseProsperity.bind(this);
     this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
     this.itemsToDisplay = this.itemsToDisplay.bind(this);
 
@@ -556,16 +555,6 @@ class App extends React.Component {
     this.setDialog(<AddCards addCards={this.addCards}/>);
   }
 
-  decreaseProsperity() {
-    this.setState((prevState, props) => {
-      let state = prevState;
-      if (1 < state.stacks.prosperity) {
-        state.stacks.prosperity -= 1;
-      }
-      return state;
-    }, this.save);
-  }
-
   increaseProsperity() {
     this.setState((prevState, props) => {
       let state = prevState;
@@ -636,7 +625,6 @@ class App extends React.Component {
       </div>,
       <div key="prosperity-items-div">
         <h2 key="h2">
-          <button disabled={(prosperity <= 1)} type="button" onClick={this.decreaseProsperity}>-</button>
           Prosperity {prosperity}
           <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
         </h2>
