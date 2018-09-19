@@ -175,7 +175,7 @@ class AddCards extends React.Component {
   render() {
     return [
       <h2 key="h2">Add Cards</h2>,
-    ].concat(["City Events", "Road Events"].map((s) =>
+    ].concat(["City Events", "Road Events", "Item Designs", "Single Items"].map((s) =>
       <div key={"div" + s}>
         <button key={s} type="button" onClick={(e) => this.handleClick(e, s)}>{s}</button>
         :
@@ -376,6 +376,15 @@ class ImportExport extends React.Component {
   }
 }
 
+function itemsAboveProsperity(title, items, prosperity) {
+  let maxProsperityItem = itemIdsByProsperityLevel[prosperity].slice(-1)[0];
+  let itemDivs = items.filter(item => item > maxProsperityItem).map(itemToDiv)
+  return <div key={title + "-div"}>
+    {itemDivs.length > 0 && <h2 key="h2">{title}</h2>}
+    {itemDivs}
+  </div>;
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -431,6 +440,13 @@ class App extends React.Component {
       removeFromArray(s.randomItemDesigns.stack, c);
     }
     s.randomItemDesigns.history = s.randomItemDesigns.history || [];
+
+    s.itemDesigns = s.itemDesigns || {};
+    s.itemDesigns.list = s.itemDesigns.list || [];
+    s.itemDesigns.history = s.itemDesigns.history || [];
+    s.singleItems = s.singleItems || {};
+    s.singleItems.list = s.singleItems.list || [];
+    s.singleItems.history = s.singleItems.history || [];
 
     s.randomScenarios = s.randomScenarios || {};
     s.randomScenarios.stack = s.randomScenarios.stack || initialRandomScenarios;
@@ -509,6 +525,10 @@ class App extends React.Component {
 
   addCards(name, cards) {
     console.log("addCards", name, cards);
+    let simpleListMappings = {
+      "Item Designs": this.state.stacks.itemDesigns,
+      "Single Items": this.state.stacks.singleItems,
+    };
     cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
     let stack;
     if (name === "Random Item Designs") {
@@ -524,6 +544,23 @@ class App extends React.Component {
 
         state.stacks.randomItemDesigns.history.push({
           action: "added cards & shuffled",
+          cards: cards,
+        });
+
+        return state;
+      }, this.save);
+    } else if (simpleListMappings[name]) {
+      this.setState((prevState, props) => {
+        let state = prevState;
+        let list = simpleListMappings[name].list.concat(cards);
+        list.sort();
+        if (name != "Single Items") {
+          // remove duplicates, but not on "Single Items"
+          list = list.filter((el, idx, arr) => el !== arr[idx - 1]);
+        }
+        simpleListMappings[name].list = list;
+        simpleListMappings[name].history.push({
+          action: "added cards",
           cards: cards,
         });
 
@@ -627,6 +664,12 @@ class App extends React.Component {
       </div>,
       <div key="random-items-div">
         <RandomItemDesigns list={this.state.stacks.randomItemDesigns.list}/>
+      </div>,
+      <div key="item-designs-div">
+        {itemsAboveProsperity("Item Designs", this.state.stacks.itemDesigns.list, prosperity)}
+      </div>,
+      <div key="single-items-div">
+        {itemsAboveProsperity("Single Items", this.state.stacks.singleItems.list, prosperity)}
       </div>,
       <div key="prosperity-items-div">
         <h2 key="h2">
