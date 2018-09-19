@@ -7,6 +7,29 @@ const randomItemDesigns = {
   n: 25,
 };
 
+function rangeFromTo(from, to){
+  if (to < from) {
+    return [];
+  }
+  return range(from, to - from);
+}
+
+function range(startAt, size) {
+  return [...Array(size).keys()].map(i => i + startAt);
+}
+
+const itemIdsByProsperityLevel = {
+  1: range(1, 14),
+  2: range(15, 7),
+  3: range(22, 7),
+  4: range(29, 7),
+  5: range(36, 7),
+  6: range(43, 7),
+  7: range(50, 7),
+  8: range(57, 7),
+  9: range(64, 7),
+};
+
 const itemUrls = function(){
   const itemCounts = [0,2,2,2,2,2,2,2,2,2,2,2,4,4,4,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,2,2,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
   const itemUrls = [{
@@ -367,10 +390,13 @@ class App extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
+    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
+    this.itemsToDisplay = this.itemsToDisplay.bind(this);
 
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
       dialog: null,
+      shopItemFilter: 'all'
     };
     this.save();
   }
@@ -536,8 +562,28 @@ class App extends React.Component {
         state.stacks.prosperity += 1;
       }
       return state;
-    });
-    this.save();
+    }, this.save);
+  }
+
+  handleShopItemFilterChange(event) {
+    this.setState({shopItemFilter: event.target.value}, () => { });
+    event.preventDefault();
+  }
+
+  itemsToDisplay() {
+    const filterAsString = this.state.shopItemFilter;
+    switch (filterAsString) {
+      case 'all':
+        return rangeFromTo(1, this.state.stacks.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
+      default:
+        const maybeProsperity = parseInt(filterAsString, 10);
+        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
+        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
+    }
+  }
+
+  levelWithItems(level, items){
+    return {level, items}
   }
 
   setDialog(dialog) {
@@ -585,10 +631,26 @@ class App extends React.Component {
       <div key="prosperity-items-div">
         <h2 key="h2">
           Prosperity {prosperity}
-          { (prosperity < 9) && <button type="button" onClick={this.increaseProsperity}>Increase Prosperity</button> }
+          <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
         </h2>
         <div key="cards">
-          {[...Array((prosperity+1)*7).keys()].map(i => itemToDiv(i+1))}
+          <div>
+            <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
+              <option key='all' value="all">all</option>
+              {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
+            </select>
+          </div>
+
+          {
+            this.itemsToDisplay().map(category => {
+              return (
+                <div key={category.level}>
+                  <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
+                  {category.items.map(itemToDiv)}
+                </div>
+              )
+            })
+          }
         </div>
       </div>
     ];
