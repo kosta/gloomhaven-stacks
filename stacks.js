@@ -574,11 +574,16 @@ class App extends React.Component {
     const filterAsString = this.state.shopItemFilter;
     switch (filterAsString) {
       case 'all':
-        return rangeFromTo(1, this.state.stacks.prosperity + 1).map(level => itemIdsByProsperityLevel[level]).flat();
+        return rangeFromTo(1, this.state.stacks.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
       default:
         const maybeProsperity = parseInt(filterAsString, 10);
-        return itemIdsByProsperityLevel[isNaN(maybeProsperity)? 1 : maybeProsperity];
+        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
+        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
     }
+  }
+
+  levelWithItems(level, items){
+    return {level, items}
   }
 
   setDialog(dialog) {
@@ -635,7 +640,17 @@ class App extends React.Component {
               {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
             </select>
           </div>
-          {this.itemsToDisplay().map(itemToDiv)}
+
+          {
+            this.itemsToDisplay().map(category => {
+              return (
+                <div key={category.level}>
+                  <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
+                  {category.items.map(itemToDiv)}
+                </div>
+              )
+            })
+          }
         </div>
       </div>
     ];
