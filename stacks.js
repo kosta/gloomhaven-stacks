@@ -330,6 +330,26 @@ class Pop extends React.Component {
   }
 }
 
+class ProsperityInput extends React.Component {
+  constructor(props){
+    super(props);
+    this.increaseProsperity = this.increaseProsperity.bind(this);
+  }
+
+  increaseProsperity(){
+    this.props.onIncreaseProsperity();
+  }
+
+  render(){
+    const prosperity = this.props.prosperity;
+    return <h2 key="h2">
+      Prosperity {prosperity}
+      <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
+    </h2>;
+  }
+
+}
+
 class ImportExport extends React.Component {
   constructor(props) {
     super(props);
@@ -672,29 +692,26 @@ class App extends React.Component {
         {itemsAboveProsperity("Single Items", this.state.stacks.singleItems.list, prosperity)}
       </div>,
       <div key="prosperity-items-div">
-        <h2 key="h2">
-          Prosperity {prosperity}
-          <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
-        </h2>
-        <div key="cards">
-          <div>
-            <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
-              <option key='all' value="all">all</option>
-              {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
-            </select>
-          </div>
-
-          {
-            this.itemsToDisplay().map(category => {
-              return (
-                <div key={category.level}>
-                  <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
-                  {category.items.map(itemToDiv)}
-                </div>
-              )
-            })
-          }
+        <ProsperityInput prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>
+      </div>,
+      <div key="cards">
+        <div>
+          <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
+            <option key='all' value="all">all</option>
+            {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
+          </select>
         </div>
+
+        {
+          this.itemsToDisplay().map(category => {
+            return (
+              <div key={category.level}>
+                <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
+                {category.items.map(itemToDiv)}
+              </div>
+            )
+          })
+        }
       </div>
     ];
   }
