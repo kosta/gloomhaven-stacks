@@ -347,7 +347,62 @@ class ProsperityInput extends React.Component {
       <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
     </h2>;
   }
+}
 
+class Shop extends React.Component {
+  constructor(props){
+    super(props);
+    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
+    this.itemsToDisplay = this.itemsToDisplay.bind(this);
+
+    this.state = {
+      shopItemFilter: 'all'
+    };
+  }
+
+  handleShopItemFilterChange(event) {
+    this.setState({shopItemFilter: event.target.value}, () => { });
+    event.preventDefault();
+  }
+
+  itemsToDisplay() {
+    const filterAsString = this.state.shopItemFilter;
+    switch (filterAsString) {
+      case 'all':
+        return rangeFromTo(1, this.props.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
+      default:
+        const maybeProsperity = parseInt(filterAsString, 10);
+        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
+        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
+    }
+  }
+
+  levelWithItems(level, items){
+    return {level, items}
+  }
+
+  render(){
+    const prosperity = this.props.prosperity;
+    return <div key="cards">
+      <div>
+        <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
+          <option key='all' value="all">all</option>
+          {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
+        </select>
+      </div>
+
+      {
+        this.itemsToDisplay().map(category => {
+          return (
+            <div key={category.level}>
+              <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
+              {category.items.map(itemToDiv)}
+            </div>
+          )
+        })
+      }
+    </div>;
+  }
 }
 
 class ImportExport extends React.Component {
@@ -419,13 +474,9 @@ class App extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
-    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
-    this.itemsToDisplay = this.itemsToDisplay.bind(this);
-
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
-      dialog: null,
-      shopItemFilter: 'all'
+      dialog: null
     };
     this.save();
   }
@@ -622,27 +673,6 @@ class App extends React.Component {
     }, this.save);
   }
 
-  handleShopItemFilterChange(event) {
-    this.setState({shopItemFilter: event.target.value}, () => { });
-    event.preventDefault();
-  }
-
-  itemsToDisplay() {
-    const filterAsString = this.state.shopItemFilter;
-    switch (filterAsString) {
-      case 'all':
-        return rangeFromTo(1, this.state.stacks.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
-      default:
-        const maybeProsperity = parseInt(filterAsString, 10);
-        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
-        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
-    }
-  }
-
-  levelWithItems(level, items){
-    return {level, items}
-  }
-
   setDialog(dialog) {
     // first remove, then add so that the component doesnt get recycled
     this.setState({
@@ -694,24 +724,8 @@ class App extends React.Component {
       <div key="prosperity-items-div">
         <ProsperityInput prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>
       </div>,
-      <div key="cards">
-        <div>
-          <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
-            <option key='all' value="all">all</option>
-            {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
-          </select>
-        </div>
-
-        {
-          this.itemsToDisplay().map(category => {
-            return (
-              <div key={category.level}>
-                <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
-                {category.items.map(itemToDiv)}
-              </div>
-            )
-          })
-        }
+      <div key="shop">
+        <Shop prosperity={prosperity}/>
       </div>
     ];
   }
