@@ -625,7 +625,7 @@ class App extends React.Component {
         let state = prevState;
         let list = simpleListMappings[name].list.concat(cards);
         list.sort();
-        if (name != "Single Items") {
+        if (name !== "Single Items") {
           // remove duplicates, but not on "Single Items"
           list = list.filter((el, idx, arr) => el !== arr[idx - 1]);
         }
