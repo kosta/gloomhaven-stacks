@@ -119,14 +119,12 @@ function itemToDiv(itemId) {
   });
 }
 
-function cardToDiv(i, props) {
-  if (i >= 510) {
+function cardToDiv(cardId, props) {
+  if (cardId >= 510) {
     //sorry for this spaghetti special case :(
-    return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + i}>
-      <img key={i} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + i + ".png"}/>
-    </div>;
+    return <PersonalGoalCard cardId={cardId}/>
   } else {
-    let n = i - props.offset;
+    let n = cardId - props.offset;
     let row = Math.floor(n / props.cols);
     let col = n % props.cols;
     let style = {
@@ -139,7 +137,16 @@ function cardToDiv(i, props) {
       padding: "0 0 3px 14px",
       display: "inline-block",
     };
-    return <div key={i} style={style}>{i}</div>;
+    return <div key={cardId} style={style}>{cardId}</div>;
+  }
+}
+
+class PersonalGoalCard extends React.Component {
+  render() {
+    const cardId = this.props.cardId;
+    return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + cardId}>
+      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"}/>
+    </div>;
   }
 }
 
