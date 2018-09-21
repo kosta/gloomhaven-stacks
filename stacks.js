@@ -193,6 +193,7 @@ class EventCard extends React.Component {
     this.selectB = this.selectB.bind(this);
     this.returnToBottom = this.returnToBottom.bind(this);
     this.removeFromGame = this.removeFromGame.bind(this);
+    this.eventImageBaseUrl = this.eventImageBaseUrl.bind(this);
     this.state = {};
   }
 
@@ -220,13 +221,17 @@ class EventCard extends React.Component {
     return false;
   }
 
-  render() {
+  eventImageBaseUrl(){
     let number = this.props.number;
     if (number <= 9) {
       number = "0" + number;
     }
-    let imageName = this.props.name.toLowerCase();
-    let imgUrlBase = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
+    const imageName = this.props.name.toLowerCase();
+    return "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
+  }
+
+  render() {
+    const imgUrlBase = this.eventImageBaseUrl();
     let r = [
       <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
       <img key="image-front" src={imgUrlBase + "f.png"}/>,
