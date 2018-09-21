@@ -291,7 +291,6 @@ class Draw extends React.Component {
       drawnCards.push(next);
     }
     drawnCards.sort();
-    // console.log("cardNo", cardNo);
     this.props.setDialog(
       <RandomCard
         name={this.props.name}
@@ -430,7 +429,6 @@ class ImportExport extends React.Component {
   }
 
   importFromClipboard() {
-    //console.log('asfasfd')
     navigator.clipboard.readText().then(this.props.import);
   }
 
