@@ -719,12 +719,8 @@ class App extends React.Component {
       <div key="single-items-div">
         {itemsAboveProsperity("Single Items", this.state.stacks.singleItems.list, prosperity)}
       </div>,
-      <div key="prosperity-items-div">
-        <ProsperityInput prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>
-      </div>,
-      <div key="shop">
-        <Shop prosperity={prosperity}/>
-      </div>
+      <ProsperityInput prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>,
+      <Shop prosperity={prosperity}/>
     ];
   }
 }
