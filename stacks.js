@@ -107,13 +107,13 @@ function removeFromArray(a, v) {
   }
 }
 
-function itemToDiv(i) {
-  let item = itemUrls[i];
-  return cardToDiv(i, {
+function itemToDiv(itemId) {
+  let item = itemUrls[itemId];
+  return cardToDiv(itemId, {
     url: item.url,
     width: 292,
     height: 456,
-    offset: i - item.numberInPicture,
+    offset: itemId - item.numberInPicture,
     cols: 10,
     n: item.n,
   });
