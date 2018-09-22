@@ -273,12 +273,12 @@ class RandomCard extends React.Component {
     return [
       <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>,
       <div key="button-div">
-        {this.props.drawnCards.map(cardNo => {
-          return <div key={"span-" + cardNo} style={({display: "inline-block", width: this.props.cardProps && this.props.cardProps.divWidth})}>
-            <div key={"button-div-" + cardNo}>
-              <button key={"button-" + cardNo} type="button" onClick={() => this.clicked(cardNo)}>Accept {cardNo}</button>
+        {this.props.drawnCards.map(cardNumber => {
+          return <div key={"span-" + cardNumber} style={({display: "inline-block", width: this.props.cardProps && this.props.cardProps.divWidth})}>
+            <div key={"button-div-" + cardNumber}>
+              <button key={"button-" + cardNumber} type="button" onClick={() => this.clicked(cardNumber)}>Accept {cardNumber}</button>
             </div>
-            {this.props.cardProps && cardToDiv(cardNo, this.props.cardProps)}
+            {this.props.cardProps && cardToDiv(cardNumber, this.props.cardProps)}
           </div>
         })}
       </div>,
