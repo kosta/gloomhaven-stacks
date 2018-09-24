@@ -107,26 +107,24 @@ function removeFromArray(a, v) {
   }
 }
 
-function itemToDiv(i) {
-  let item = itemUrls[i];
-  return cardToDiv(i, {
+function itemToDiv(itemId) {
+  let item = itemUrls[itemId];
+  return cardToDiv(itemId, {
     url: item.url,
     width: 292,
     height: 456,
-    offset: i - item.numberInPicture,
+    offset: itemId - item.numberInPicture,
     cols: 10,
     n: item.n,
   });
 }
 
-function cardToDiv(i, props) {
-  if (i >= 510) {
+function cardToDiv(cardId, props) {
+  if (cardId >= 510) {
     //sorry for this spaghetti special case :(
-    return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + i}>
-      <img key={i} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + i + ".png"}/>
-    </div>;
+    return <PersonalGoalCard cardId={cardId}/>
   } else {
-    let n = i - props.offset;
+    let n = cardId - props.offset;
     let row = Math.floor(n / props.cols);
     let col = n % props.cols;
     let style = {
@@ -139,7 +137,16 @@ function cardToDiv(i, props) {
       padding: "0 0 3px 14px",
       display: "inline-block",
     };
-    return <div key={i} style={style}>{i}</div>;
+    return <div key={cardId} style={style}>{cardId}</div>;
+  }
+}
+
+class PersonalGoalCard extends React.Component {
+  render() {
+    const cardId = this.props.cardId;
+    return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + cardId}>
+      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"}/>
+    </div>;
   }
 }
 
@@ -193,6 +200,7 @@ class EventCard extends React.Component {
     this.selectB = this.selectB.bind(this);
     this.returnToBottom = this.returnToBottom.bind(this);
     this.removeFromGame = this.removeFromGame.bind(this);
+    this.eventImageBaseUrl = this.eventImageBaseUrl.bind(this);
     this.state = {};
   }
 
@@ -220,13 +228,17 @@ class EventCard extends React.Component {
     return false;
   }
 
-  render() {
+  eventImageBaseUrl(){
     let number = this.props.number;
     if (number <= 9) {
       number = "0" + number;
     }
-    let imageName = this.props.name.toLowerCase();
-    let imgUrlBase = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
+    const imageName = this.props.name.toLowerCase();
+    return "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
+  }
+
+  render() {
+    const imgUrlBase = this.eventImageBaseUrl();
     let r = [
       <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
       <img key="image-front" src={imgUrlBase + "f.png"}/>,
@@ -261,12 +273,12 @@ class RandomCard extends React.Component {
     return [
       <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>,
       <div key="button-div">
-        {this.props.drawnCards.map(cardNo => {
-          return <div key={"span-" + cardNo} style={({display: "inline-block", width: this.props.cardProps && this.props.cardProps.divWidth})}>
-            <div key={"button-div-" + cardNo}>
-              <button key={"button-" + cardNo} type="button" onClick={() => this.clicked(cardNo)}>Accept {cardNo}</button>
+        {this.props.drawnCards.map(cardNumber => {
+          return <div key={"span-" + cardNumber} style={({display: "inline-block", width: this.props.cardProps && this.props.cardProps.divWidth})}>
+            <div key={"button-div-" + cardNumber}>
+              <button key={"button-" + cardNumber} type="button" onClick={() => this.clicked(cardNumber)}>Accept {cardNumber}</button>
             </div>
-            {this.props.cardProps && cardToDiv(cardNo, this.props.cardProps)}
+            {this.props.cardProps && cardToDiv(cardNumber, this.props.cardProps)}
           </div>
         })}
       </div>,
@@ -291,7 +303,6 @@ class Draw extends React.Component {
       drawnCards.push(next);
     }
     drawnCards.sort();
-    // console.log("cardNo", cardNo);
     this.props.setDialog(
       <RandomCard
         name={this.props.name}
@@ -330,6 +341,81 @@ class Pop extends React.Component {
   }
 }
 
+class ProsperityInput extends React.Component {
+  constructor(props){
+    super(props);
+    this.increaseProsperity = this.increaseProsperity.bind(this);
+  }
+
+  increaseProsperity(){
+    this.props.onIncreaseProsperity();
+  }
+
+  render(){
+    const prosperity = this.props.prosperity;
+    return <h2 key="h2">
+      Prosperity {prosperity}
+      <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
+    </h2>;
+  }
+}
+
+class Shop extends React.Component {
+  constructor(props){
+    super(props);
+    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
+    this.itemsToDisplay = this.itemsToDisplay.bind(this);
+
+    this.state = {
+      shopItemFilter: 'all'
+    };
+  }
+
+  handleShopItemFilterChange(event) {
+    this.setState({shopItemFilter: event.target.value}, () => { });
+    event.preventDefault();
+  }
+
+  itemsToDisplay() {
+    const filterAsString = this.state.shopItemFilter;
+    switch (filterAsString) {
+      case 'all':
+        return rangeFromTo(1, this.props.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
+      default:
+        const maybeProsperity = parseInt(filterAsString, 10);
+        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
+        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
+    }
+  }
+
+  levelWithItems(level, items){
+    return {level, items}
+  }
+
+  render(){
+    const prosperity = this.props.prosperity;
+    return <div key="cards">
+      <div>
+        <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
+          <option key='all' value="all">all</option>
+          {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
+        </select>
+      </div>
+
+      {
+        this.itemsToDisplay().map(category => {
+          return (
+            <div key={category.level}>
+              <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
+              {category.items.map(itemToDiv)}
+            </div>
+          )
+        })
+      }
+    </div>;
+  }
+}
+
 class ImportExport extends React.Component {
   constructor(props) {
     super(props);
@@ -355,7 +441,6 @@ class ImportExport extends React.Component {
   }
 
   importFromClipboard() {
-    //console.log('asfasfd')
     navigator.clipboard.readText().then(this.props.import);
   }
 
@@ -399,13 +484,9 @@ class App extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
-    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
-    this.itemsToDisplay = this.itemsToDisplay.bind(this);
-
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
-      dialog: null,
-      shopItemFilter: 'all'
+      dialog: null
     };
     this.save();
   }
@@ -554,7 +635,7 @@ class App extends React.Component {
         let state = prevState;
         let list = simpleListMappings[name].list.concat(cards);
         list.sort();
-        if (name != "Single Items") {
+        if (name !== "Single Items") {
           // remove duplicates, but not on "Single Items"
           list = list.filter((el, idx, arr) => el !== arr[idx - 1]);
         }
@@ -600,27 +681,6 @@ class App extends React.Component {
       }
       return state;
     }, this.save);
-  }
-
-  handleShopItemFilterChange(event) {
-    this.setState({shopItemFilter: event.target.value}, () => { });
-    event.preventDefault();
-  }
-
-  itemsToDisplay() {
-    const filterAsString = this.state.shopItemFilter;
-    switch (filterAsString) {
-      case 'all':
-        return rangeFromTo(1, this.state.stacks.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
-      default:
-        const maybeProsperity = parseInt(filterAsString, 10);
-        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
-        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
-    }
-  }
-
-  levelWithItems(level, items){
-    return {level, items}
   }
 
   setDialog(dialog) {
@@ -671,31 +731,8 @@ class App extends React.Component {
       <div key="single-items-div">
         {itemsAboveProsperity("Single Items", this.state.stacks.singleItems.list, prosperity)}
       </div>,
-      <div key="prosperity-items-div">
-        <h2 key="h2">
-          Prosperity {prosperity}
-          <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
-        </h2>
-        <div key="cards">
-          <div>
-            <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
-              <option key='all' value="all">all</option>
-              {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
-            </select>
-          </div>
-
-          {
-            this.itemsToDisplay().map(category => {
-              return (
-                <div key={category.level}>
-                  <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
-                  {category.items.map(itemToDiv)}
-                </div>
-              )
-            })
-          }
-        </div>
-      </div>
+      <ProsperityInput key="prosperity-input" prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>,
+      <Shop key="shop" prosperity={prosperity}/>
     ];
   }
 }
