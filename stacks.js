@@ -192,7 +192,7 @@ class AddCards extends React.Component {
   }
 }
 
-class EventCard extends React.Component {
+class EventConclusion extends React.Component {
   constructor(props) {
     super(props);
 
@@ -328,7 +328,7 @@ class Pop extends React.Component {
 
   clicked() {
     this.props.setDialog(
-      <EventCard
+      <EventConclusion
         name={this.props.name}
         number={this.props.cards.stack[0]}
         stackPopped={this.props.stackPopped}
