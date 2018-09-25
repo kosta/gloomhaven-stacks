@@ -192,6 +192,28 @@ class AddCards extends React.Component {
   }
 }
 
+class EventCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.eventCardImageUrl = this.eventCardImageUrl.bind(this);
+  }
+
+  render() {
+    return <img key='image-front' src={this.eventCardImageUrl()}/>
+  }
+
+  eventCardImageUrl() {
+    let number = this.props.eventCardId;
+    if (number <= 9) {
+      number = "0" + number;
+    }
+    const imageName = this.props.name.toLowerCase();
+    const imageBaseUrl = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
+    const sideUrlPart = this.props.side === 'back' ? 'b' : 'f';
+    return imageBaseUrl + sideUrlPart + '.png';
+  }
+}
+
 class EventConclusion extends React.Component {
   constructor(props) {
     super(props);
@@ -200,7 +222,6 @@ class EventConclusion extends React.Component {
     this.selectB = this.selectB.bind(this);
     this.returnToBottom = this.returnToBottom.bind(this);
     this.removeFromGame = this.removeFromGame.bind(this);
-    this.eventImageBaseUrl = this.eventImageBaseUrl.bind(this);
     this.state = {};
   }
 
@@ -228,21 +249,11 @@ class EventConclusion extends React.Component {
     return false;
   }
 
-  eventImageBaseUrl(){
-    let number = this.props.number;
-    if (number <= 9) {
-      number = "0" + number;
-    }
-    const imageName = this.props.name.toLowerCase();
-    return "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/events/base/" + imageName + "/" + imageName.charAt(0) + "e-" + number + "-";
-  }
-
   render() {
-    const imgUrlBase = this.eventImageBaseUrl();
     let r = [
       <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
-      <img key="image-front" src={imgUrlBase + "f.png"}/>,
-      this.state.selected && <img key="image-back" src={imgUrlBase + "b.png"}/>,
+      <EventCard key='event-card-front' eventCardId={this.props.number} side='front' name={this.props.name}/>,
+      this.state.selected && <EventCard key='event-card-back' eventCardId={this.props.number} side='back' name={this.props.name}/>,
       <div key="div-a">
         <button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button>
       </div>,
