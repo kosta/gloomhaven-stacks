@@ -490,9 +490,33 @@ class PartyBattleGoals extends React.Component {
 class PlayerBattleGoals extends React.Component {
   render() {
     return <ul>
-      <li key='first'>{this.props.first}</li>
-      <li key='second'>{this.props.second}</li>
+      <li key='first'><BattleGoalCard battleGoalId={this.props.first}/></li>
+      <li key='second'><BattleGoalCard battleGoalId={this.props.second}/></li>
     </ul>;
+  }
+}
+
+class BattleGoalCard extends React.Component {
+  constructor(props){
+    super(props);
+    this.reveal = this.reveal.bind(this);
+    this.hide = this.hide.bind(this);
+    this.state = {hidden: true};
+  }
+
+  reveal(){
+    this.setState({hidden: false}, () => {});
+  }
+
+  hide(){
+    this.setState({hidden: true}, () => {});
+  }
+
+  render() {
+    const style = {
+      opacity: this.state.hidden ? 0 : 1
+    };
+    return <span style={style} onMouseOver={this.reveal} onMouseOut={this.hide} key='first'>{this.props.battleGoalId}</span>;
   }
 }
 
