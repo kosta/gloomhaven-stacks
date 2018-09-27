@@ -510,26 +510,18 @@ function partition(size, array) {
   return partitions;
 }
 
-function drawDistinctBattleGoals(count){
-  const battleGoals = [];
-  while (battleGoals.length < count) {
-    const potentialBattleGoal = randomIntInclusive(1, 100);
-    if(!battleGoals.includes(potentialBattleGoal)){
-      battleGoals.push(potentialBattleGoal);
-    }
-  }
-  return battleGoals;
+function communityBattleGoals() {
+  return range(1, 100);
 }
 
-function randomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function drawDistinctBattleGoals(count){
+  const allBattleGoals = communityBattleGoals();
+  return shuffle(allBattleGoals).slice(0, count);
 }
 
 function itemsAboveProsperity(title, items, prosperity) {
   let maxProsperityItem = itemIdsByProsperityLevel[prosperity].slice(-1)[0];
-  let itemDivs = items.filter(item => item > maxProsperityItem).map(itemToDiv)
+  let itemDivs = items.filter(item => item > maxProsperityItem).map(itemToDiv);
   return <div key={title + "-div"}>
     {itemDivs.length > 0 && <h2 key="h2">{title}</h2>}
     {itemDivs}
