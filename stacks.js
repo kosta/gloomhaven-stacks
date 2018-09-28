@@ -728,7 +728,7 @@ class App extends React.Component {
       if (!stack) {
         throw "Unknown name for addCards: " + name;
       }
-      this.setState((state, props) => {
+      this.setState((prevState, props) => {
         stack.stack = stack.stack.concat(cardIdsToAdd);
         shuffle(stack.stack);
 
@@ -737,7 +737,7 @@ class App extends React.Component {
           cards: cardIdsToAdd,
         });
 
-        return state;
+        return prevState;
       }, this.save)
     }
     this.cancel();
