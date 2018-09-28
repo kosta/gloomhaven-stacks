@@ -275,7 +275,8 @@ class BringEventToConclusion extends React.Component {
         <div key="div-rem">
           <button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button>
         </div>,
-      ])
+        this.props.children
+      ]);
     }
     return r;
   }
@@ -348,8 +349,9 @@ class Pop extends React.Component {
       <BringEventToConclusion
         name={this.props.name}
         number={this.props.cards.stack[0]}
-        stackPopped={this.props.stackPopped}
-      />
+        stackPopped={this.props.stackPopped}>
+        <AddCards onAddCards={this.props.onAddCards}/>
+      </BringEventToConclusion>
     );
   }
 
@@ -799,8 +801,8 @@ class App extends React.Component {
     let prosperity = this.state.stacks.prosperity;
     return [
       <div key="button-frame" className="frame">
-        <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped}/>
-        <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped}/>
+        <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} onAddCards={this.addCards}/>
+        <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} onAddCards={this.addCards}/>
         <Draw key="randomItem" name="Random Item Design" cards={this.state.stacks.randomItemDesigns} cardProps={randomItemDesigns} setDialog={this.setDialog} drawn={this.stackDrawn}/>
         <Draw key="randomScenario" name="Random Side Scenario" cards={this.state.stacks.randomScenarios} setDialog={this.setDialog} drawn={this.stackDrawn}/>
         <Draw key="personalGoal" name="Personal Goal" n={2} cards={this.state.stacks.personalGoals} cardProps={personalGoals} setDialog={this.setDialog} drawn={this.stackDrawn}/>
