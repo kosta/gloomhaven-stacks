@@ -723,7 +723,8 @@ class App extends React.Component {
       }, this.save);
     } else {
       // assuming "City Event" or "Road Event"
-      const stack = this.state.stacks[name.split(" ")[0].toLowerCase() + "Events"];
+      const eventStackName = name.split(" ")[0].toLowerCase() + "Events";
+      const stack = this.state.stacks[eventStackName];
       if (!stack) {
         throw "Unknown name for addCards: " + name;
       }
