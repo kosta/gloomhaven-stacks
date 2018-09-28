@@ -256,29 +256,36 @@ class BringEventToConclusion extends React.Component {
   }
 
   render() {
-    let r = [
-      <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
-      <EventCard key='event-card-front' eventCardId={this.props.number} side='front' name={this.props.name}/>,
-      this.state.selected && <EventCard key='event-card-back' eventCardId={this.props.number} side='back' name={this.props.name}/>,
-      <div key="div-a">
-        <button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button>
-      </div>,
-      <div key="div-b">
-        <button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button>
-      </div>,
+    const containerStyle = {
+      'display': 'flex',
+      'flex-direction': 'row'
+    };
+    const choiceStyle = {
+      'display': 'flex',
+      'flex-direction': 'column'
+    };
+    const resolutionStyle = {
+      'display': 'flex',
+      'flex-direction': 'column'
+    };
+    return [<h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
+      <div style={containerStyle}>
+        <EventCard key='event-card-front' eventCardId={this.props.number} side='front' name={this.props.name}/>
+        <div style={choiceStyle}>
+          <button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button>
+          <button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button>
+        </div>
+        {this.state.selected && [
+          <EventCard key='event-card-back' eventCardId={this.props.number} side='back' name={this.props.name}/>,
+          <div style={resolutionStyle}>
+            {this.props.children}
+            <h3>Conclusion</h3>
+            <button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button>
+            <button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button>
+          </div>
+        ]}
+      </div>
     ];
-    if (this.state.selected) {
-      r = r.concat([
-        <div key="div-ret">
-          <button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button>
-        </div>,
-        <div key="div-rem">
-          <button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button>
-        </div>,
-        this.props.children
-      ]);
-    }
-    return r;
   }
 }
 
