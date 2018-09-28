@@ -173,9 +173,10 @@ class AddCards extends React.Component {
     this.inputs = {};
   }
 
-  handleClick(e, s) {
+  handleClick(e, cardType) {
     e.preventDefault();
-    this.props.addCards(s, this.inputs[s].value.split(/\D+/));
+    const stringCardIds = this.inputs[cardType].value.split(/\D+/);
+    this.props.onAddCards(cardType, stringCardIds);
     return false;
   }
 
@@ -569,6 +570,7 @@ class App extends React.Component {
 
     this.showAddCards = this.showAddCards.bind(this);
     this.addCards = this.addCards.bind(this);
+    this.addCardsAndCloseDialog = this.addCardsAndCloseDialog.bind(this);
     this.stackPopped = this.stackPopped.bind(this);
     this.stackDrawn = this.stackDrawn.bind(this);
     this.showImportExport = this.showImportExport.bind(this);
@@ -698,6 +700,11 @@ class App extends React.Component {
     }
   }
 
+  addCardsAndCloseDialog(name, cardIdsAsString){
+    this.addCards(name, cardIdsAsString);
+    this.cancel();
+  }
+
   addCards(name, cardIdsAsString) {
     let simpleListMappings = {
       "Item Designs": this.state.stacks.itemDesigns,
@@ -740,11 +747,10 @@ class App extends React.Component {
         return prevState;
       }, this.save)
     }
-    this.cancel();
   }
 
   showAddCards() {
-    this.setDialog(<AddCards addCards={this.addCards}/>);
+    this.setDialog(<AddCards onAddCards={this.addCardsAndCloseDialog}/>);
   }
 
   increaseProsperity() {
