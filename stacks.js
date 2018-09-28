@@ -472,9 +472,91 @@ class ImportExport extends React.Component {
   }
 }
 
+class PartyBattleGoals extends React.Component {
+  render() {
+    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(8));
+    return (<table key={1}>
+      <thead>
+      <tr key='header'>
+        {battleGoalsPerPlayer.map((battleGoals, index) => {
+          const playerNumber = index + 1;
+          return <th key={playerNumber}>Player {playerNumber}</th>;
+        })}
+      </tr>
+      </thead>
+      <tbody>
+      <tr key='player-goals'>
+        {battleGoalsPerPlayer.map((battleGoals, index) => {
+          const first = battleGoals[0];
+          const second = battleGoals[1];
+          const playerNumber = index + 1;
+          return <td key={playerNumber}><PlayerBattleGoals key={playerNumber} first={first} second={second}/></td>;
+        })}
+      </tr>
+      </tbody>
+    </table>);
+  }
+}
+
+class PlayerBattleGoals extends React.Component {
+  render() {
+    return <ul>
+      <li key='first'><BattleGoalCard battleGoalId={this.props.first}/></li>
+      <li key='second'><BattleGoalCard battleGoalId={this.props.second}/></li>
+    </ul>;
+  }
+}
+
+class BattleGoalCard extends React.Component {
+  constructor(props){
+    super(props);
+    this.reveal = this.reveal.bind(this);
+    this.hide = this.hide.bind(this);
+    this.state = {hidden: true};
+  }
+
+  reveal(){
+    this.setState({hidden: false}, () => {});
+  }
+
+  hide(){
+    this.setState({hidden: true}, () => {});
+  }
+
+  render() {
+    const style = {
+      opacity: this.state.hidden ? 0 : 1
+    };
+    return <span style={style} onMouseOver={this.reveal} onMouseOut={this.hide} key='first'>{this.props.battleGoalId}</span>;
+  }
+}
+
+function partition(size, array) {
+  const partitions = [];
+  let nextPartitionStart = 0;
+  let nextPartitionEnd = size;
+
+  while (nextPartitionStart < array.length){
+    partitions.push(array.slice(nextPartitionStart, nextPartitionEnd));
+    nextPartitionStart += size;
+    nextPartitionEnd += size;
+  }
+
+  return partitions;
+}
+
+function communityBattleGoals() {
+  return range(1, 100);
+}
+
+function drawDistinctBattleGoals(count){
+  const allBattleGoals = communityBattleGoals();
+  return shuffle(allBattleGoals).slice(0, count);
+}
+
 function itemsAboveProsperity(title, items, prosperity) {
   let maxProsperityItem = itemIdsByProsperityLevel[prosperity].slice(-1)[0];
-  let itemDivs = items.filter(item => item > maxProsperityItem).map(itemToDiv)
+  let itemDivs = items.filter(item => item > maxProsperityItem).map(itemToDiv);
   return <div key={title + "-div"}>
     {itemDivs.length > 0 && <h2 key="h2">{title}</h2>}
     {itemDivs}
@@ -495,6 +577,7 @@ class App extends React.Component {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
+    this.onDrawBattleGoals = this.onDrawBattleGoals.bind(this);
     this.state = {
       stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
       dialog: null
@@ -694,6 +777,10 @@ class App extends React.Component {
     }, this.save);
   }
 
+  onDrawBattleGoals() {
+    this.setDialog((<PartyBattleGoals/>));
+  }
+
   setDialog(dialog) {
     // first remove, then add so that the component doesnt get recycled
     this.setState({
@@ -729,6 +816,7 @@ class App extends React.Component {
         <Draw key="personalGoal" name="Personal Goal" n={2} cards={this.state.stacks.personalGoals} cardProps={personalGoals} setDialog={this.setDialog} drawn={this.stackDrawn}/>
         <button type="button" onClick={this.showAddCards}>Add Cards</button>
         <button type="button" onClick={this.showImportExport}>Import / Export</button>
+        <button type="button" onClick={this.onDrawBattleGoals}>Draw Battle Goals</button>
       </div>,
       <div key="dialog-frame" className="frame">
         {this.state.dialog}
