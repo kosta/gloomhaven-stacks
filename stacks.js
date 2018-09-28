@@ -698,16 +698,16 @@ class App extends React.Component {
     }
   }
 
-  addCards(name, cards) {
+  addCards(name, cardIdsAsString) {
     let simpleListMappings = {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
     };
-    cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
+    const cardIdsToAdd = cardIdsAsString.map((s) => parseInt(s, 10)).filter((x) => x === x);
     if (simpleListMappings[name]) {
       this.setState((prevState, props) => {
         let state = prevState;
-        let list = simpleListMappings[name].list.concat(cards);
+        let list = simpleListMappings[name].list.concat(cardIdsToAdd);
         list.sort();
         if (name !== "Single Items") {
           // remove duplicates, but not on "Single Items"
@@ -716,7 +716,7 @@ class App extends React.Component {
         simpleListMappings[name].list = list;
         simpleListMappings[name].history.push({
           action: "added cards",
-          cards: cards,
+          cards: cardIdsToAdd,
         });
 
         return state;
@@ -729,12 +729,12 @@ class App extends React.Component {
         throw "Unknown name for addCards: " + name;
       }
       this.setState((state, props) => {
-        stack.stack = stack.stack.concat(cards);
+        stack.stack = stack.stack.concat(cardIdsToAdd);
         shuffle(stack.stack);
 
         stack.history.push({
           action: "added cards & shuffled",
-          cards: cards,
+          cards: cardIdsToAdd,
         });
 
         return state;
