@@ -168,15 +168,20 @@ class RandomItemDesigns extends React.Component {
 class AddCards extends React.Component {
   constructor(props) {
     super(props);
-
     this.handleClick = this.handleClick.bind(this);
+    this.parseCardIdsFromInputFor = this.parseCardIdsFromInputFor.bind(this);
     this.inputs = {};
+  }
+
+  parseCardIdsFromInputFor(cardType) {
+    const stringCardIds = this.inputs[cardType].value.split(/\D+/);
+    return stringCardIds.map((s) => parseInt(s, 10)).filter((x) => x === x);
   }
 
   handleClick(e, cardType) {
     e.preventDefault();
-    const stringCardIds = this.inputs[cardType].value.split(/\D+/);
-    this.props.onAddCards(cardType, stringCardIds);
+    const cardIdsToAdd = this.parseCardIdsFromInputFor(cardType);
+    this.props.onAddCards(cardType, cardIdsToAdd);
     return false;
   }
 
@@ -700,17 +705,16 @@ class App extends React.Component {
     }
   }
 
-  addCardsAndCloseDialog(name, cardIdsAsString){
-    this.addCards(name, cardIdsAsString);
+  addCardsAndCloseDialog(name, cardIdsToAdd){
+    this.addCards(name, cardIdsToAdd);
     this.cancel();
   }
 
-  addCards(name, cardIdsAsString) {
+  addCards(name, cardIdsToAdd) {
     let simpleListMappings = {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
     };
-    const cardIdsToAdd = cardIdsAsString.map((s) => parseInt(s, 10)).filter((x) => x === x);
     if (simpleListMappings[name]) {
       this.setState((prevState, props) => {
         let state = prevState;
