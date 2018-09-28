@@ -699,7 +699,6 @@ class App extends React.Component {
   }
 
   addCards(name, cards) {
-    console.log("addCards", name, cards);
     let simpleListMappings = {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
@@ -740,7 +739,6 @@ class App extends React.Component {
         return state;
       }, this.save)
     }
-    console.log("addCards", name, cards);
     this.cancel();
   }
 
