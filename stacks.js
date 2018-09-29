@@ -720,6 +720,9 @@ class App extends React.Component {
   }
 
   addCards(name, cardIdsToAdd) {
+    if (!cardIdsToAdd || cardIdsToAdd.length === 0) {
+      return;
+    }
     let simpleListMappings = {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
