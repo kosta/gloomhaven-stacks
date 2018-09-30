@@ -15,3 +15,6 @@ Sorry for the extremely horrible look! If you're good at CSS, send a Pull Reques
 * make it pretty (CSS)
 * move components into own files
 * redux?
+
+# Done
+* Setup webpack build following this [blog post](https://www.valentinog.com/blog/webpack-tutorial/).
