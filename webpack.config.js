@@ -2,8 +2,9 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: {
-    main: './src/stacks.js'
+    main: "./src/stacks.js"
   },
+  devtool: "source-map",
   module: {
     rules: [
       {
