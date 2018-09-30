@@ -15,6 +15,7 @@ Sorry for the extremely horrible look! If you're good at CSS, send a Pull Reques
 * make it pretty (CSS)
 * move components into own files
 * redux?
+* Enable [absolute imports](https://medium.com/@sherryhsu/how-to-change-relative-paths-to-absolute-paths-for-imports-32ba6cce18a5)
 
 # Done
 * Setup webpack build following this [blog post](https://www.valentinog.com/blog/webpack-tutorial/).
