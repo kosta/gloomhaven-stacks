@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 const randomItemDesigns = {
   url: "https://lh3.googleusercontent.com/u/0/d/1ubPFoTJ1_Ly-Eqn_yMvNhG0Dwq_tuw5c=s4800-k-iv1",
   width: 409,
