@@ -1,0 +1,9 @@
+{
+  "name": "gloomhaven-stacks",
+  "version": "0.4.0",
+  "description": "Manage gloomhaven card stacks on the web",
+  "main": "index.js",
+  "repository": "https://github.com/kosta/gloomhaven-stacks.git",
+  "author": "theoneandonlykosta@gmail.com",
+  "private": true
+}
