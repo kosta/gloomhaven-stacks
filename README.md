@@ -10,6 +10,8 @@ Sorry for the extremely horrible look! If you're good at CSS, send a Pull Reques
 # Opportunities for improvement
 ## Features
 * mark sold items in the shop
+* show battle goal images 
+
 ## Tech
 * document component props with `prop-types`
 * make it pretty (CSS)
