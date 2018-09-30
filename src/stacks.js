@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {shuffle, removeFromArray} from 'lang/arrays';
+import {rangeFromTo, range} from 'lang/ranges';
+import PartyBattleGoals from 'battlegoals/partyBattleGoals';
 
 const randomItemDesigns = {
   url: "https://lh3.googleusercontent.com/u/0/d/1ubPFoTJ1_Ly-Eqn_yMvNhG0Dwq_tuw5c=s4800-k-iv1",
@@ -9,17 +12,6 @@ const randomItemDesigns = {
   cols: 10,
   n: 25,
 };
-
-function rangeFromTo(from, to){
-  if (to < from) {
-    return [];
-  }
-  return range(from, to - from);
-}
-
-function range(startAt, size) {
-  return [...Array(size).keys()].map(i => i + startAt);
-}
 
 const itemIdsByProsperityLevel = {
   1: range(1, 14),
@@ -89,27 +81,6 @@ const personalGoals = {
   divWidth: "605px",
 };
 
-// from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-  return array;
-}
-
-function removeFromArray(a, v) {
-  while (true) {
-    let i = a.indexOf(v);
-    if (i === -1) {
-      return;
-    }
-    a.splice(i, 1);
-  }
-}
-
 function itemToDiv(itemId) {
   let item = itemUrls[itemId];
   return cardToDiv(itemId, {
@@ -120,6 +91,15 @@ function itemToDiv(itemId) {
     cols: 10,
     n: item.n,
   });
+}
+
+class PersonalGoalCard extends React.Component {
+  render() {
+    const cardId = this.props.cardId;
+    return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + cardId}>
+      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"}/>
+    </div>;
+  }
 }
 
 function cardToDiv(cardId, props) {
@@ -141,15 +121,6 @@ function cardToDiv(cardId, props) {
       display: "inline-block",
     };
     return <div key={cardId} style={style}>{cardId}</div>;
-  }
-}
-
-class PersonalGoalCard extends React.Component {
-  render() {
-    const cardId = this.props.cardId;
-    return <div style={({display: "inline-block", width: "605px"})} key={"cardToDiv-div-" + cardId}>
-      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"}/>
-    </div>;
   }
 }
 
@@ -373,16 +344,16 @@ class Pop extends React.Component {
 }
 
 class ProsperityInput extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.increaseProsperity = this.increaseProsperity.bind(this);
   }
 
-  increaseProsperity(){
+  increaseProsperity() {
     this.props.onIncreaseProsperity();
   }
 
-  render(){
+  render() {
     const prosperity = this.props.prosperity;
     return <h2 key="h2">
       Prosperity {prosperity}
@@ -392,7 +363,7 @@ class ProsperityInput extends React.Component {
 }
 
 class Shop extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
     this.itemsToDisplay = this.itemsToDisplay.bind(this);
@@ -403,7 +374,7 @@ class Shop extends React.Component {
   }
 
   handleShopItemFilterChange(event) {
-    this.setState({shopItemFilter: event.target.value}, () => { });
+    this.setState({shopItemFilter: event.target.value}, () => {});
     event.preventDefault();
   }
 
@@ -419,17 +390,17 @@ class Shop extends React.Component {
     }
   }
 
-  levelWithItems(level, items){
+  levelWithItems(level, items) {
     return {level, items}
   }
 
-  render(){
+  render() {
     const prosperity = this.props.prosperity;
     return <div key="cards">
       <div>
         <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
           <option key='all' value="all">all</option>
-          {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
+          {rangeFromTo(1, prosperity + 1).map(level => <option key={level} value={level}>{level}</option>)}
         </select>
       </div>
 
@@ -490,88 +461,6 @@ class ImportExport extends React.Component {
       <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
     ];
   }
-}
-
-class PartyBattleGoals extends React.Component {
-  render() {
-    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(8));
-    return (<table key={1}>
-      <thead>
-      <tr key='header'>
-        {battleGoalsPerPlayer.map((battleGoals, index) => {
-          const playerNumber = index + 1;
-          return <th key={playerNumber}>Player {playerNumber}</th>;
-        })}
-      </tr>
-      </thead>
-      <tbody>
-      <tr key='player-goals'>
-        {battleGoalsPerPlayer.map((battleGoals, index) => {
-          const first = battleGoals[0];
-          const second = battleGoals[1];
-          const playerNumber = index + 1;
-          return <td key={playerNumber}><PlayerBattleGoals key={playerNumber} first={first} second={second}/></td>;
-        })}
-      </tr>
-      </tbody>
-    </table>);
-  }
-}
-
-class PlayerBattleGoals extends React.Component {
-  render() {
-    return <ul>
-      <li key='first'><BattleGoalCard battleGoalId={this.props.first}/></li>
-      <li key='second'><BattleGoalCard battleGoalId={this.props.second}/></li>
-    </ul>;
-  }
-}
-
-class BattleGoalCard extends React.Component {
-  constructor(props){
-    super(props);
-    this.reveal = this.reveal.bind(this);
-    this.hide = this.hide.bind(this);
-    this.state = {hidden: true};
-  }
-
-  reveal(){
-    this.setState({hidden: false}, () => {});
-  }
-
-  hide(){
-    this.setState({hidden: true}, () => {});
-  }
-
-  render() {
-    const style = {
-      opacity: this.state.hidden ? 0 : 1
-    };
-    return <span style={style} onMouseOver={this.reveal} onMouseOut={this.hide} key='first'>{this.props.battleGoalId}</span>;
-  }
-}
-
-function partition(size, array) {
-  const partitions = [];
-  let nextPartitionStart = 0;
-  let nextPartitionEnd = size;
-
-  while (nextPartitionStart < array.length){
-    partitions.push(array.slice(nextPartitionStart, nextPartitionEnd));
-    nextPartitionStart += size;
-    nextPartitionEnd += size;
-  }
-
-  return partitions;
-}
-
-function communityBattleGoals() {
-  return range(1, 100);
-}
-
-function drawDistinctBattleGoals(count){
-  const allBattleGoals = communityBattleGoals();
-  return shuffle(allBattleGoals).slice(0, count);
 }
 
 function itemsAboveProsperity(title, items, prosperity) {
