@@ -705,26 +705,7 @@ class App extends React.Component {
       "Single Items": this.state.stacks.singleItems,
     };
     cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
-    let stack;
-    if (name === "Random Item Designs") {
-      stack = this.state.stacks.randomItemDesigns;
-      this.setState((prevState, props) => {
-        let state = prevState;
-
-        let list = state.stacks.randomItemDesigns.list.concat(cards);
-        list.sort();
-        // remove duplicates
-        list = list.filter((el, idx, arr) => el !== arr[idx - 1]);
-        state.stacks.randomItemDesigns.list = list;
-
-        state.stacks.randomItemDesigns.history.push({
-          action: "added cards & shuffled",
-          cards: cards,
-        });
-
-        return state;
-      }, this.save);
-    } else if (simpleListMappings[name]) {
+    if (simpleListMappings[name]) {
       this.setState((prevState, props) => {
         let state = prevState;
         let list = simpleListMappings[name].list.concat(cards);
@@ -743,7 +724,7 @@ class App extends React.Component {
       }, this.save);
     } else {
       // assuming "City Event" or "Road Event"
-      stack = this.state.stacks[name.split(" ")[0].toLowerCase() + "Events"];
+      const stack = this.state.stacks[name.split(" ")[0].toLowerCase() + "Events"];
       if (!stack) {
         throw "Unknown name for addCards: " + name;
       }
