@@ -168,14 +168,20 @@ class RandomItemDesigns extends React.Component {
 class AddCards extends React.Component {
   constructor(props) {
     super(props);
-
     this.handleClick = this.handleClick.bind(this);
+    this.parseCardIdsFromInputFor = this.parseCardIdsFromInputFor.bind(this);
     this.inputs = {};
   }
 
-  handleClick(e, s) {
+  parseCardIdsFromInputFor(cardType) {
+    const stringCardIds = this.inputs[cardType].value.split(/\D+/);
+    return stringCardIds.map((s) => parseInt(s, 10)).filter((x) => x === x);
+  }
+
+  handleClick(e, cardType) {
     e.preventDefault();
-    this.props.addCards(s, this.inputs[s].value.split(/\D+/));
+    const cardIdsToAdd = this.parseCardIdsFromInputFor(cardType);
+    this.props.onAddCards(cardType, cardIdsToAdd);
     return false;
   }
 
@@ -250,28 +256,38 @@ class BringEventToConclusion extends React.Component {
   }
 
   render() {
-    let r = [
-      <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
-      <EventCard key='event-card-front' eventCardId={this.props.number} side='front' name={this.props.name}/>,
-      this.state.selected && <EventCard key='event-card-back' eventCardId={this.props.number} side='back' name={this.props.name}/>,
-      <div key="div-a">
-        <button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button>
-      </div>,
-      <div key="div-b">
-        <button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button>
-      </div>,
+    const containerStyle = {
+      'display': 'flex',
+      'flex-direction': 'row'
+    };
+    const choiceStyle = {
+      'display': 'flex',
+      'flex-direction': 'column',
+      'padding': '0 1em 0'
+    };
+    const resolutionStyle = {
+      'display': 'flex',
+      'flex-direction': 'column',
+      'padding': '0 1em 0 '
+    };
+    return [<h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
+      <div style={containerStyle}>
+        <EventCard key='event-card-front' eventCardId={this.props.number} side='front' name={this.props.name}/>
+        <div style={choiceStyle}>
+          <button key="a" type="button" onClick={this.selectA} className={this.state.selected === "a" ? "selected" : ""}>A</button>
+          <button key="b" type="button" onClick={this.selectB} className={this.state.selected === "b" ? "selected" : ""}>B</button>
+        </div>
+        {this.state.selected && [
+          <EventCard key='event-card-back' eventCardId={this.props.number} side='back' name={this.props.name}/>,
+          <div style={resolutionStyle}>
+            {this.props.children}
+            <h3>Conclusion</h3>
+            <button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button>
+            <button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button>
+          </div>
+        ]}
+      </div>
     ];
-    if (this.state.selected) {
-      r = r.concat([
-        <div key="div-ret">
-          <button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button>
-        </div>,
-        <div key="div-rem">
-          <button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button>
-        </div>,
-      ])
-    }
-    return r;
   }
 }
 
@@ -342,8 +358,9 @@ class Pop extends React.Component {
       <BringEventToConclusion
         name={this.props.name}
         number={this.props.cards.stack[0]}
-        stackPopped={this.props.stackPopped}
-      />
+        stackPopped={this.props.stackPopped}>
+        <AddCards onAddCards={this.props.onAddCards}/>
+      </BringEventToConclusion>
     );
   }
 
@@ -569,6 +586,7 @@ class App extends React.Component {
 
     this.showAddCards = this.showAddCards.bind(this);
     this.addCards = this.addCards.bind(this);
+    this.addCardsAndCloseDialog = this.addCardsAndCloseDialog.bind(this);
     this.stackPopped = this.stackPopped.bind(this);
     this.stackDrawn = this.stackDrawn.bind(this);
     this.showImportExport = this.showImportExport.bind(this);
@@ -698,17 +716,23 @@ class App extends React.Component {
     }
   }
 
-  addCards(name, cards) {
-    console.log("addCards", name, cards);
+  addCardsAndCloseDialog(name, cardIdsToAdd){
+    this.addCards(name, cardIdsToAdd);
+    this.cancel();
+  }
+
+  addCards(name, cardIdsToAdd) {
+    if (!cardIdsToAdd || cardIdsToAdd.length === 0) {
+      return;
+    }
     let simpleListMappings = {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
     };
-    cards = cards.map((s) => parseInt(s, 10)).filter((x) => x === x);
     if (simpleListMappings[name]) {
       this.setState((prevState, props) => {
         let state = prevState;
-        let list = simpleListMappings[name].list.concat(cards);
+        let list = simpleListMappings[name].list.concat(cardIdsToAdd);
         list.sort();
         if (name !== "Single Items") {
           // remove duplicates, but not on "Single Items"
@@ -717,35 +741,34 @@ class App extends React.Component {
         simpleListMappings[name].list = list;
         simpleListMappings[name].history.push({
           action: "added cards",
-          cards: cards,
+          cards: cardIdsToAdd,
         });
 
         return state;
       }, this.save);
     } else {
       // assuming "City Event" or "Road Event"
-      const stack = this.state.stacks[name.split(" ")[0].toLowerCase() + "Events"];
+      const eventStackName = name.split(" ")[0].toLowerCase() + "Events";
+      const stack = this.state.stacks[eventStackName];
       if (!stack) {
         throw "Unknown name for addCards: " + name;
       }
-      this.setState((state, props) => {
-        stack.stack = stack.stack.concat(cards);
+      this.setState((prevState, props) => {
+        stack.stack = stack.stack.concat(cardIdsToAdd);
         shuffle(stack.stack);
 
         stack.history.push({
           action: "added cards & shuffled",
-          cards: cards,
+          cards: cardIdsToAdd,
         });
 
-        return state;
+        return prevState;
       }, this.save)
     }
-    console.log("addCards", name, cards);
-    this.cancel();
   }
 
   showAddCards() {
-    this.setDialog(<AddCards addCards={this.addCards}/>);
+    this.setDialog(<AddCards onAddCards={this.addCardsAndCloseDialog}/>);
   }
 
   increaseProsperity() {
@@ -790,8 +813,8 @@ class App extends React.Component {
     let prosperity = this.state.stacks.prosperity;
     return [
       <div key="button-frame" className="frame">
-        <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped}/>
-        <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped}/>
+        <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} onAddCards={this.addCards}/>
+        <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} onAddCards={this.addCards}/>
         <Draw key="randomItem" name="Random Item Design" cards={this.state.stacks.randomItemDesigns} cardProps={randomItemDesigns} setDialog={this.setDialog} drawn={this.stackDrawn}/>
         <Draw key="randomScenario" name="Random Side Scenario" cards={this.state.stacks.randomScenarios} setDialog={this.setDialog} drawn={this.stackDrawn}/>
         <Draw key="personalGoal" name="Personal Goal" n={2} cards={this.state.stacks.personalGoals} cardProps={personalGoals} setDialog={this.setDialog} drawn={this.stackDrawn}/>
