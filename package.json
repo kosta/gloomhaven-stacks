@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/kosta/gloomhaven-stacks.git",
   "author": "Kosta <theoneandonlykosta@gmail.com>",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "webpack": "4.20.2"
+  }
 }
