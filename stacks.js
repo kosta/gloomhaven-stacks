@@ -262,11 +262,13 @@ class BringEventToConclusion extends React.Component {
     };
     const choiceStyle = {
       'display': 'flex',
-      'flex-direction': 'column'
+      'flex-direction': 'column',
+      'padding': '0 1em 0'
     };
     const resolutionStyle = {
       'display': 'flex',
-      'flex-direction': 'column'
+      'flex-direction': 'column',
+      'padding': '0 1em 0 '
     };
     return [<h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
       <div style={containerStyle}>
