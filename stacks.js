@@ -15,7 +15,11 @@ function rangeFromTo(from, to){
 }
 
 function range(startAt, size) {
-  return [...Array(size).keys()].map(i => i + startAt);
+  const array = [];
+  for (let i = startAt; i < startAt + size; ++i) {
+    array.push(i)
+  }
+  return array
 }
 
 const itemIdsByProsperityLevel = {
