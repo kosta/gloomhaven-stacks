@@ -2,14 +2,17 @@
   "name": "gloomhaven-stacks",
   "version": "0.4.0",
   "description": "Manage your gloomhaven card stacks",
-  "main": "index.js",
   "repository": "https://github.com/kosta/gloomhaven-stacks.git",
   "author": "Kosta <theoneandonlykosta@gmail.com>",
   "private": true,
   "devDependencies": {
     "@types/react": "16.4.14",
     "@types/react-dom": "16.0.8",
-    "webpack": "4.20.2"
+    "awesome-typescript-loader": "5.2.1",
+    "source-map-loader": "0.2.4",
+    "typescript": "3.1.1",
+    "webpack": "4.20.2",
+    "webpack-cli": "3.1.2"
   },
   "dependencies": {
     "react": "16.5.2",
