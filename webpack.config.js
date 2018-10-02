@@ -1,13 +1,11 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
-module.exports = {
+const config = {
   entry: "./src/index.tsx",
   output: {
     filename: "bundle.js",
     path: __dirname + "/dist"
   },
-
-  devtool: "source-map",
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
@@ -29,4 +27,15 @@ module.exports = {
       filename: "./index.html"
     })
   ]
+};
+
+module.exports = (env, argv) => {
+  if (argv.mode === 'development') {
+    config.devtool = 'source-map';
+  }
+
+  if (argv.mode === 'production') {
+    config.output.path = __dirname + "/docs";
+  }
+  return config;
 };
