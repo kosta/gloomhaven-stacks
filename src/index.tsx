@@ -1,6 +1,7 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom";
 import { CSSProperties } from "react";
+import { MouseEventHandler } from "react";
 
 class RandomSideScenarioProps {
     readonly kind: string = 'random-side-scenario-props';
@@ -296,6 +297,22 @@ interface StackPopped {
   stackPopped: (name: string, returnToBottom: boolean) => void,
 }
 
+interface ButtonWithSelectionHighlightProps {
+  onClick: MouseEventHandler;
+  selected: boolean;
+  text: string;
+}
+
+class ButtonWithSelectionHighlight extends React.Component<ButtonWithSelectionHighlightProps, NoState> {
+  render() {
+    const style = {} as CSSProperties;
+    if (this.props.selected) {
+      style.borderColor = 'red';
+    }
+    return <button key={this.props.text} style={style} type="button" onClick={this.props.onClick}>{this.props.text}</button>;
+  }
+}
+
 interface BringEventToConclusionProps extends StackPopped{
   name: string,
   number: number,
@@ -364,8 +381,8 @@ class BringEventToConclusion extends React.Component<BringEventToConclusionProps
       <div style={containerStyle}>
         <EventCard key='event-card-front' eventCardId={this.props.number} side={Side.Front} name={this.props.name}/>
         <div style={choiceStyle}>
-          <button key="a" type="button" onClick={this.selectA} className={this.state.selected === Choice.A ? "selected" : ""}>A</button>
-          <button key="b" type="button" onClick={this.selectB} className={this.state.selected === Choice.B ? "selected" : ""}>B</button>
+          <ButtonWithSelectionHighlight onClick={this.selectA} selected={this.state.selected === Choice.A} text="A"/>
+          <ButtonWithSelectionHighlight onClick={this.selectB} selected={this.state.selected === Choice.B} text="B"/>
         </div>
         {this.state.selected && [
           <EventCard key='event-card-back' eventCardId={this.props.number} side={Side.Back} name={this.props.name}/>,
