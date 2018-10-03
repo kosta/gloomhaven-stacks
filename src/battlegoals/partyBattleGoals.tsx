@@ -14,7 +14,7 @@ function drawDistinctBattleGoals(count) {
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, NoState> {
-  render() {
+  public render(): React.ReactNode {
     const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(8));
     const containerStyle = {
       'display': 'flex',

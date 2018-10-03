@@ -8,7 +8,7 @@ interface PlayerBattleGoalsProps {
 }
 
 export default class PlayerBattleGoals extends React.Component<PlayerBattleGoalsProps, NoState> {
-  render() {
+  public render(): React.ReactNode {
     return <ul>
       <li key='first'><BattleGoalCard battleGoalId={this.props.first}/></li>
       <li key='second'><BattleGoalCard battleGoalId={this.props.second}/></li>

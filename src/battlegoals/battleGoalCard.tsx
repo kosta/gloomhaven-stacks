@@ -1,6 +1,5 @@
 import * as React from "react";
 import { noop } from "lang/react";
-import { ReactNode } from "react";
 
 interface BattleGoalCardProps {
   battleGoalId: number
@@ -26,7 +25,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     this.setState({ hidden: true }, noop);
   }
 
-  public render(): ReactNode {
+  public render(): React.ReactNode {
     const style = {
       opacity: this.state.hidden ? 0 : 1
     };
