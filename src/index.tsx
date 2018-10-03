@@ -667,26 +667,27 @@ class ImportExport extends React.Component<ImportExportProps, NoState> {
 class PartyBattleGoals extends React.Component<NoProps, NoState> {
   render() {
     const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(8));
-    return (<table key={1}>
-      <thead>
-      <tr key='header'>
-        {battleGoalsPerPlayer.map((battleGoals, index) => {
-          const playerNumber = index + 1;
-          return <th key={playerNumber}>Player {playerNumber}</th>;
-        })}
-      </tr>
-      </thead>
-      <tbody>
-      <tr key='player-goals'>
-        {battleGoalsPerPlayer.map((battleGoals, index) => {
-          const first = battleGoals[0];
-          const second = battleGoals[1];
-          const playerNumber = index + 1;
-          return <td key={playerNumber}><PlayerBattleGoals key={playerNumber} first={first} second={second}/></td>;
-        })}
-      </tr>
-      </tbody>
-    </table>);
+    const containerStyle = {
+      'display': 'flex',
+      'flex-direction': 'row'
+    };
+    const playerBattleGoalsStyle = {
+      'display': 'flex',
+      'flex-direction': 'column',
+      'padding': '0 0.25em 0 '
+    };
+
+    return <div style={containerStyle}>
+      {battleGoalsPerPlayer.map((battleGoals, index) => {
+        const first = battleGoals[0];
+        const second = battleGoals[1];
+        const playerNumber = index + 1;
+        return <div style={playerBattleGoalsStyle} key={playerNumber}>
+          <h4>Player {playerNumber}</h4>
+          <PlayerBattleGoals key={playerNumber} first={first} second={second}/>
+        </div>;
+      })}
+    </div>;
   }
 }
 
