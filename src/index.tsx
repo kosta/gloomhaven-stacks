@@ -1,9 +1,9 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom";
-import { CSSProperties } from "react";
-import { MouseEventHandler } from "react";
 import { range, rangeFromTo } from "lang/ranges";
 import { removeFromArray, shuffle } from "lang/arrays";
+import { noop, NoProps, NoState } from "lang/react";
+import PartyBattleGoals from "battlegoals/partyBattleGoals";
 
 class RandomSideScenarioProps {
     readonly kind: string = 'random-side-scenario-props';
@@ -153,14 +153,6 @@ interface PersonalGoalCardProps {
   cardId: number;
 }
 
-interface NoState {
-
-}
-
-interface NoProps {
-
-}
-
 class PersonalGoalCard extends React.Component<PersonalGoalCardProps, NoState> {
   render() {
     const cardId = this.props.cardId;
@@ -263,14 +255,14 @@ interface StackPopped {
 }
 
 interface ButtonWithSelectionHighlightProps {
-  onClick: MouseEventHandler;
+  onClick: React.MouseEventHandler;
   selected: boolean;
   text: string;
 }
 
 class ButtonWithSelectionHighlight extends React.Component<ButtonWithSelectionHighlightProps, NoState> {
   render() {
-    const style = {} as CSSProperties;
+    const style = {} as React.CSSProperties;
     if (this.props.selected) {
       style.borderColor = 'red';
     }
@@ -381,7 +373,7 @@ class RandomCard extends React.Component<RandomCardProps, NoState> {
       <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>,
       <div key="button-div">
         {this.props.drawnCards.map(cardNumber => {
-          const styles = {display: "inline-block"} as CSSProperties;
+          const styles = {display: "inline-block"} as React.CSSProperties;
           if(isPersonalGoalProps(this.props.cardProps)){
             styles.width = this.props.cardProps.divWidth
           }
@@ -530,7 +522,7 @@ class Shop extends React.Component<ShopProps, ShopState> {
   }
 
   handleShopItemFilterChange(event) {
-    this.setState({shopItemFilter: event.target.value}, () => { });
+    this.setState({shopItemFilter: event.target.value}, noop);
     event.preventDefault();
   }
 
@@ -627,102 +619,6 @@ class ImportExport extends React.Component<ImportExportProps, NoState> {
       <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
     ];
   }
-}
-
-class PartyBattleGoals extends React.Component<NoProps, NoState> {
-  render() {
-    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(8));
-    const containerStyle = {
-      'display': 'flex',
-      'flex-direction': 'row'
-    };
-    const playerBattleGoalsStyle = {
-      'display': 'flex',
-      'flex-direction': 'column',
-      'padding': '0 0.25em 0 '
-    };
-
-    return <div style={containerStyle}>
-      {battleGoalsPerPlayer.map((battleGoals, index) => {
-        const first = battleGoals[0];
-        const second = battleGoals[1];
-        const playerNumber = index + 1;
-        return <div style={playerBattleGoalsStyle} key={playerNumber}>
-          <h4>Player {playerNumber}</h4>
-          <PlayerBattleGoals key={playerNumber} first={first} second={second}/>
-        </div>;
-      })}
-    </div>;
-  }
-}
-
-interface PlayerBattleGoalsProps {
-  first: number,
-  second: number;
-}
-
-class PlayerBattleGoals extends React.Component<PlayerBattleGoalsProps, NoState> {
-  render() {
-    return <ul>
-      <li key='first'><BattleGoalCard battleGoalId={this.props.first}/></li>
-      <li key='second'><BattleGoalCard battleGoalId={this.props.second}/></li>
-    </ul>;
-  }
-}
-
-interface BattleGoalCardProps {
-  battleGoalId: number
-}
-
-interface BattleGoalCardState {
-  hidden: boolean,
-}
-
-class BattleGoalCard extends React.Component<BattleGoalCardProps, BattleGoalCardState> {
-  constructor(props){
-    super(props);
-    this.reveal = this.reveal.bind(this);
-    this.hide = this.hide.bind(this);
-    this.state = {hidden: true};
-  }
-
-  reveal(){
-    this.setState({hidden: false}, () => {});
-  }
-
-  hide(){
-    this.setState({hidden: true}, () => {});
-  }
-
-  render() {
-    const style = {
-      opacity: this.state.hidden ? 0 : 1
-    };
-    return <span style={style} onMouseOver={this.reveal} onMouseOut={this.hide} key='first'>{this.props.battleGoalId}</span>;
-  }
-}
-
-function partition(size, array) {
-  const partitions = [];
-  let nextPartitionStart = 0;
-  let nextPartitionEnd = size;
-
-  while (nextPartitionStart < array.length){
-    partitions.push(array.slice(nextPartitionStart, nextPartitionEnd));
-    nextPartitionStart += size;
-    nextPartitionEnd += size;
-  }
-
-  return partitions;
-}
-
-function communityBattleGoals() {
-  return range(1, 100);
-}
-
-function drawDistinctBattleGoals(count){
-  const allBattleGoals = communityBattleGoals();
-  return shuffle(allBattleGoals).slice(0, count);
 }
 
 function itemsAboveProsperity(title, items, prosperity) {

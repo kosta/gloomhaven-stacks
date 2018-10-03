@@ -18,3 +18,17 @@ export function removeFromArray(a, v) {
     a.splice(i, 1);
   }
 }
+
+export function partition(size, array) {
+  const partitions = [];
+  let nextPartitionStart = 0;
+  let nextPartitionEnd = size;
+
+  while (nextPartitionStart < array.length) {
+    partitions.push(array.slice(nextPartitionStart, nextPartitionEnd));
+    nextPartitionStart += size;
+    nextPartitionEnd += size;
+  }
+
+  return partitions;
+}
