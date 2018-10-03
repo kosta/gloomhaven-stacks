@@ -2,6 +2,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom";
 import { CSSProperties } from "react";
 import { MouseEventHandler } from "react";
+import { range, rangeFromTo } from 'lang/arrays'
 
 class RandomSideScenarioProps {
     readonly kind: string = 'random-side-scenario-props';
@@ -52,21 +53,6 @@ type CardRenderProps = RandomItemDesignProps | ItemProps | PersonalGoalProps | R
 
 const randomItemDesigns = new RandomItemDesignProps();
 const personalGoals =  new PersonalGoalProps();
-
-function rangeFromTo(from, to){
-  if (to < from) {
-    return [];
-  }
-  return range(from, to - from);
-}
-
-function range(startAt, size) {
-  const array = [];
-  for (let i = startAt; i < startAt + size; ++i) {
-    array.push(i)
-  }
-  return array
-}
 
 const itemIdsByProsperityLevel = {
   1: range(1, 14),
