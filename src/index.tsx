@@ -2,7 +2,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom";
 import { CSSProperties } from "react";
 import { MouseEventHandler } from "react";
-import { range, rangeFromTo } from 'lang/arrays'
+import { range, rangeFromTo } from 'lang/ranges'
 
 class RandomSideScenarioProps {
     readonly kind: string = 'random-side-scenario-props';
