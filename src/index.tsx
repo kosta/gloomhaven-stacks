@@ -2,7 +2,8 @@ import * as React from "react"
 import * as ReactDOM from "react-dom";
 import { CSSProperties } from "react";
 import { MouseEventHandler } from "react";
-import { range, rangeFromTo } from 'lang/ranges'
+import { range, rangeFromTo } from "lang/ranges";
+import { removeFromArray, shuffle } from "lang/arrays";
 
 class RandomSideScenarioProps {
     readonly kind: string = 'random-side-scenario-props';
@@ -111,28 +112,6 @@ const randomScenarios = {
   offset: 63,
   n: 9,
 };
-
-
-// from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#2450976
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-  return array;
-}
-
-function removeFromArray(a, v) {
-  while (true) {
-    let i = a.indexOf(v);
-    if (i === -1) {
-      return;
-    }
-    a.splice(i, 1);
-  }
-}
 
 function itemToDiv(itemId: number) {
   let item = itemUrls[itemId];
