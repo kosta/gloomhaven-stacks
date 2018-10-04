@@ -10,4 +10,20 @@ Sorry for the extremely horrible look! If you're good at CSS, send a Pull Reques
 
 # Developer Documentation
 * [setup typescript project](https://medium.com/@mateuszsokola/configuring-react-16-jest-enzyme-typescript-7122e1a1e6e8)
-  I started to look into this to setup jest for testing
+  
+# Opportunities for improvement
+## Features
+* mark sold items in the shop
+* show battle goal images 
+
+## Tech
+* document component props with `prop-types`
+* make it pretty (CSS)
+* move components into own files
+* [redux](https://redux.js.org/)?
+* [jest-enzyme](https://github.com/FormidableLabs/enzyme-matchers/tree/master/packages/jest-enzyme) for additional enzyme test matchers?
+
+# Done
+* Setup webpack build
+* Enable absolute imports  
+
