@@ -29,6 +29,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --open --mode development",
+    "test": "jest",
     "deploy": "webpack --mode production"
   }
 }
