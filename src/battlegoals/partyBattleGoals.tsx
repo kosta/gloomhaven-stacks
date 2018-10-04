@@ -4,12 +4,12 @@ import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
 import PlayerBattleGoals from "battlegoals/playerBattleGoals";
 
-function communityBattleGoals() {
-  return range(1, 100);
+function battleGoals() {
+  return range(1, 24);
 }
 
 function drawDistinctBattleGoals(count) {
-  const allBattleGoals = communityBattleGoals();
+  const allBattleGoals = battleGoals();
   return shuffle(allBattleGoals).slice(0, count);
 }
 

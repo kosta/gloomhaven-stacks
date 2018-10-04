@@ -1,5 +1,8 @@
 import * as React from "react";
 import { noop } from "lang/react";
+import { battleGoalByLocalId } from "battlegoals/battleGoals";
+
+const battleGoalBackground = 'battlegoal-back';
 
 interface BattleGoalCardProps {
   battleGoalId: number
@@ -17,7 +20,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     this.state = { hidden: true };
   }
 
-  private reveal (): void {
+  private reveal(): void {
     this.setState({ hidden: false }, noop);
   }
 
@@ -27,8 +30,13 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
 
   public render(): React.ReactNode {
     const style = {
-      opacity: this.state.hidden ? 0 : 1
-    };
-    return <span style={style} onMouseOver={this.reveal} onMouseOut={this.hide} key='first'>{this.props.battleGoalId}</span>;
+      height: 300,
+      width: 200
+    } as React.CSSProperties;
+    const imageName = this.state.hidden ? battleGoalBackground : battleGoalByLocalId(this.props.battleGoalId).name;
+    const imageUrl = "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/battle-goals/" + imageName + ".png";
+    return <span onMouseOver={this.reveal} onMouseOut={this.hide}>
+                <img src={imageUrl} style={style}/>
+    </span>;
   }
 }
