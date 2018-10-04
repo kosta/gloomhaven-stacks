@@ -7,4 +7,5 @@ module.exports = {
     "node_modules",
     "<rootDir>/src"
   ],
+  "setupTestFrameworkScriptFile": "<rootDir>/test/scripts/testSetup.ts"
 };
