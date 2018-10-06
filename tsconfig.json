@@ -7,6 +7,9 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
+    "alwaysStrict": false,
+    "strictFunctionTypes": false,
+    "strictPropertyInitialization": false,
     "module": "commonjs",
     "target": "ES5",
     // lib should not be needed but https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15140
