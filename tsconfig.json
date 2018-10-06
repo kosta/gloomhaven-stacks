@@ -4,7 +4,7 @@
     "sourceMap": true,
     "strict": false, //TODO this is the goal
     "noImplicitReturns": true,
-    "noImplicitThis": false,
+    "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": false,
     "module": "commonjs",
