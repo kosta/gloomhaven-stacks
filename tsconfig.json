@@ -3,7 +3,7 @@
     "outDir": "./dist/",
     "sourceMap": true,
     "strict": false, //TODO this is the goal
-    "noImplicitReturns": false,
+    "noImplicitReturns": true,
     "noImplicitThis": false,
     "noImplicitAny": true,
     "strictNullChecks": false,
