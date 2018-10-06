@@ -182,7 +182,7 @@ class RandomItemDesigns extends React.Component<RandomItemDesignsProps, NoState>
 }
 
 interface AddCardsProps {
-  onAddCards: (cardType: String, cardIdsToAdd: Array<number>) => void
+  onAddCards: (cardType: string, cardIdsToAdd: Array<number>) => void
 }
 
 class AddCards extends React.Component<AddCardsProps, NoState> {
@@ -512,6 +512,10 @@ interface ShopState {
 }
 
 class Shop extends React.Component<ShopProps, ShopState> {
+  static levelWithItems(level: number, items: Array<number>){
+    return {level, items}
+  }
+
   constructor(props: ShopProps){
     super(props);
     this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
@@ -531,16 +535,12 @@ class Shop extends React.Component<ShopProps, ShopState> {
     const filterAsString = this.state.shopItemFilter;
     switch (filterAsString) {
       case 'all':
-        return rangeFromTo(1, this.props.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
+        return rangeFromTo(1, this.props.prosperity + 1).map(level => Shop.levelWithItems(level, itemIdsByProsperityLevel[level]));
       default:
         const maybeProsperity = parseInt(filterAsString, 10);
         const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
-        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
+        return [Shop.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
     }
-  }
-
-  levelWithItems(level: number, items: Array<number>){
-    return {level, items}
   }
 
   render(){
@@ -669,33 +669,7 @@ interface AppState {
 }
 
 class App extends React.Component<NoProps, AppState> {
-  constructor(props: NoProps) {
-    super(props);
-
-    this.showAddCards = this.showAddCards.bind(this);
-    this.addCards = this.addCards.bind(this);
-    this.addCardsAndCloseDialog = this.addCardsAndCloseDialog.bind(this);
-    this.stackPopped = this.stackPopped.bind(this);
-    this.stackDrawn = this.stackDrawn.bind(this);
-    this.showImportExport = this.showImportExport.bind(this);
-    this.setDialog = this.setDialog.bind(this);
-    this.import = this.import.bind(this);
-    this.cancel = this.cancel.bind(this);
-    this.save = this.save.bind(this);
-    this.increaseProsperity = this.increaseProsperity.bind(this);
-    this.onDrawBattleGoals = this.onDrawBattleGoals.bind(this);
-
-    const maybeStateFromStorage = window.localStorage.getItem("state");
-    const stateFromStorage = maybeStateFromStorage ? JSON.parse(maybeStateFromStorage) : {};
-
-    this.state = {
-      stacks: this.initializeStacks(stateFromStorage),
-      dialog: null
-    };
-    this.save();
-  }
-
-  initializeStacks(loadedState: any): CardStacks {
+  static initializeStacks(loadedState: any): CardStacks {
     let thirty = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -745,8 +719,33 @@ class App extends React.Component<NoProps, AppState> {
     loadedState.personalGoals.history = loadedState.personalGoals.history || [];
 
     loadedState.prosperity = loadedState.prosperity || 1;
-
     return loadedState;
+  }
+
+  constructor(props: NoProps) {
+    super(props);
+
+    this.showAddCards = this.showAddCards.bind(this);
+    this.addCards = this.addCards.bind(this);
+    this.addCardsAndCloseDialog = this.addCardsAndCloseDialog.bind(this);
+    this.stackPopped = this.stackPopped.bind(this);
+    this.stackDrawn = this.stackDrawn.bind(this);
+    this.showImportExport = this.showImportExport.bind(this);
+    this.setDialog = this.setDialog.bind(this);
+    this.import = this.import.bind(this);
+    this.cancel = this.cancel.bind(this);
+    this.save = this.save.bind(this);
+    this.increaseProsperity = this.increaseProsperity.bind(this);
+    this.onDrawBattleGoals = this.onDrawBattleGoals.bind(this);
+
+    const maybeStateFromStorage = window.localStorage.getItem("state");
+    const stateFromStorage = maybeStateFromStorage ? JSON.parse(maybeStateFromStorage) : {};
+
+    this.state = {
+      stacks: App.initializeStacks(stateFromStorage),
+      dialog: null
+    };
+    this.save();
   }
 
   showImportExport() {
@@ -796,7 +795,7 @@ class App extends React.Component<NoProps, AppState> {
 
   import(text: string) {
     try {
-      let stacks = this.initializeStacks(JSON.parse(text));
+      let stacks = App.initializeStacks(JSON.parse(text));
       this.setState({
         stacks: stacks
       }, this.save);
@@ -807,12 +806,12 @@ class App extends React.Component<NoProps, AppState> {
     this.cancel();
   }
 
-  addCardsAndCloseDialog(name: string, cardIdsToAdd: Array<number>){
-    this.addCards(name, cardIdsToAdd);
+  addCardsAndCloseDialog(cardType: string, cardIdsToAdd: Array<number>){
+    this.addCards(cardType, cardIdsToAdd);
     this.cancel();
   }
 
-  addCards(name: string, cardIdsToAdd:Array<number>) {
+  addCards(cardType: string, cardIdsToAdd:Array<number>) {
     if (!cardIdsToAdd || cardIdsToAdd.length === 0) {
       return;
     }
@@ -821,17 +820,17 @@ class App extends React.Component<NoProps, AppState> {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
     };
-    if (simpleListMappings[name]) {
+    if (simpleListMappings[cardType]) {
       this.setState((prevState) => {
         let state = prevState;
-        let list = simpleListMappings[name].list.concat(cardIdsToAdd);
+        let list = simpleListMappings[cardType].list.concat(cardIdsToAdd);
         list.sort();
-        if (name !== "Single Items") {
+        if (cardType !== "Single Items") {
           // remove duplicates, but not on "Single Items"
           list = list.filter((el, idx, arr) => el !== arr[idx - 1]);
         }
-        simpleListMappings[name].list = list;
-        simpleListMappings[name].history.push({
+        simpleListMappings[cardType].list = list;
+        simpleListMappings[cardType].history.push({
           action: "added cards",
           cards: cardIdsToAdd,
         });
@@ -840,10 +839,10 @@ class App extends React.Component<NoProps, AppState> {
       }, this.save);
     } else {
       // assuming "City Event" or "Road Event"
-      const eventStackName = name.split(" ")[0].toLowerCase() + "Events";
+      const eventStackName = cardType.split(" ")[0].toLowerCase() + "Events";
       const stack = this.state.stacks[eventStackName];
       if (!stack || typeof stack === "number") {
-        throw "Unknown name for addCards: " + name;
+        throw "Unknown name for addCards: " + cardType;
       }
       this.setState((prevState) => {
         stack.stack = stack.stack.concat(cardIdsToAdd);
