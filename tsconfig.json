@@ -6,7 +6,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "module": "commonjs",
     "target": "ES5",
     // lib should not be needed but https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15140

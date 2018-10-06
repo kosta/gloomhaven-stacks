@@ -571,13 +571,25 @@ interface CancelDialog {
   cancel: () => void;
 }
 
-interface ImportExportProps extends CancelDialog{
+interface ImportExportProps extends CancelDialog {
   stacks: CardStacks,
   import: (text: string) => void,
 }
 
-class ImportExport extends React.Component<ImportExportProps, NoState> {
-  private _textarea: HTMLTextAreaElement;
+interface ImportExportState{
+  stateAsJsonString: string;
+}
+
+class ImportExport extends React.Component<ImportExportProps, ImportExportState> {
+  static supportForCopyToClipboard(): boolean {
+    const maybeClipboard = navigator.clipboard;
+    return maybeClipboard != undefined && (typeof maybeClipboard.readText === "function");
+  }
+
+  static supportForImportFromClipboard(): boolean {
+    const maybeClipboard = navigator.clipboard;
+    return maybeClipboard != undefined && (typeof maybeClipboard.writeText === "function");
+  }
 
   constructor(props: ImportExportProps) {
     super(props);
@@ -585,11 +597,11 @@ class ImportExport extends React.Component<ImportExportProps, NoState> {
     this.stacksToJsonString = this.stacksToJsonString.bind(this);
     this.copyToClipboard = this.copyToClipboard.bind(this);
     this.importFromClipboard = this.importFromClipboard.bind(this);
-    this._textarea = null;
+    this.state = { stateAsJsonString: '' };
   }
 
   importClicked() {
-    this.props.import(this._textarea.value)
+    this.props.import(this.state.stateAsJsonString)
   }
 
   stacksToJsonString() {
@@ -597,26 +609,29 @@ class ImportExport extends React.Component<ImportExportProps, NoState> {
   }
 
   copyToClipboard() {
-    navigator.clipboard.writeText(this.stacksToJsonString())
+    navigator.clipboard!.writeText(this.stacksToJsonString())
       .then(() => console.log("copied to clipboard"))
       .catch((error) => alert(error));
   }
 
   importFromClipboard() {
-    navigator.clipboard.readText().then(this.props.import);
+    navigator.clipboard!.readText().then(this.props.import);
   }
 
+  onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState({ stateAsJsonString: e.target.value })
+  };
+
   render() {
-    let that = this;
     return [
       <h2 key="h2">Import / Export</h2>,
       <textarea
         key="textarea" rows={20} cols={20}
         defaultValue={this.stacksToJsonString()}
-        ref={(textarea) => that._textarea = textarea}
+        onChange={this.onTextChange}
       />,
-      <button key="to-clipboard" type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>,
-      <button key="from-clipboard" type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>,
+      <button key="to-clipboard" hidden={!ImportExport.supportForCopyToClipboard()} type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>,
+      <button key="from-clipboard" hidden={!ImportExport.supportForImportFromClipboard()} type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>,
       <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>,
       <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
     ];
@@ -650,7 +665,7 @@ interface CardStacks {
 
 interface AppState {
   stacks: CardStacks;
-  dialog: JSX.Element;
+  dialog: JSX.Element | null;
 }
 
 class App extends React.Component<NoProps, AppState> {
@@ -669,14 +684,18 @@ class App extends React.Component<NoProps, AppState> {
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
     this.onDrawBattleGoals = this.onDrawBattleGoals.bind(this);
+
+    const maybeStateFromStorage = window.localStorage.getItem("state");
+    const stateFromStorage = maybeStateFromStorage ? JSON.parse(maybeStateFromStorage) : {};
+
     this.state = {
-      stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
+      stacks: this.initializeStacks(stateFromStorage),
       dialog: null
     };
     this.save();
   }
 
-  initializeStacks(s: any): CardStacks {
+  initializeStacks(loadedState: any): CardStacks {
     let thirty = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -687,47 +706,47 @@ class App extends React.Component<NoProps, AppState> {
     let initialRandomScenarios = range(randomScenarios.offset, randomScenarios.n);
     let initialPersonalGoals = range(personalGoals.offset, personalGoals.n);
 
-    s = s || {};
-    s.cityEvents = s.cityEvents || {};
-    s.cityEvents.stack = s.cityEvents.stack || shuffle(thirty.slice(0));
-    s.cityEvents.history = s.cityEvents.history || [];
+    loadedState = loadedState || {};
+    loadedState.cityEvents = loadedState.cityEvents || {};
+    loadedState.cityEvents.stack = loadedState.cityEvents.stack || shuffle(thirty.slice(0));
+    loadedState.cityEvents.history = loadedState.cityEvents.history || [];
 
-    s.roadEvents = s.roadEvents || {};
-    s.roadEvents.stack = s.roadEvents.stack || shuffle(thirty.slice(0));
-    s.roadEvents.history = s.roadEvents.history || [];
+    loadedState.roadEvents = loadedState.roadEvents || {};
+    loadedState.roadEvents.stack = loadedState.roadEvents.stack || shuffle(thirty.slice(0));
+    loadedState.roadEvents.history = loadedState.roadEvents.history || [];
 
-    s.randomItemDesigns = s.randomItemDesigns || {};
-    s.randomItemDesigns.list = s.randomItemDesigns.list || [];
-    s.randomItemDesigns.list.sort();
+    loadedState.randomItemDesigns = loadedState.randomItemDesigns || {};
+    loadedState.randomItemDesigns.list = loadedState.randomItemDesigns.list || [];
+    loadedState.randomItemDesigns.list.sort();
     // remove duplicates
-    s.randomItemDesigns.list = s.randomItemDesigns.list.filter((e: number, i: number, a: Array<number>) => e !== a[i - 1]);
-    s.randomItemDesigns.stack = s.randomItemDesigns.stack || initialRandomItems;
+    loadedState.randomItemDesigns.list = loadedState.randomItemDesigns.list.filter((e: number, i: number, a: Array<number>) => e !== a[i - 1]);
+    loadedState.randomItemDesigns.stack = loadedState.randomItemDesigns.stack || initialRandomItems;
     // remove everything in list from stack
-    for (let c of s.randomItemDesigns.list) {
-      removeFromArray(s.randomItemDesigns.stack, c);
+    for (let c of loadedState.randomItemDesigns.list) {
+      removeFromArray(loadedState.randomItemDesigns.stack, c);
     }
-    s.randomItemDesigns.history = s.randomItemDesigns.history || [];
+    loadedState.randomItemDesigns.history = loadedState.randomItemDesigns.history || [];
 
-    s.itemDesigns = s.itemDesigns || {};
-    s.itemDesigns.list = s.itemDesigns.list || [];
-    s.itemDesigns.history = s.itemDesigns.history || [];
-    s.singleItems = s.singleItems || {};
-    s.singleItems.list = s.singleItems.list || [];
-    s.singleItems.history = s.singleItems.history || [];
+    loadedState.itemDesigns = loadedState.itemDesigns || {};
+    loadedState.itemDesigns.list = loadedState.itemDesigns.list || [];
+    loadedState.itemDesigns.history = loadedState.itemDesigns.history || [];
+    loadedState.singleItems = loadedState.singleItems || {};
+    loadedState.singleItems.list = loadedState.singleItems.list || [];
+    loadedState.singleItems.history = loadedState.singleItems.history || [];
 
-    s.randomScenarios = s.randomScenarios || {};
-    s.randomScenarios.stack = s.randomScenarios.stack || initialRandomScenarios;
-    s.randomScenarios.list = s.randomScenarios.list || [];
-    s.randomScenarios.history = s.randomScenarios.history || [];
+    loadedState.randomScenarios = loadedState.randomScenarios || {};
+    loadedState.randomScenarios.stack = loadedState.randomScenarios.stack || initialRandomScenarios;
+    loadedState.randomScenarios.list = loadedState.randomScenarios.list || [];
+    loadedState.randomScenarios.history = loadedState.randomScenarios.history || [];
 
-    s.personalGoals = s.personalGoals || {};
-    s.personalGoals.stack = s.personalGoals.stack || initialPersonalGoals;
-    s.personalGoals.list = s.personalGoals.list || [];
-    s.personalGoals.history = s.personalGoals.history || [];
+    loadedState.personalGoals = loadedState.personalGoals || {};
+    loadedState.personalGoals.stack = loadedState.personalGoals.stack || initialPersonalGoals;
+    loadedState.personalGoals.list = loadedState.personalGoals.list || [];
+    loadedState.personalGoals.history = loadedState.personalGoals.history || [];
 
-    s.prosperity = s.prosperity || 1;
+    loadedState.prosperity = loadedState.prosperity || 1;
 
-    return s;
+    return loadedState;
   }
 
   showImportExport() {
