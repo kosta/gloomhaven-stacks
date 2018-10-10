@@ -10,7 +10,8 @@ Sorry for the extremely horrible look! If you're good at CSS, send a Pull Reques
 
 # Developer Documentation
 * [setup typescript project](https://medium.com/@mateuszsokola/configuring-react-16-jest-enzyme-typescript-7122e1a1e6e8)
-  
+* [typescript and react](https://levelup.gitconnected.com/ultimate-react-component-patterns-with-typescript-2-8-82990c516935)
+  gives some good examples on how to setup your react components in typescript  
 # Opportunities for improvement
 ## Features
 * mark sold items in the shop
