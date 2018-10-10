@@ -55,7 +55,7 @@ type CardRenderProps = RandomItemDesignProps | ItemProps | PersonalGoalProps | R
 const randomItemDesigns = new RandomItemDesignProps();
 const personalGoals =  new PersonalGoalProps();
 
-const itemIdsByProsperityLevel = {
+const itemIdsByProsperityLevel: { [prosperityLevel: number]: Array<number> } = {
   1: range(1, 14),
   2: range(15, 7),
   3: range(22, 7),
@@ -182,12 +182,12 @@ class RandomItemDesigns extends React.Component<RandomItemDesignsProps, NoState>
 }
 
 interface AddCardsProps {
-  onAddCards: (cardType: String, cardIdsToAdd: Array<number>) => void
+  onAddCards: (cardType: string, cardIdsToAdd: Array<number>) => void
 }
 
 class AddCards extends React.Component<AddCardsProps, NoState> {
   private readonly inputs: any;
-  constructor(props) {
+  constructor(props: AddCardsProps) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
     this.parseCardIdsFromInputFor = this.parseCardIdsFromInputFor.bind(this);
@@ -195,11 +195,11 @@ class AddCards extends React.Component<AddCardsProps, NoState> {
   }
 
   parseCardIdsFromInputFor(cardType: string) {
-    const stringCardIds = this.inputs[cardType].value.split(/\D+/);
+    const stringCardIds: Array<string> = this.inputs[cardType].value.split(/\D+/);
     return stringCardIds.map((s) => parseInt(s, 10)).filter((x) => x === x);
   }
 
-  handleClick(e, cardType) {
+  handleClick(e: React.MouseEvent, cardType:string) {
     e.preventDefault();
     const cardIdsToAdd = this.parseCardIdsFromInputFor(cardType);
     this.props.onAddCards(cardType, cardIdsToAdd);
@@ -209,11 +209,11 @@ class AddCards extends React.Component<AddCardsProps, NoState> {
   render() {
     return [
       <h2 key="h2">Add Cards</h2>,
-    ].concat(["City Events", "Road Events", "Item Designs", "Single Items"].map((s) =>
-      <div key={"div" + s}>
-        <button key={s} type="button" onClick={(e) => this.handleClick(e, s)}>{s}</button>
+    ].concat(["City Events", "Road Events", "Item Designs", "Single Items"].map((cardType) =>
+      <div key={"div" + cardType}>
+        <button key={cardType} type="button" onClick={(e) => this.handleClick(e, cardType)}>{cardType}</button>
         :
-        <input ref={(i) => this.inputs[s] = i}/>
+        <input ref={(i) => this.inputs[cardType] = i}/>
       </div>
     ));
   }
@@ -232,7 +232,7 @@ interface EventCardProps {
 }
 
 class EventCard extends React.Component<EventCardProps, NoState> {
-  constructor(props) {
+  constructor(props: EventCardProps) {
     super(props);
     this.eventCardImageUrl = this.eventCardImageUrl.bind(this);
   }
@@ -285,7 +285,7 @@ interface BringEventToConclusionState {
 }
 
 class BringEventToConclusion extends React.Component<BringEventToConclusionProps, BringEventToConclusionState> {
-  constructor(props) {
+  constructor(props: BringEventToConclusionProps) {
     super(props);
 
     this.selectA = this.selectA.bind(this);
@@ -295,25 +295,25 @@ class BringEventToConclusion extends React.Component<BringEventToConclusionProps
     this.state = { selected: undefined };
   }
 
-  selectA(e) {
+  selectA(e: React.MouseEvent) {
     this.setState({selected: Choice.A});
     e.preventDefault();
     return false;
   }
 
-  selectB(e) {
+  selectB(e: React.MouseEvent) {
     this.setState({selected: Choice.B});
     e.preventDefault();
     return false;
   }
 
-  returnToBottom(e) {
+  returnToBottom(e: React.MouseEvent) {
     this.props.stackPopped(this.props.name, true);
     e.preventDefault();
     return false;
   }
 
-  removeFromGame(e) {
+  removeFromGame(e: React.MouseEvent) {
     this.props.stackPopped(this.props.name, false);
     e.preventDefault();
     return false;
@@ -364,7 +364,7 @@ interface RandomCardProps {
 }
 
 class RandomCard extends React.Component<RandomCardProps, NoState> {
-  clicked(cardNo) {
+  clicked(cardNo: number) {
     this.props.drawn(this.props.name, this.props.cards, cardNo);
   }
 
@@ -396,6 +396,7 @@ interface OpenDialog {
 interface CardStackEvent {
   action: string,
   card?: number,
+  cards?: Array<number>,
   event?: number,
 }
 
@@ -414,7 +415,7 @@ interface DrawProps extends OpenDialog, DrawnCallback {
 
 // Draw draws a _random_ card from the deck
 class Draw extends React.Component<DrawProps, NoState> {
-  constructor(props) {
+  constructor(props: DrawProps) {
     super(props);
     this.clicked = this.clicked.bind(this);
   }
@@ -452,7 +453,7 @@ interface PopProps extends OpenDialog, AddCardsProps, StackPopped{
 
 // Pop draws the _top_ card of the deck
 class Pop extends React.Component<PopProps, NoState> {
-  constructor(props) {
+  constructor(props: PopProps) {
     super(props);
     this.clicked = this.clicked.bind(this);
   }
@@ -479,7 +480,7 @@ interface ProsperityInputProps {
 }
 
 class ProsperityInput extends React.Component<ProsperityInputProps, NoState> {
-  constructor(props){
+  constructor(props: ProsperityInputProps){
     super(props);
     this.increaseProsperity = this.increaseProsperity.bind(this);
   }
@@ -511,7 +512,11 @@ interface ShopState {
 }
 
 class Shop extends React.Component<ShopProps, ShopState> {
-  constructor(props){
+  static levelWithItems(level: number, items: Array<number>){
+    return {level, items}
+  }
+
+  constructor(props: ShopProps){
     super(props);
     this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
     this.itemsToDisplay = this.itemsToDisplay.bind(this);
@@ -521,8 +526,8 @@ class Shop extends React.Component<ShopProps, ShopState> {
     };
   }
 
-  handleShopItemFilterChange(event) {
-    this.setState({shopItemFilter: event.target.value}, noop);
+  handleShopItemFilterChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    this.setState({shopItemFilter: event.target.value as ShopItemFilter}, noop);
     event.preventDefault();
   }
 
@@ -530,16 +535,12 @@ class Shop extends React.Component<ShopProps, ShopState> {
     const filterAsString = this.state.shopItemFilter;
     switch (filterAsString) {
       case 'all':
-        return rangeFromTo(1, this.props.prosperity + 1).map(level => this.levelWithItems(level, itemIdsByProsperityLevel[level]));
+        return rangeFromTo(1, this.props.prosperity + 1).map(level => Shop.levelWithItems(level, itemIdsByProsperityLevel[level]));
       default:
         const maybeProsperity = parseInt(filterAsString, 10);
         const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
-        return [this.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
+        return [Shop.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
     }
-  }
-
-  levelWithItems(level, items){
-    return {level, items}
   }
 
   render(){
@@ -570,24 +571,37 @@ interface CancelDialog {
   cancel: () => void;
 }
 
-interface ImportExportProps extends CancelDialog{
+interface ImportExportProps extends CancelDialog {
   stacks: CardStacks,
   import: (text: string) => void,
 }
 
-class ImportExport extends React.Component<ImportExportProps, NoState> {
-  private _textarea;
-  constructor(props) {
+interface ImportExportState{
+  stateAsJsonString: string;
+}
+
+class ImportExport extends React.Component<ImportExportProps, ImportExportState> {
+  static supportForCopyToClipboard(): boolean {
+    const maybeClipboard = navigator.clipboard;
+    return maybeClipboard != undefined && (typeof maybeClipboard.readText === "function");
+  }
+
+  static supportForImportFromClipboard(): boolean {
+    const maybeClipboard = navigator.clipboard;
+    return maybeClipboard != undefined && (typeof maybeClipboard.writeText === "function");
+  }
+
+  constructor(props: ImportExportProps) {
     super(props);
     this.importClicked = this.importClicked.bind(this);
     this.stacksToJsonString = this.stacksToJsonString.bind(this);
     this.copyToClipboard = this.copyToClipboard.bind(this);
     this.importFromClipboard = this.importFromClipboard.bind(this);
-    this._textarea = null;
+    this.state = { stateAsJsonString: '' };
   }
 
   importClicked() {
-    this.props.import(this._textarea.value)
+    this.props.import(this.state.stateAsJsonString)
   }
 
   stacksToJsonString() {
@@ -595,33 +609,36 @@ class ImportExport extends React.Component<ImportExportProps, NoState> {
   }
 
   copyToClipboard() {
-    navigator.clipboard.writeText(this.stacksToJsonString())
+    navigator.clipboard!.writeText(this.stacksToJsonString())
       .then(() => console.log("copied to clipboard"))
       .catch((error) => alert(error));
   }
 
   importFromClipboard() {
-    navigator.clipboard.readText().then(this.props.import);
+    navigator.clipboard!.readText().then(this.props.import);
   }
 
+  onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    this.setState({ stateAsJsonString: e.target.value })
+  };
+
   render() {
-    let that = this;
     return [
       <h2 key="h2">Import / Export</h2>,
       <textarea
         key="textarea" rows={20} cols={20}
         defaultValue={this.stacksToJsonString()}
-        ref={(textarea) => that._textarea = textarea}
+        onChange={this.onTextChange}
       />,
-      <button key="to-clipboard" type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>,
-      <button key="from-clipboard" type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>,
+      <button key="to-clipboard" hidden={!ImportExport.supportForCopyToClipboard()} type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>,
+      <button key="from-clipboard" hidden={!ImportExport.supportForImportFromClipboard()} type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>,
       <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>,
       <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
     ];
   }
 }
 
-function itemsAboveProsperity(title, items, prosperity) {
+function itemsAboveProsperity(title: String, items: Array<number>, prosperity: number) {
   let maxProsperityItem = itemIdsByProsperityLevel[prosperity].slice(-1)[0];
   let itemDivs = items.filter(item => item > maxProsperityItem).map(itemToDiv);
   return <div key={title + "-div"}>
@@ -643,15 +660,69 @@ interface CardStacks {
   singleItems: CardStack;
   personalGoals: CardStack;
   prosperity: number;
+  [key: string]: CardStacks[keyof CardStacks]; // https://stackoverflow.com/a/47465004
 }
 
 interface AppState {
   stacks: CardStacks;
-  dialog: JSX.Element;
+  dialog: JSX.Element | null;
 }
 
 class App extends React.Component<NoProps, AppState> {
-  constructor(props) {
+  static initializeStacks(loadedState: any): CardStacks {
+    let thirty = [
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+      11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+    ];
+
+    let initialRandomItems = range(randomItemDesigns.offset, randomItemDesigns.n);
+    let initialRandomScenarios = range(randomScenarios.offset, randomScenarios.n);
+    let initialPersonalGoals = range(personalGoals.offset, personalGoals.n);
+
+    loadedState = loadedState || {};
+    loadedState.cityEvents = loadedState.cityEvents || {};
+    loadedState.cityEvents.stack = loadedState.cityEvents.stack || shuffle(thirty.slice(0));
+    loadedState.cityEvents.history = loadedState.cityEvents.history || [];
+
+    loadedState.roadEvents = loadedState.roadEvents || {};
+    loadedState.roadEvents.stack = loadedState.roadEvents.stack || shuffle(thirty.slice(0));
+    loadedState.roadEvents.history = loadedState.roadEvents.history || [];
+
+    loadedState.randomItemDesigns = loadedState.randomItemDesigns || {};
+    loadedState.randomItemDesigns.list = loadedState.randomItemDesigns.list || [];
+    loadedState.randomItemDesigns.list.sort();
+    // remove duplicates
+    loadedState.randomItemDesigns.list = loadedState.randomItemDesigns.list.filter((e: number, i: number, a: Array<number>) => e !== a[i - 1]);
+    loadedState.randomItemDesigns.stack = loadedState.randomItemDesigns.stack || initialRandomItems;
+    // remove everything in list from stack
+    for (let c of loadedState.randomItemDesigns.list) {
+      removeFromArray(loadedState.randomItemDesigns.stack, c);
+    }
+    loadedState.randomItemDesigns.history = loadedState.randomItemDesigns.history || [];
+
+    loadedState.itemDesigns = loadedState.itemDesigns || {};
+    loadedState.itemDesigns.list = loadedState.itemDesigns.list || [];
+    loadedState.itemDesigns.history = loadedState.itemDesigns.history || [];
+    loadedState.singleItems = loadedState.singleItems || {};
+    loadedState.singleItems.list = loadedState.singleItems.list || [];
+    loadedState.singleItems.history = loadedState.singleItems.history || [];
+
+    loadedState.randomScenarios = loadedState.randomScenarios || {};
+    loadedState.randomScenarios.stack = loadedState.randomScenarios.stack || initialRandomScenarios;
+    loadedState.randomScenarios.list = loadedState.randomScenarios.list || [];
+    loadedState.randomScenarios.history = loadedState.randomScenarios.history || [];
+
+    loadedState.personalGoals = loadedState.personalGoals || {};
+    loadedState.personalGoals.stack = loadedState.personalGoals.stack || initialPersonalGoals;
+    loadedState.personalGoals.list = loadedState.personalGoals.list || [];
+    loadedState.personalGoals.history = loadedState.personalGoals.history || [];
+
+    loadedState.prosperity = loadedState.prosperity || 1;
+    return loadedState;
+  }
+
+  constructor(props: NoProps) {
     super(props);
 
     this.showAddCards = this.showAddCards.bind(this);
@@ -666,65 +737,15 @@ class App extends React.Component<NoProps, AppState> {
     this.save = this.save.bind(this);
     this.increaseProsperity = this.increaseProsperity.bind(this);
     this.onDrawBattleGoals = this.onDrawBattleGoals.bind(this);
+
+    const maybeStateFromStorage = window.localStorage.getItem("state");
+    const stateFromStorage = maybeStateFromStorage ? JSON.parse(maybeStateFromStorage) : {};
+
     this.state = {
-      stacks: this.initializeStacks(JSON.parse(window.localStorage.getItem("state"))),
+      stacks: App.initializeStacks(stateFromStorage),
       dialog: null
     };
     this.save();
-  }
-
-  initializeStacks(s): CardStacks {
-    let thirty = [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-      11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-      21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-    ];
-
-    let initialRandomItems = range(randomItemDesigns.offset, randomItemDesigns.n);
-    let initialRandomScenarios = range(randomScenarios.offset, randomScenarios.n);
-    let initialPersonalGoals = range(personalGoals.offset, personalGoals.n);
-
-    s = s || {};
-    s.cityEvents = s.cityEvents || {};
-    s.cityEvents.stack = s.cityEvents.stack || shuffle(thirty.slice(0));
-    s.cityEvents.history = s.cityEvents.history || [];
-
-    s.roadEvents = s.roadEvents || {};
-    s.roadEvents.stack = s.roadEvents.stack || shuffle(thirty.slice(0));
-    s.roadEvents.history = s.roadEvents.history || [];
-
-    s.randomItemDesigns = s.randomItemDesigns || {};
-    s.randomItemDesigns.list = s.randomItemDesigns.list || [];
-    s.randomItemDesigns.list.sort();
-    // remove duplicates
-    s.randomItemDesigns.list = s.randomItemDesigns.list.filter((e, i, a) => e !== a[i - 1]);
-    s.randomItemDesigns.stack = s.randomItemDesigns.stack || initialRandomItems;
-    // remove everything in list from stack
-    for (let c of s.randomItemDesigns.list) {
-      removeFromArray(s.randomItemDesigns.stack, c);
-    }
-    s.randomItemDesigns.history = s.randomItemDesigns.history || [];
-
-    s.itemDesigns = s.itemDesigns || {};
-    s.itemDesigns.list = s.itemDesigns.list || [];
-    s.itemDesigns.history = s.itemDesigns.history || [];
-    s.singleItems = s.singleItems || {};
-    s.singleItems.list = s.singleItems.list || [];
-    s.singleItems.history = s.singleItems.history || [];
-
-    s.randomScenarios = s.randomScenarios || {};
-    s.randomScenarios.stack = s.randomScenarios.stack || initialRandomScenarios;
-    s.randomScenarios.list = s.randomScenarios.list || [];
-    s.randomScenarios.history = s.randomScenarios.history || [];
-
-    s.personalGoals = s.personalGoals || {};
-    s.personalGoals.stack = s.personalGoals.stack || initialPersonalGoals;
-    s.personalGoals.list = s.personalGoals.list || [];
-    s.personalGoals.history = s.personalGoals.history || [];
-
-    s.prosperity = s.prosperity || 1;
-
-    return s;
   }
 
   showImportExport() {
@@ -738,7 +759,7 @@ class App extends React.Component<NoProps, AppState> {
   stackPopped(name: string, returnToBottom: boolean) {
     this.setState((prevState) => {
       let state = prevState;
-      let events = this.state.stacks[name.toLowerCase() + "Events"];
+      let events = this.state.stacks[name.toLowerCase() + "Events"] as any;
       console.log("events", events);
       let event = events.stack.shift();
       let action = "removed from game";
@@ -772,9 +793,9 @@ class App extends React.Component<NoProps, AppState> {
     this.cancel();
   }
 
-  import(text) {
+  import(text: string) {
     try {
-      let stacks = this.initializeStacks(JSON.parse(text));
+      let stacks = App.initializeStacks(JSON.parse(text));
       this.setState({
         stacks: stacks
       }, this.save);
@@ -785,30 +806,31 @@ class App extends React.Component<NoProps, AppState> {
     this.cancel();
   }
 
-  addCardsAndCloseDialog(name, cardIdsToAdd){
-    this.addCards(name, cardIdsToAdd);
+  addCardsAndCloseDialog(cardType: string, cardIdsToAdd: Array<number>){
+    this.addCards(cardType, cardIdsToAdd);
     this.cancel();
   }
 
-  addCards(name: string, cardIdsToAdd:Array<number>) {
+  addCards(cardType: string, cardIdsToAdd:Array<number>) {
     if (!cardIdsToAdd || cardIdsToAdd.length === 0) {
       return;
     }
-    let simpleListMappings = {
+
+    let simpleListMappings: { [cardType: string]: CardStack } = {
       "Item Designs": this.state.stacks.itemDesigns,
       "Single Items": this.state.stacks.singleItems,
     };
-    if (simpleListMappings[name]) {
+    if (simpleListMappings[cardType]) {
       this.setState((prevState) => {
         let state = prevState;
-        let list = simpleListMappings[name].list.concat(cardIdsToAdd);
+        let list = simpleListMappings[cardType].list.concat(cardIdsToAdd);
         list.sort();
-        if (name !== "Single Items") {
+        if (cardType !== "Single Items") {
           // remove duplicates, but not on "Single Items"
           list = list.filter((el, idx, arr) => el !== arr[idx - 1]);
         }
-        simpleListMappings[name].list = list;
-        simpleListMappings[name].history.push({
+        simpleListMappings[cardType].list = list;
+        simpleListMappings[cardType].history.push({
           action: "added cards",
           cards: cardIdsToAdd,
         });
@@ -817,10 +839,10 @@ class App extends React.Component<NoProps, AppState> {
       }, this.save);
     } else {
       // assuming "City Event" or "Road Event"
-      const eventStackName = name.split(" ")[0].toLowerCase() + "Events";
+      const eventStackName = cardType.split(" ")[0].toLowerCase() + "Events";
       const stack = this.state.stacks[eventStackName];
-      if (!stack) {
-        throw "Unknown name for addCards: " + name;
+      if (!stack || typeof stack === "number") {
+        throw "Unknown name for addCards: " + cardType;
       }
       this.setState((prevState) => {
         stack.stack = stack.stack.concat(cardIdsToAdd);
@@ -854,7 +876,7 @@ class App extends React.Component<NoProps, AppState> {
     this.setDialog((<PartyBattleGoals/>));
   }
 
-  setDialog(dialog) {
+  setDialog(dialog: JSX.Element) {
     // first remove, then add so that the component doesnt get recycled
     this.setState({
       dialog: null

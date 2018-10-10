@@ -10,7 +10,7 @@ interface CommunityBattleGoalCardState {
 }
 
 export default class CommunityBattleGoalCard extends React.Component<CommunityBattleGoalCardProps, CommunityBattleGoalCardState> {
-  constructor(props) {
+  constructor(props: CommunityBattleGoalCardProps) {
     super(props);
     this.reveal = this.reveal.bind(this);
     this.hide = this.hide.bind(this);

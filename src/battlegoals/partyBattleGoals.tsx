@@ -29,7 +29,7 @@ interface PartyBattleGoalsState {
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
 
-  constructor(props) {
+  constructor(props: NoProps) {
     super(props);
     this.handleFlavourChange = this.handleFlavourChange.bind(this);
     this.state = {
@@ -37,8 +37,8 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     }
   }
 
-  private handleFlavourChange(event) {
-    this.setState({ flavour: event.target.value }, () => {
+  private handleFlavourChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    this.setState({ flavour: event.target.value as BattleGoalFlavour }, () => {
       console.log(this.state)
     });
   }
