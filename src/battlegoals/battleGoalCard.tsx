@@ -13,7 +13,7 @@ interface BattleGoalCardState {
 }
 
 export default class BattleGoalCard extends React.Component<BattleGoalCardProps, BattleGoalCardState> {
-  constructor(props) {
+  constructor(props: BattleGoalCardProps) {
     super(props);
     this.reveal = this.reveal.bind(this);
     this.hide = this.hide.bind(this);
