@@ -1,4 +1,5 @@
-# gloomhaven-stacks
+# gloomhaven-stacks [![Build Status](https://travis-ci.com/kosta/gloomhaven-stacks.svg?branch=master)](https://travis-ci.com/kosta/gloomhaven-stacks)
+
 Tracker for your Gloomhaven Event and Quest cards
 
 Sorry for the extremely horrible look! If you're good at CSS, send a Pull Request :)
