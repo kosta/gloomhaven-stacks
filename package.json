@@ -32,5 +32,16 @@
     "start": "webpack-dev-server --open --mode development",
     "test": "jest",
     "deploy": "webpack --mode production"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "roots": [
+      "<rootDir>/test"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/src"
+    ],
+    "setupFilesAfterEnv": ["<rootDir>/test/scripts/testSetup.ts"]
   }
 }
