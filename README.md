@@ -22,6 +22,14 @@ When sending a PR, please don't add the `docs/` folder in the PR to avoid
 merge conflicts (when merging multiple PRs). Instead, it needs to be manually
 re-built _after_ each merge.
 
+To do so, run
+```sh
+yarn install && npm test && npm deploy
+```
+
+Ideally, only files in the `docs/` folder should change. If that is the case, commit them
+and feed free to push directly to `master`.
+
 # Opportunities for improvement
 ## Features
 * mark sold items in the shop
