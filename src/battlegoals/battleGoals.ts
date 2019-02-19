@@ -5,6 +5,11 @@ class BattleGoal {
   }
 }
 
+export const battleGoalImages = {
+  background: 'https://lh3.googleusercontent.com/u/0/d/14yNwcdD1fUPuRE4WPIn9cYNpeZJinujR=w1440-h766-iv1',
+  foreground: 'https://lh3.googleusercontent.com/u/0/d/19x3kdXZF2oEME3WipHeAXISfWkGtgmEA=w1440-h766-iv1'
+};
+
 export const officialBattleGoals = [
   new BattleGoal(258, 'streamliner'),
   new BattleGoal(259, 'layabout'),
