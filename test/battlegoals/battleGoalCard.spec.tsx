@@ -1,11 +1,12 @@
 import * as React from "react";
 import BattleGoalCard from "battlegoals/battleGoalCard";
+import { battleGoalImages } from "battlegoals/battleGoals";
 import { shallow } from 'enzyme'
 
 describe('battle goal card', () => {
   it('should show background by default to make it harder to read another players battle goal by accident', () => {
     const component = shallow(<BattleGoalCard battleGoalId={4}/>);
-    expect(component.find('img').prop('src')).toContain('battlegoal-back.png');
+    expect(component.find('img').prop('src')).toContain(battleGoalImages.background);
   });
 
   it('should show foreground on mouse over', () => {
@@ -18,6 +19,6 @@ describe('battle goal card', () => {
     const component = shallow(<BattleGoalCard battleGoalId={4}/>);
     component.simulate("mouseover");
     component.simulate("mouseout");
-    expect(component.find('img').prop('src')).toContain('battlegoal-back.png');
+    expect(component.find('img').prop('src')).toContain(battleGoalImages.background);
   });
 });
