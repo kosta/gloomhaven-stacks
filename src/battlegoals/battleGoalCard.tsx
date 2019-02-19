@@ -27,15 +27,18 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
   }
 
   public render(): React.ReactNode {
-    const style = {
+    const imageStyle = {
       height: 300,
       width: 200
     } as React.CSSProperties;
     const imageUrl = this.state.hidden ?
       battleGoalImages.background :
       "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/battle-goals/" + (battleGoalByLocalId(this.props.battleGoalId).name) + ".png";
-    return <span onMouseOver={this.reveal} onMouseOut={this.hide}>
-                <img src={imageUrl} style={style}/>
-    </span>;
+
+
+
+    return <div onMouseOver={this.reveal} onMouseOut={this.hide}>
+                <img src={imageUrl} style={imageStyle}/>
+    </div>;
   }
 }
