@@ -44,7 +44,7 @@ export const officialBattleGoals = [
 const communityBattleGoalsAsString = 'Bully: Kill a monster afflicted by a negative condition.\n' +
   'Challenger: Attack only monsters who have their starting hit point values. (2 Checks)\n' +
   'Discriminating: Kill no elite monsters or bosses during the scenario.\n' +
-  'Distracted: Kill a monster you are not adjacent to while adjacent to to other monsters.\n' +
+  'Distracted: Kill a monster you are not adjacent to while adjacent to other monsters.\n' +
   'Elitist: Kill only elite monsters.\n' +
   'Exterminator: Kill three monsters in the same round. (2 Checks)\n' +
   'Finisher: Kill the last monster to die in the scenario.\n' +
