@@ -1,4 +1,4 @@
-class BattleGoal {
+export class BattleGoal {
   constructor(
     readonly displayName: string,
     readonly reward: number,

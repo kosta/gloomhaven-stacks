@@ -3,8 +3,7 @@ import { NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
 import PlayerBattleGoals from "battlegoals/playerBattleGoals";
-import CommunityBattleGoalCard from "battlegoals/communityBattleGoalCard";
-import BattleGoalCard from "./battleGoalCard";
+import { battleGoalByLocalId } from "battlegoals/battleGoals";
 
 function battleGoals(): Array<number> {
   return range(1, 24);
@@ -14,7 +13,7 @@ function communityBattleGoals(): Array<number> {
   return range(1, 100);
 }
 
-function drawDistinctBattleGoals(allBattleGoals: Array<number>, count:number): Array<number> {
+function drawDistinctBattleGoals(allBattleGoals: Array<number>, count: number): Array<number> {
   return shuffle(allBattleGoals).slice(0, count);
 }
 
@@ -47,7 +46,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     const vanilla = this.state.flavour === BattleGoalFlavour.Vanilla;
 
     const allBattleGoals = vanilla ? battleGoals() : communityBattleGoals();
-    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(allBattleGoals, 8));
+    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(allBattleGoals, 8).map(battleGoalByLocalId));
     const containerStyle = {
       'display': 'flex',
       'flex-direction': 'row'
@@ -58,7 +57,6 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       'padding': '0 0.25em 0 '
     };
 
-    const kind = vanilla ? BattleGoalCard : CommunityBattleGoalCard;
     return [
       <select value={this.state.flavour} onChange={this.handleFlavourChange}>
         <option key={BattleGoalFlavour.Vanilla} value={BattleGoalFlavour.Vanilla}>vanilla</option>
@@ -71,7 +69,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
           const playerNumber = index + 1;
           return <div style={playerBattleGoalsStyle} key={playerNumber}>
             <h4>Player {playerNumber}</h4>
-            <PlayerBattleGoals kind={kind} key={playerNumber} first={first} second={second}/>
+            <PlayerBattleGoals key={playerNumber} first={first} second={second}/>
           </div>;
         })}
       </div>];

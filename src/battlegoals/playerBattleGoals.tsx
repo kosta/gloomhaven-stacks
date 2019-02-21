@@ -1,17 +1,18 @@
 import * as React from "react";
 import { NoState } from "lang/react";
+import BattleGoalCard from "battlegoals/battleGoalCard";
+import { BattleGoal } from "battlegoals/battleGoals";
 
 interface PlayerBattleGoalsProps {
-  kind: any,
-  first: number,
-  second: number;
+  first: BattleGoal,
+  second: BattleGoal;
 }
 
 export default class PlayerBattleGoals extends React.Component<PlayerBattleGoalsProps, NoState> {
   public render(): React.ReactNode {
     return <ul>
-      <li key='first'><this.props.kind battleGoalId={this.props.first}/></li>
-      <li key='second'><this.props.kind battleGoalId={this.props.second}/></li>
+      <li key='first'><BattleGoalCard battleGoal={this.props.first}/></li>
+      <li key='second'><BattleGoalCard battleGoal={this.props.second}/></li>
     </ul>;
   }
 }

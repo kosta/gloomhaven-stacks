@@ -1,10 +1,10 @@
 import * as React from "react";
 import { noop } from "lang/react";
-import { battleGoalByLocalId, battleGoalImages } from "battlegoals/battleGoals";
+import { battleGoalImages, BattleGoal } from "battlegoals/battleGoals";
 import { range } from "../lang/ranges";
 
 interface BattleGoalCardProps {
-  battleGoalId: number
+  battleGoal: BattleGoal
 }
 
 interface BattleGoalCardState {
@@ -103,7 +103,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       fontSize: 'xx-small',
     } as React.CSSProperties;
 
-    const battleGoal = battleGoalByLocalId(this.props.battleGoalId);
+    const battleGoal = this.props.battleGoal;
 
     return <div style={overlayStyle}>
       <div style={textStyle}>
