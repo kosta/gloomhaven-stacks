@@ -4,7 +4,8 @@ import { battleGoalImages, BattleGoal } from "battlegoals/battleGoals";
 import { range } from "../lang/ranges";
 
 interface BattleGoalCardProps {
-  battleGoal: BattleGoal
+  battleGoal: BattleGoal;
+  show?: boolean;
 }
 
 interface BattleGoalCardState {
@@ -39,7 +40,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       width: '100%'
     };
 
-    const imageUrl = this.state.hidden ? battleGoalImages.background : battleGoalImages.foreground;
+    const imageUrl = (this.state.hidden && !this.props.show) ? battleGoalImages.background : battleGoalImages.foreground;
 
     // "https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/battle-goals/" + (battleGoalByLocalId(this.props.battleGoalId).name) + ".png"
 
@@ -50,7 +51,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
   }
 
   private renderOverlay(): React.ReactNode {
-    if (this.state.hidden) {
+    if (this.state.hidden && !this.props.show) {
       return null;
     }
 

@@ -2,9 +2,12 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 const config = {
-  entry: "./src/index.tsx",
+  entry: {
+    main: "./src/index.tsx",
+    gallery: "./src/gallery.tsx"
+  },
   output: {
-    filename: "bundle.js",
+    filename: '[name].js',
     path: __dirname + "/dist"
   },
 
@@ -25,8 +28,14 @@ const config = {
   },
   plugins: [
     new HtmlWebPackPlugin({
+      chunks: ['main'],
       template: "./src/index.html",
-      filename: "./index.html"
+      filename: "index.html"
+    }),
+    new HtmlWebPackPlugin({
+      chunks: ['gallery'],
+      template: "./src/index.html",
+      filename: "gallery.html"
     })
   ]
 };
