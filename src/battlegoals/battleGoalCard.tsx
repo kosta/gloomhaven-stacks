@@ -55,30 +55,27 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     const overlayStyle = {
       position: 'absolute',
       top: '22%',
-      right: '12%',
+      width: '60%',
       bottom: '10%',
-      left: '12%',
+      left: '20%',
+      display: 'flex',
+      flexDirection: 'column',
       textAlign: 'center'
     } as React.CSSProperties;
 
-    const textStyle = {
-      position: 'absolute',
-      width: '100%'
-    } as React.CSSProperties;
-
     const titleStyle = {
-      margin: '0 0 17% 0',
+      margin: '0',
       fontSize: '1.35em',
       fontWeight: 'normal'
     } as React.CSSProperties;
 
     const descriptionStyle = {
-      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
       fontSize: '0.8em',
       lineHeight: '1.2em',
-      left: '50%',
-      width: '68%',
-      margin: ' 0 0 0 -34%'
+      height: '52%',
+      padding: '0 7% 0 7%',
     } as React.CSSProperties;
 
     const perksStyle = {
@@ -104,10 +101,8 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     const battleGoal = this.props.battleGoal;
 
     return <div style={overlayStyle}>
-      <div style={textStyle}>
-        <h3 style={titleStyle}>{battleGoal.displayName}</h3>
-        <section style={descriptionStyle}>{battleGoal.text}</section>
-      </div>
+      <h3 style={titleStyle}>{battleGoal.displayName}</h3>
+      <section style={descriptionStyle}>{battleGoal.text}</section>
       <div style={perksStyle}>{range(0, battleGoal.reward).map(() => '✓').join('')}</div>
       <div style={cardNumberStyle}>{battleGoal.globalCardId}</div>
     </div>;
