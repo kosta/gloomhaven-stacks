@@ -2,7 +2,7 @@ import * as React from "react";
 import { NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import PlayerBattleGoals from "battlegoals/playerBattleGoals";
-import { BattleGoal, communityBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
+import { BattleGoal, battleGoalByGlobalId, communityBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
@@ -15,6 +15,7 @@ interface PartyBattleGoalsState {
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
+  private storage: Storage = window.localStorage;
 
   constructor(props: NoProps) {
     super(props);
@@ -29,12 +30,35 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     }
   }
 
+
+  componentDidMount() {
+    const dtoAsString = this.storage.getItem('partyBattleGoalState');
+    if (dtoAsString) {
+      const dto = JSON.parse(dtoAsString);
+      const stateFromStore = {
+        includeVanilla: dto.includeVanilla,
+        includeCommunity: dto.includeCommunity,
+        drawnBattleGoals: dto.battleGoalIds.map(battleGoalByGlobalId)
+      };
+      this.setState(stateFromStore);
+    }
+  }
+
+  componentWillUnmount(): void {
+    const dto = {
+      includeCommunity: this.state.includeCommunity,
+      includeVanilla: this.state.includeVanilla,
+      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId)
+    };
+    this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
+  }
+
   private toggleVanilla(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ includeVanilla: event.target.checked }, this.logState);
+    this.setState({ includeVanilla: event.target.checked, drawnBattleGoals: [] }, this.logState);
   }
 
   private toggleCommunity(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ includeCommunity: event.target.checked }, this.logState);
+    this.setState({ includeCommunity: event.target.checked, drawnBattleGoals: [] }, this.logState);
   }
 
   private handleDrawBattleGoals() {
@@ -64,14 +88,14 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       'padding': '0 0.25em 0 '
     } as React.CSSProperties;
 
-    const readyToDraw = this.state.includeVanilla || this.state.includeCommunity;
+    const readyToDrawCards = this.state.includeVanilla || this.state.includeCommunity;
     const battleGoalsPerPlayer = partition(2, this.state.drawnBattleGoals);
 
     return [
       <div>
-        <input type='checkbox' defaultChecked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
-        <input type='checkbox' defaultChecked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label>Community</label>
-        <button disabled={!readyToDraw} onClick={this.handleDrawBattleGoals}>draw</button>
+        <input type='checkbox' checked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
+        <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label>Community</label>
+        <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
       </div>,
       <div style={containerStyle}>
         {battleGoalsPerPlayer.map((battleGoals, index) => {

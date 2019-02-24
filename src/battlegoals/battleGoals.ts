@@ -120,6 +120,16 @@ export const communityBattleGoals = communityBattleGoalsAsString.split('\n')
     }
   }).map((it, index) => new BattleGoal(it.displayName, it.reward, it.text, index, "empty"));
 
+const allBattleGoals = officialBattleGoals.concat(communityBattleGoals);
+
+export const battleGoalByGlobalId = (globalId: number): BattleGoal => {
+  var result = allBattleGoals.find(it => it.globalCardId === globalId);
+  if (result === undefined) {
+    throw Error('There is no battle goal with globalId=' + globalId)
+  }
+  return result;
+};
+
 export const battleGoalByLocalId = (localId: number): BattleGoal => {
   const zeroBasedIndex = localId - 1;
   return officialBattleGoals[zeroBasedIndex];
