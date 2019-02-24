@@ -1,7 +1,7 @@
 import * as React from "react";
 import { noop } from "lang/react";
 import { battleGoalImages, BattleGoal } from "battlegoals/battleGoals";
-import { range } from "../lang/ranges";
+import { range } from "lang/ranges";
 
 interface BattleGoalCardProps {
   battleGoal: BattleGoal;

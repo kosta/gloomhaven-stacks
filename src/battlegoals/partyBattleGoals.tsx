@@ -1,8 +1,11 @@
 import * as React from "react";
 import { NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
-import PlayerBattleGoals from "battlegoals/playerBattleGoals";
+import { range } from "lang/ranges";
 import { BattleGoal, battleGoalByGlobalId, communityBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
+import PlayerBattleGoals from "battlegoals/playerBattleGoals";
+import BattleGoalCard from "battlegoals/battleGoalCard";
+
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
@@ -12,6 +15,7 @@ interface PartyBattleGoalsState {
   includeVanilla: boolean;
   includeCommunity: boolean;
   drawnBattleGoals: BattleGoal[];
+  currentPlayer: void | number
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
@@ -23,13 +27,14 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     this.toggleVanilla = this.toggleVanilla.bind(this);
     this.toggleCommunity = this.toggleCommunity.bind(this);
     this.logState = this.logState.bind(this);
+    this.handlePlayerToggle = this.handlePlayerToggle.bind(this);
     this.state = {
       includeVanilla: false,
       includeCommunity: false,
-      drawnBattleGoals: []
+      drawnBattleGoals: [],
+      currentPlayer: undefined
     }
   }
-
 
   componentDidMount() {
     const dtoAsString = this.storage.getItem('partyBattleGoalState');
@@ -73,6 +78,11 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     this.setState({ drawnBattleGoals: partyGoals }, this.logState);
   }
 
+  private handlePlayerToggle(player: number) {
+    const newCurrentPlayer = this.state.currentPlayer === player ? undefined : player;
+    this.setState({ currentPlayer: newCurrentPlayer });
+  }
+
   private logState() {
     console.log(this.state);
   }
@@ -87,26 +97,87 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       'flexDirection': 'column',
       'padding': '0 0.25em 0 '
     } as React.CSSProperties;
-
-    const readyToDrawCards = this.state.includeVanilla || this.state.includeCommunity;
     const battleGoalsPerPlayer = partition(2, this.state.drawnBattleGoals);
-
     return [
-      <div>
-        <input type='checkbox' checked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
-        <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label>Community</label>
-        <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
-      </div>,
-      <div style={containerStyle}>
+      this.dealer(),
+      this.picker(battleGoalsPerPlayer),
+      <div key='player-pick' style={containerStyle}>
         {battleGoalsPerPlayer.map((battleGoals, index) => {
           const first = battleGoals[0];
           const second = battleGoals[1];
           const playerNumber = index + 1;
-          return <div style={playerBattleGoalsStyle} key={playerNumber}>
+          return <div style={playerBattleGoalsStyle} key={`old-${playerNumber}`}>
             <h4>Player {playerNumber}</h4>
             <PlayerBattleGoals key={playerNumber} first={first} second={second}/>
           </div>;
         })}
       </div>];
+  }
+
+  private picker(battleGoalsPerPlayer: Array<Array<BattleGoal>>) {
+    if (battleGoalsPerPlayer.length === 0) {
+      return null;
+    }
+
+    const battleGoalSelectorStyle = {
+      display: 'flex'
+    } as React.CSSProperties;
+
+    return <div key='battle-goal-selector' style={battleGoalSelectorStyle}>
+      {this.playerSelection()}
+      {this.cardPickers(battleGoalsPerPlayer)}
+    </div>;
+  }
+
+  private playerSelection() {
+    const playerSelectionStyle = {
+      display: "flex",
+      flexDirection: "column",
+      width: '200px'
+    } as React.CSSProperties;
+    const buttonStyle = {
+      borderRadius: '25px'
+    } as React.CSSProperties;
+    const buttonStyleSelected = {
+      borderRadius: '25px',
+      background: 'greenyellow'
+    } as React.CSSProperties;
+
+    return <div key='player-selection-container' style={playerSelectionStyle}>
+      {range(0, 4).map(player => {
+        const style = this.state.currentPlayer === player ? buttonStyleSelected : buttonStyle;
+        return <button key={`select-player-${player}`} style={style} onClick={() => this.handlePlayerToggle(player)}>Player {player + 1}</button>;
+      })}
+    </div>
+  }
+
+  private cardPickers(battleGoalsPerPlayer: Array<Array<BattleGoal>>) {
+    const currentPlayer = this.state.currentPlayer;
+    if (currentPlayer === undefined) {
+      return null;
+    }
+
+    const playerBattleGoals = battleGoalsPerPlayer[currentPlayer];
+    const first = playerBattleGoals[0];
+    const second = playerBattleGoals[1];
+    return [
+      <div key='first-battle-goal'>
+        <BattleGoalCard key={first.globalCardId} battleGoal={first} show={true}/>
+        <input type='checkbox'/>
+      </div>,
+      <div key='second-battle-goal'>
+        <BattleGoalCard key={second.globalCardId} battleGoal={second} show={true}/>
+        <input type='checkbox'/>
+      </div>
+    ];
+  }
+
+  private dealer() {
+    const readyToDrawCards = this.state.includeVanilla || this.state.includeCommunity;
+    return <div key='pool-configurator'>
+      <input type='checkbox' checked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
+      <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label>Community</label>
+      <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
+    </div>;
   }
 }
