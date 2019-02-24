@@ -1,8 +1,8 @@
 import { officialBattleGoals } from "battlegoals/battleGoals";
-import { battleGoalByLocalId, communityBattleGoal } from "battlegoals/battleGoals";
+import { battleGoalByLocalId, communityBattleGoals } from "battlegoals/battleGoals";
 
 function battleGoalWithTwoRewards() {
-  return communityBattleGoal[1];
+  return communityBattleGoals[1];
 }
 
 describe('battle goals', () => {
@@ -20,13 +20,13 @@ describe('battle goals', () => {
   });
   describe('communicty', () => {
     it('should be available', () => {
-      expect(communityBattleGoal).toHaveLength(64);
+      expect(communityBattleGoals).toHaveLength(64);
     });
     it('should properly detect one rewards', () => {
-      expect(communityBattleGoal[0].reward).toBe(1);
+      expect(communityBattleGoals[0].reward).toBe(1);
     });
     it('parse name', () => {
-      expect(communityBattleGoal[0].displayName).toEqual('Bully');
+      expect(communityBattleGoals[0].displayName).toEqual('Bully');
     });
     it('should properly detect two rewards', () => {
       expect(battleGoalWithTwoRewards().reward).toBe(2);
