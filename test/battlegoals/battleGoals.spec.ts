@@ -1,5 +1,5 @@
 import { officialBattleGoals } from "battlegoals/battleGoals";
-import { battleGoalByLocalId, battleGoalByGlobalId, communityBattleGoals } from "battlegoals/battleGoals";
+import { battleGoalByGlobalId, communityBattleGoals } from "battlegoals/battleGoals";
 
 function battleGoalWithTwoRewards() {
   return communityBattleGoals[1];
