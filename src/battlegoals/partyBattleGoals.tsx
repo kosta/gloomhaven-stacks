@@ -3,7 +3,6 @@ import { NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
 import { BattleGoal, battleGoalByGlobalId, communityBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
-import PlayerBattleGoals from "battlegoals/playerBattleGoals";
 import BattleGoalCard from "battlegoals/battleGoalCard";
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
@@ -106,33 +105,14 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
   }
 
   public render(): React.ReactNode {
-    const containerStyle = {
-      'display': 'flex',
-      'flexDirection': 'row'
-    } as React.CSSProperties;
-    const playerBattleGoalsStyle = {
-      'display': 'flex',
-      'flexDirection': 'column',
-      'padding': '0 0.25em 0 '
-    } as React.CSSProperties;
-    const battleGoalsPerPlayer = partition(2, this.state.drawnBattleGoals);
     return [
       this.dealer(),
-      this.picker(battleGoalsPerPlayer),
-      <div key='player-pick' style={containerStyle}>
-        {battleGoalsPerPlayer.map((battleGoals, index) => {
-          const first = battleGoals[0];
-          const second = battleGoals[1];
-          const playerNumber = index + 1;
-          return <div style={playerBattleGoalsStyle} key={`old-${playerNumber}`}>
-            <h4>Player {playerNumber}</h4>
-            <PlayerBattleGoals key={playerNumber} first={first} second={second}/>
-          </div>;
-        })}
-      </div>];
+      this.picker()
+    ];
   }
 
-  private picker(battleGoalsPerPlayer: Array<Array<BattleGoal>>) {
+  private picker() {
+    const battleGoalsPerPlayer = partition(2, this.state.drawnBattleGoals);
     if (battleGoalsPerPlayer.length === 0) {
       return null;
     }
