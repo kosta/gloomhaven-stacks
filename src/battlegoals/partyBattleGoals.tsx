@@ -6,16 +6,20 @@ import { BattleGoal, battleGoalByGlobalId, communityBattleGoals, officialBattleG
 import PlayerBattleGoals from "battlegoals/playerBattleGoals";
 import BattleGoalCard from "battlegoals/battleGoalCard";
 
-
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
+}
+
+interface Picks {
+  [picks: number]: number
 }
 
 interface PartyBattleGoalsState {
   includeVanilla: boolean;
   includeCommunity: boolean;
   drawnBattleGoals: BattleGoal[];
-  currentPlayer: void | number
+  currentPlayer: void | number;
+  picks: Picks;
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
@@ -28,22 +32,25 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     this.toggleCommunity = this.toggleCommunity.bind(this);
     this.logState = this.logState.bind(this);
     this.handlePlayerToggle = this.handlePlayerToggle.bind(this);
+    this.handlePlayerPick = this.handlePlayerPick.bind(this);
     this.state = {
       includeVanilla: false,
       includeCommunity: false,
       drawnBattleGoals: [],
-      currentPlayer: undefined
+      currentPlayer: undefined,
+      picks: {}
     }
   }
 
   componentDidMount() {
     const dtoAsString = this.storage.getItem('partyBattleGoalState');
-    if (dtoAsString) {
+    if (dtoAsString !== null) {
       const dto = JSON.parse(dtoAsString);
       const stateFromStore = {
         includeVanilla: dto.includeVanilla,
         includeCommunity: dto.includeCommunity,
-        drawnBattleGoals: dto.battleGoalIds.map(battleGoalByGlobalId)
+        drawnBattleGoals: dto.battleGoalIds.map(battleGoalByGlobalId),
+        picks: dto.picks || {}
       };
       this.setState(stateFromStore);
     }
@@ -53,7 +60,8 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     const dto = {
       includeCommunity: this.state.includeCommunity,
       includeVanilla: this.state.includeVanilla,
-      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId)
+      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId),
+      picks: this.state.picks
     };
     this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
   }
@@ -75,12 +83,22 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       pool.push(...communityBattleGoals)
     }
     const partyGoals = drawDistinctBattleGoals(pool, 8);
-    this.setState({ drawnBattleGoals: partyGoals }, this.logState);
+    this.setState({ drawnBattleGoals: partyGoals, picks: {} }, this.logState);
   }
 
   private handlePlayerToggle(player: number) {
     const newCurrentPlayer = this.state.currentPlayer === player ? undefined : player;
     this.setState({ currentPlayer: newCurrentPlayer });
+  }
+
+  private handlePlayerPick(checked: boolean, player: number, battleGoal: BattleGoal) {
+    const newPicks = { ...this.state.picks };
+    if (checked) {
+      newPicks[player] = battleGoal.globalCardId;
+    } else {
+      delete newPicks[player];
+    }
+    this.setState({ picks: newPicks }, this.logState);
   }
 
   private logState() {
@@ -156,20 +174,13 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     if (currentPlayer === undefined) {
       return null;
     }
-
     const playerBattleGoals = battleGoalsPerPlayer[currentPlayer];
-    const first = playerBattleGoals[0];
-    const second = playerBattleGoals[1];
-    return [
-      <div key='first-battle-goal'>
-        <BattleGoalCard key={first.globalCardId} battleGoal={first} show={true}/>
-        <input type='checkbox'/>
-      </div>,
-      <div key='second-battle-goal'>
-        <BattleGoalCard key={second.globalCardId} battleGoal={second} show={true}/>
-        <input type='checkbox'/>
+    return playerBattleGoals.map((battleGoal, index) => {
+      return <div key={`battle-goal-${index}`}>
+        <BattleGoalCard key={battleGoal.globalCardId} battleGoal={battleGoal} show={true}/>
+        <input type='checkbox' checked={this.pickedByPlayer(currentPlayer, battleGoal)} onChange={(e) => this.handlePlayerPick(e.target.checked, currentPlayer, battleGoal)}/>
       </div>
-    ];
+    });
   }
 
   private dealer() {
@@ -179,5 +190,9 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label><a href='http://eepurl.com/dEDLkH' target='_blank'>Satire Gaming</a></label>
       <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
     </div>;
+  }
+
+  private pickedByPlayer(currentPlayer: number, battleGoal: BattleGoal) {
+    return this.state.picks[currentPlayer] === battleGoal.globalCardId;
   }
 }
