@@ -85,16 +85,17 @@ export default class BringEventToConclusion extends React.Component<BringEventTo
       'flexDirection': 'column',
       'padding': '0 1em 0 '
     } as React.CSSProperties;
-    return [<h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
-      <div style={containerStyle}>
+    return [
+      <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
+      <div key='event-conclusion-container' style={containerStyle}>
         <EventCard key='event-card-front' eventCardId={this.props.number} side={Side.Front} name={this.props.name}/>
-        <div style={choiceStyle}>
+        <div key='choice-container' style={choiceStyle}>
           <ButtonWithSelectionHighlight onClick={this.selectA} selected={this.state.selected === Choice.A} text="A"/>
           <ButtonWithSelectionHighlight onClick={this.selectB} selected={this.state.selected === Choice.B} text="B"/>
         </div>
         {this.state.selected && [
           <EventCard key='event-card-back' eventCardId={this.props.number} side={Side.Back} name={this.props.name}/>,
-          <div style={resolutionStyle}>
+          <div key='resolution-container' style={resolutionStyle}>
             {this.props.children}
             <h3>Conclusion</h3>
             <button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button>
