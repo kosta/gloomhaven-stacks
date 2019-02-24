@@ -4,6 +4,7 @@ import { NoProps, NoState } from "lang/react";
 import { officialBattleGoals, communityBattleGoals } from 'battlegoals/battleGoals'
 import BattleGoalCard from "battlegoals/battleGoalCard";
 import { CSSProperties } from "react";
+import "./style.css";
 
 class Gallery extends React.Component<NoProps, NoState> {
   render(): React.ReactNode {

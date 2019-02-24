@@ -23,7 +23,21 @@ const config = {
       {test: [/\.ts$/, /\.tsx$/], loader: "awesome-typescript-loader"},
 
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      {enforce: "pre", test: /\.js$/, loader: "source-map-loader"}
+      {enforce: "pre", test: /\.js$/, loader: "source-map-loader"},
+
+      {
+        test: /\.css$/,
+        use: [
+          {loader: "style-loader"},
+          {loader: "css-loader"}
+        ]
+      },
+      {
+        test: /\.ttf$/,
+        use: [
+          'file-loader'
+        ]
+      }
     ]
   },
   plugins: [

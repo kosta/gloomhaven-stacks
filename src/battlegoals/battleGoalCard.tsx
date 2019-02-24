@@ -65,6 +65,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
 
     const titleStyle = {
       margin: '0',
+      fontFamily: 'Pirata One',
       fontSize: '1.35em',
       fontWeight: 'normal'
     } as React.CSSProperties;
@@ -72,6 +73,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     const descriptionStyle = {
       display: 'flex',
       alignItems: 'center',
+      fontFamily: 'High Tower',
       fontSize: '0.8em',
       lineHeight: '1.2em',
       height: '52%',

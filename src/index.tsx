@@ -7,6 +7,7 @@ import StackPopped from "stacks/stackPopped";
 import BringEventToConclusion from "events/bringEventToConclusion";
 import PartyBattleGoals from "battlegoals/partyBattleGoals";
 import AddCards, { AddCardsProps } from "cards/addCards";
+import "./style.css";
 
 class RandomSideScenarioProps {
     readonly kind: string = 'random-side-scenario-props';
@@ -160,7 +161,7 @@ class PersonalGoalCard extends React.Component<PersonalGoalCardProps, NoState> {
   render() {
     const cardId = this.props.cardId;
     return <div style={({ display: "inline-block", width: "605px" })} key={"cardToDiv-div-" + cardId}>
-      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"}/>
+      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"} alt='personal goal'/>
     </div>;
   }
 }
