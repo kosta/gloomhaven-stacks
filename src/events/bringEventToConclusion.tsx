@@ -73,18 +73,18 @@ export default class BringEventToConclusion extends React.Component<BringEventTo
   render() {
     const containerStyle = {
       'display': 'flex',
-      'flex-direction': 'row'
-    };
+      'flexDirection': 'row'
+    } as React.CSSProperties;
     const choiceStyle = {
       'display': 'flex',
-      'flex-direction': 'column',
+      'flexDirection': 'column',
       'padding': '0 1em 0'
-    };
+    } as React.CSSProperties;
     const resolutionStyle = {
       'display': 'flex',
-      'flex-direction': 'column',
+      'flexDirection': 'column',
       'padding': '0 1em 0 '
-    };
+    } as React.CSSProperties;
     return [<h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
       <div style={containerStyle}>
         <EventCard key='event-card-front' eventCardId={this.props.number} side={Side.Front} name={this.props.name}/>

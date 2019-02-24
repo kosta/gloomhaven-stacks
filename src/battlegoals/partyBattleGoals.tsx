@@ -49,13 +49,13 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(allBattleGoals, 8).map(battleGoalByLocalId));
     const containerStyle = {
       'display': 'flex',
-      'flex-direction': 'row'
-    };
+      'flexDirection': 'row'
+    } as React.CSSProperties;
     const playerBattleGoalsStyle = {
       'display': 'flex',
-      'flex-direction': 'column',
+      'flexDirection': 'column',
       'padding': '0 0.25em 0 '
-    };
+    } as React.CSSProperties;
 
     return [
       <select value={this.state.flavour} onChange={this.handleFlavourChange}>
