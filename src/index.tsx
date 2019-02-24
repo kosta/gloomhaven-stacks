@@ -140,6 +140,7 @@ function cardToDiv(cardId: number, props: CardRenderProps) {
     let row = Math.floor(n / props.cols);
     let col = n % props.cols;
     let style = {
+      borderRadius: '15px',
       background: "url(" + props.url + ") no-repeat scroll top -" + (row * props.height) + "px left -" + (col * props.width) + "px",
       width: (props.width - 14) + "px",
       maxWidth: (props.width - 14) + "px",
