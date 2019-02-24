@@ -125,7 +125,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
 
     return <div key='battle-goal-selector' style={battleGoalSelectorStyle}>
       {this.playerSelection()}
-      {this.cardPickers(battleGoalsPerPlayer)}
+      {this.battleGoalPicker(battleGoalsPerPlayer)}
     </div>;
   }
 
@@ -151,7 +151,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     </div>
   }
 
-  private cardPickers(battleGoalsPerPlayer: Array<Array<BattleGoal>>) {
+  private battleGoalPicker(battleGoalsPerPlayer: Array<Array<BattleGoal>>) {
     const currentPlayer = this.state.currentPlayer;
     if (currentPlayer === undefined) {
       return null;
