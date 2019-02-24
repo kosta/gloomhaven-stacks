@@ -36,6 +36,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     } as React.CSSProperties;
 
     const imageStyle = {
+      borderRadius: '15px',
       height: '100%',
       width: '100%'
     };
