@@ -176,7 +176,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     const readyToDrawCards = this.state.includeVanilla || this.state.includeCommunity;
     return <div key='pool-configurator'>
       <input type='checkbox' checked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
-      <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label>Community</label>
+      <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label><a href='http://eepurl.com/dEDLkH' target='_blank'>Satire Gaming</a></label>
       <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
     </div>;
   }
