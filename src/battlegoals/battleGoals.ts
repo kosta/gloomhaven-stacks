@@ -123,7 +123,7 @@ export const communityBattleGoals = communityBattleGoalsAsString.split('\n')
 const allBattleGoals = officialBattleGoals.concat(communityBattleGoals);
 
 export const battleGoalByGlobalId = (globalId: number): BattleGoal => {
-  var result = allBattleGoals.find(it => it.globalCardId === globalId);
+  const result = allBattleGoals.find(it => it.globalCardId === globalId);
   if (result === undefined) {
     throw Error('There is no battle goal with globalId=' + globalId)
   }
