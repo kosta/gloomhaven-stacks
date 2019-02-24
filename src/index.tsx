@@ -10,8 +10,8 @@ import AddCards, { AddCardsProps } from "cards/addCards";
 import "./style.css";
 
 class RandomSideScenarioProps {
-    readonly kind: string = 'random-side-scenario-props';
-    readonly notUsedByAnyOne: boolean = false; // if you delete this, typescript becomes un-happy
+  readonly kind: string = 'random-side-scenario-props';
+  readonly notUsedByAnyOne: boolean = false; // if you delete this, typescript becomes un-happy
 }
 
 class RandomItemDesignProps {
@@ -21,7 +21,7 @@ class RandomItemDesignProps {
   readonly height: number = 636;
   readonly offset: number = 71;
   readonly cols: number = 10;
-  readonly n: number =  25;
+  readonly n: number = 25;
 }
 
 class ItemUrl {
@@ -46,7 +46,7 @@ class ItemProps {
   readonly cols: number = 10;
   readonly n: number;
 
-  constructor(private item: ItemUrl, readonly offset: number){
+  constructor(private item: ItemUrl, readonly offset: number) {
     this.item = item;
     this.url = item.url;
     this.offset = offset;
@@ -57,7 +57,7 @@ class ItemProps {
 type CardRenderProps = RandomItemDesignProps | ItemProps | PersonalGoalProps | RandomSideScenarioProps;
 
 const randomItemDesigns = new RandomItemDesignProps();
-const personalGoals =  new PersonalGoalProps();
+const personalGoals = new PersonalGoalProps();
 
 const itemIdsByProsperityLevel: { [prosperityLevel: number]: Array<number> } = {
   1: range(1, 14),
@@ -71,24 +71,24 @@ const itemIdsByProsperityLevel: { [prosperityLevel: number]: Array<number> } = {
   9: range(64, 7),
 };
 
-const itemUrls = function(): Array<ItemUrl>{
-  const itemCounts = [0,2,2,2,2,2,2,2,2,2,2,2,4,4,4,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,1,1,2,2,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+const itemUrls = function (): Array<ItemUrl> {
+  const itemCounts = [0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const itemUrls = [{
     maxItem: 20,
     url: "https://lh3.googleusercontent.com/u/0/d/1P0bd7vtA_SVwC7Qm9dJ_YmZkQPNDLOCk=s3200-k-iv2",
-  },{
+  }, {
     maxItem: 40,
     url: "https://lh3.googleusercontent.com/u/0/d/1uHYherEvc9bv3Jpl2TpA2DlRPgGT8l3z=s3200-k-iv2",
-  },{
+  }, {
     maxItem: 60,
     url: "https://lh3.googleusercontent.com/u/0/d/172NPm8x9T8zPE2Vd672_10rZ3ieFHHOX=s3200-k-iv2",
-  },{
+  }, {
     maxItem: 90,
     url: "https://lh3.googleusercontent.com/u/0/d/1XAabPK_Hs8gBXXJVpaBaSsAv6_NioEyu=s3200-k-iv2",
-  },{
+  }, {
     maxItem: 133,
     url: "https://lh3.googleusercontent.com/u/0/d/1KW0TZOs7SDVl5frTM9y-ISR-4dZFIex4=s3200-k-iv2",
-  },{
+  }, {
     maxItem: 150,
     url: "https://lh3.googleusercontent.com/u/0/d/1BHfEwqmC_dax5dV4RFFP5MlfJ76eS7KZ=s3200-k-iv2",
   }];
@@ -160,10 +160,13 @@ interface PersonalGoalCardProps {
 
 class PersonalGoalCard extends React.Component<PersonalGoalCardProps, NoState> {
   render() {
+    const style = {
+      display: "inline-block",
+      width: "605px",
+      borderRadius: '20px'
+    } as React.CSSProperties;
     const cardId = this.props.cardId;
-    return <div style={({ display: "inline-block", width: "605px" })} key={"cardToDiv-div-" + cardId}>
-      <img key={cardId} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"} alt='personal goal'/>
-    </div>;
+    return <img key={cardId} style={style} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"} alt='personal goal'/>
   }
 }
 
@@ -204,8 +207,10 @@ class RandomCard extends React.Component<RandomCardProps, NoState> {
       <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>,
       <div key="button-div">
         {this.props.drawnCards.map(cardNumber => {
-          const styles = {display: "inline-block"} as React.CSSProperties;
-          if(isPersonalGoalProps(this.props.cardProps)){
+          const styles = {
+            display: "inline-block"
+          } as React.CSSProperties;
+          if (isPersonalGoalProps(this.props.cardProps)) {
             styles.width = this.props.cardProps.divWidth
           }
           return <div key={"span-" + cardNumber} style={(styles)}>
@@ -232,8 +237,8 @@ interface CardStackEvent {
 }
 
 interface CardStack {
-  list : Array<number>,
-  stack : Array<number>,
+  list: Array<number>,
+  stack: Array<number>,
   history: Array<CardStackEvent>
 }
 
@@ -277,7 +282,7 @@ class Draw extends React.Component<DrawProps, NoState> {
   }
 }
 
-interface PopProps extends OpenDialog, AddCardsProps, StackPopped{
+interface PopProps extends OpenDialog, AddCardsProps, StackPopped {
   name: string,
   cards: CardStack
 }
@@ -305,22 +310,22 @@ class Pop extends React.Component<PopProps, NoState> {
   }
 }
 
-interface ProsperityInputProps {
+interface ProsperityInputProps {
   onIncreaseProsperity: () => void,
   prosperity: number,
 }
 
 class ProsperityInput extends React.Component<ProsperityInputProps, NoState> {
-  constructor(props: ProsperityInputProps){
+  constructor(props: ProsperityInputProps) {
     super(props);
     this.increaseProsperity = this.increaseProsperity.bind(this);
   }
 
-  increaseProsperity(){
+  increaseProsperity() {
     this.props.onIncreaseProsperity();
   }
 
-  render(){
+  render() {
     const prosperity = this.props.prosperity;
     return <h2 key="h2">
       Prosperity {prosperity}
@@ -334,7 +339,7 @@ interface ShopProps {
 
 }
 
-enum ShopItemFilter {
+enum ShopItemFilter {
   All = 'all',
 }
 
@@ -343,11 +348,11 @@ interface ShopState {
 }
 
 class Shop extends React.Component<ShopProps, ShopState> {
-  static levelWithItems(level: number, items: Array<number>){
-    return {level, items}
+  static levelWithItems(level: number, items: Array<number>) {
+    return { level, items }
   }
 
-  constructor(props: ShopProps){
+  constructor(props: ShopProps) {
     super(props);
     this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
     this.itemsToDisplay = this.itemsToDisplay.bind(this);
@@ -358,7 +363,7 @@ class Shop extends React.Component<ShopProps, ShopState> {
   }
 
   handleShopItemFilterChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    this.setState({shopItemFilter: event.target.value as ShopItemFilter}, noop);
+    this.setState({ shopItemFilter: event.target.value as ShopItemFilter }, noop);
     event.preventDefault();
   }
 
@@ -374,13 +379,13 @@ class Shop extends React.Component<ShopProps, ShopState> {
     }
   }
 
-  render(){
+  render() {
     const prosperity = this.props.prosperity;
     return <div key="cards">
       <div>
         <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
           <option key='all' value="all">all</option>
-          {rangeFromTo(1, prosperity + 1).map( level => <option key={level} value={level}>{level}</option>)}
+          {rangeFromTo(1, prosperity + 1).map(level => <option key={level} value={level}>{level}</option>)}
         </select>
       </div>
 
@@ -407,7 +412,7 @@ interface ImportExportProps extends CancelDialog {
   import: (text: string) => void,
 }
 
-interface ImportExportState{
+interface ImportExportState {
   stateAsJsonString: string;
 }
 
@@ -637,12 +642,12 @@ class App extends React.Component<NoProps, AppState> {
     this.cancel();
   }
 
-  addCardsAndCloseDialog(cardType: string, cardIdsToAdd: Array<number>){
+  addCardsAndCloseDialog(cardType: string, cardIdsToAdd: Array<number>) {
     this.addCards(cardType, cardIdsToAdd);
     this.cancel();
   }
 
-  addCards(cardType: string, cardIdsToAdd:Array<number>) {
+  addCards(cardType: string, cardIdsToAdd: Array<number>) {
     if (!cardIdsToAdd || cardIdsToAdd.length === 0) {
       return;
     }
