@@ -129,8 +129,3 @@ export const battleGoalByGlobalId = (globalId: number): BattleGoal => {
   }
   return result;
 };
-
-export const battleGoalByLocalId = (localId: number): BattleGoal => {
-  const zeroBasedIndex = localId - 1;
-  return officialBattleGoals[zeroBasedIndex];
-};
