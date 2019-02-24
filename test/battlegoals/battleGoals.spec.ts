@@ -5,7 +5,7 @@ function battleGoalWithTwoRewards() {
   return communityBattleGoals[1];
 }
 
-function anyCommunitBattleGoal() {
+function anyCommunityBattleGoal() {
   return communityBattleGoals[47];
 }
 
@@ -46,7 +46,7 @@ describe('battle goals', () => {
 
   describe('resolve battle goal by global id', () => {
     it('should resolve community battle goals by generated global id', () => {
-      const battleGoal = anyCommunitBattleGoal();
+      const battleGoal = anyCommunityBattleGoal();
       expect(battleGoalByGlobalId(battleGoal.globalCardId).globalCardId).toEqual(battleGoal.globalCardId)
     });
     it('should resolve official battle goals', () => {
