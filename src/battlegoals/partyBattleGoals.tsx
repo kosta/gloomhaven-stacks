@@ -1,52 +1,59 @@
 import * as React from "react";
 import { NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
-import { range } from "lang/ranges";
 import PlayerBattleGoals from "battlegoals/playerBattleGoals";
-import { battleGoalByLocalId } from "battlegoals/battleGoals";
+import { BattleGoal, communityBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
 
-function battleGoals(): Array<number> {
-  return range(1, 24);
-}
-
-function communityBattleGoals(): Array<number> {
-  return range(1, 100);
-}
-
-function drawDistinctBattleGoals(allBattleGoals: Array<number>, count: number): Array<number> {
+function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
 }
 
-enum BattleGoalFlavour {
-  Vanilla = 'Vanilla',
-  Community = 'Community',
-}
-
 interface PartyBattleGoalsState {
-  flavour: BattleGoalFlavour;
+  includeVanilla: boolean;
+  includeCommunity: boolean;
+  drawnBattleGoals: BattleGoal[];
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
 
   constructor(props: NoProps) {
     super(props);
-    this.handleFlavourChange = this.handleFlavourChange.bind(this);
+    this.handleDrawBattleGoals = this.handleDrawBattleGoals.bind(this);
+    this.toggleVanilla = this.toggleVanilla.bind(this);
+    this.toggleCommunity = this.toggleCommunity.bind(this);
+    this.logState = this.logState.bind(this);
     this.state = {
-      flavour: BattleGoalFlavour.Vanilla
+      includeVanilla: false,
+      includeCommunity: false,
+      drawnBattleGoals: []
     }
   }
 
-  private handleFlavourChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    this.setState({ flavour: event.target.value as BattleGoalFlavour }, () => {
-      console.log(this.state)
-    });
+  private toggleVanilla(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ includeVanilla: event.target.checked }, this.logState);
+  }
+
+  private toggleCommunity(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ includeCommunity: event.target.checked }, this.logState);
+  }
+
+  private handleDrawBattleGoals() {
+    const pool: BattleGoal[] = [];
+    if (this.state.includeVanilla) {
+      pool.push(...officialBattleGoals);
+    }
+    if (this.state.includeCommunity) {
+      pool.push(...communityBattleGoals)
+    }
+    const partyGoals = drawDistinctBattleGoals(pool, 8);
+    this.setState({ drawnBattleGoals: partyGoals }, this.logState);
+  }
+
+  private logState() {
+    console.log(this.state);
   }
 
   public render(): React.ReactNode {
-    const vanilla = this.state.flavour === BattleGoalFlavour.Vanilla;
-
-    const allBattleGoals = vanilla ? battleGoals() : communityBattleGoals();
-    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(allBattleGoals, 8).map(battleGoalByLocalId));
     const containerStyle = {
       'display': 'flex',
       'flexDirection': 'row'
@@ -57,11 +64,15 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       'padding': '0 0.25em 0 '
     } as React.CSSProperties;
 
+    const readyToDraw = this.state.includeVanilla || this.state.includeCommunity;
+    const battleGoalsPerPlayer = partition(2, this.state.drawnBattleGoals);
+
     return [
-      <select value={this.state.flavour} onChange={this.handleFlavourChange}>
-        <option key={BattleGoalFlavour.Vanilla} value={BattleGoalFlavour.Vanilla}>vanilla</option>
-        <option key={BattleGoalFlavour.Community} value={BattleGoalFlavour.Community}>community</option>
-      </select>,
+      <div>
+        <input type='checkbox' defaultChecked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
+        <input type='checkbox' defaultChecked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label>Community</label>
+        <button disabled={!readyToDraw} onClick={this.handleDrawBattleGoals}>draw</button>
+      </div>,
       <div style={containerStyle}>
         {battleGoalsPerPlayer.map((battleGoals, index) => {
           const first = battleGoals[0];

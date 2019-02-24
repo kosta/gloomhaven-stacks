@@ -106,7 +106,7 @@ const communityBattleGoalsAsString = 'Bully: Kill a monster afflicted by a negat
   'Thorough: Never exit a room with monsters remaining in it.\n' +
   'Trailblazer: Enter two or more hexes of difficult terrain, hazardous terrain, or traps in a single turn.';
 
-export const communityBattleGoal = communityBattleGoalsAsString.split('\n')
+export const communityBattleGoals = communityBattleGoalsAsString.split('\n')
   .map(it => it.trim())
   .map(it => it.split(':'))
   .map(it => {
