@@ -55,9 +55,9 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
     const overlayStyle = {
       position: 'absolute',
       top: '22%',
-      width: '60%',
+      width: '64%',
       bottom: '10%',
-      left: '20%',
+      left: '18%',
       display: 'flex',
       flexDirection: 'column',
       textAlign: 'center'
