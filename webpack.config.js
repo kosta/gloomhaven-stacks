@@ -20,11 +20,20 @@ const config = {
   module: {
     rules: [
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      {test: [/\.ts$/, /\.tsx$/], loader: "awesome-typescript-loader"},
-
+      {
+        test: [/\.ts$/, /\.tsx$/],
+        use: [
+          {loader: "awesome-typescript-loader"}
+        ]
+      },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      {enforce: "pre", test: /\.js$/, loader: "source-map-loader"},
-
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        use: [
+          {loader: "source-map-loader"}
+        ]
+      },
       {
         test: /\.css$/,
         use: [
