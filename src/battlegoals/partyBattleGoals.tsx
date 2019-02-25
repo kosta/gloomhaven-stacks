@@ -29,7 +29,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     this.handleDrawBattleGoals = this.handleDrawBattleGoals.bind(this);
     this.toggleIncludeOfficial = this.toggleIncludeOfficial.bind(this);
     this.toggleIncludeSatireGaming = this.toggleIncludeSatireGaming.bind(this);
-    this.logState = this.logState.bind(this);
+    this.storeState = this.storeState.bind(this);
     this.handlePlayerToggle = this.handlePlayerToggle.bind(this);
     this.handlePlayerPick = this.handlePlayerPick.bind(this);
     this.state = {
@@ -55,22 +55,12 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     }
   }
 
-  componentWillUnmount(): void {
-    const dto = {
-      includeSatireGaming: this.state.includeSatireGaming,
-      includeOfficial: this.state.includeOfficial,
-      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId),
-      picks: this.state.picks
-    };
-    this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
-  }
-
   private toggleIncludeOfficial(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ includeOfficial: event.target.checked, drawnBattleGoals: [] }, this.logState);
+    this.setState({ includeOfficial: event.target.checked, drawnBattleGoals: [] }, this.storeState);
   }
 
   private toggleIncludeSatireGaming(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ includeSatireGaming: event.target.checked, drawnBattleGoals: [] }, this.logState);
+    this.setState({ includeSatireGaming: event.target.checked, drawnBattleGoals: [] }, this.storeState);
   }
 
   private handleDrawBattleGoals() {
@@ -82,7 +72,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       pool.push(...satireGamingBattleGoals)
     }
     const partyGoals = drawDistinctBattleGoals(pool, 8);
-    this.setState({ drawnBattleGoals: partyGoals, picks: {} }, this.logState);
+    this.setState({ drawnBattleGoals: partyGoals, picks: {} }, this.storeState);
   }
 
   private handlePlayerToggle(player: number) {
@@ -97,11 +87,17 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     } else {
       delete newPicks[player];
     }
-    this.setState({ picks: newPicks }, this.logState);
+    this.setState({ picks: newPicks }, this.storeState);
   }
 
-  private logState() {
-    console.log(this.state);
+  private storeState() {
+    const dto = {
+      includeSatireGaming: this.state.includeSatireGaming,
+      includeOfficial: this.state.includeOfficial,
+      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId),
+      picks: this.state.picks
+    };
+    this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
   }
 
   public render(): React.ReactNode {
