@@ -1,12 +1,11 @@
-import { officialBattleGoals } from "battlegoals/battleGoals";
-import { battleGoalByGlobalId, communityBattleGoals } from "battlegoals/battleGoals";
+import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from "battlegoals/battleGoals";
 
 function battleGoalWithTwoRewards() {
-  return communityBattleGoals[1];
+  return satireGamingBattleGoals[1];
 }
 
-function anyCommunityBattleGoal() {
-  return communityBattleGoals[47];
+function anySatireGamingBattleGoal() {
+  return satireGamingBattleGoals[47];
 }
 
 function anyOfficialBattleGoal() {
@@ -20,15 +19,15 @@ describe('battle goals', () => {
       expect(officialBattleGoals[officialBattleGoals.length - 1].globalCardId - officialBattleGoals[0].globalCardId).toEqual(23);
     });
   });
-  describe('community', () => {
+  describe('satire gaming', () => {
     it('should be available', () => {
-      expect(communityBattleGoals).toHaveLength(64);
+      expect(satireGamingBattleGoals).toHaveLength(64);
     });
     it('should properly detect one rewards', () => {
-      expect(communityBattleGoals[0].reward).toBe(1);
+      expect(satireGamingBattleGoals[0].reward).toBe(1);
     });
     it('parse name', () => {
-      expect(communityBattleGoals[0].displayName).toEqual('Bully');
+      expect(satireGamingBattleGoals[0].displayName).toEqual('Bully');
     });
     it('should properly detect two rewards', () => {
       expect(battleGoalWithTwoRewards().reward).toBe(2);
@@ -39,8 +38,8 @@ describe('battle goals', () => {
   });
 
   describe('resolve battle goal by global id', () => {
-    it('should resolve community battle goals by generated global id', () => {
-      const battleGoal = anyCommunityBattleGoal();
+    it('should resolve satire gaming battle goals by generated global id', () => {
+      const battleGoal = anySatireGamingBattleGoal();
       expect(battleGoalByGlobalId(battleGoal.globalCardId).globalCardId).toEqual(battleGoal.globalCardId)
     });
     it('should resolve official battle goals', () => {

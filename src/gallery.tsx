@@ -1,14 +1,14 @@
 import * as React from "react"
 import * as ReactDOM from "react-dom";
 import { NoProps, NoState } from "lang/react";
-import { officialBattleGoals, communityBattleGoals } from 'battlegoals/battleGoals'
+import { officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
 import BattleGoalCard from "battlegoals/battleGoalCard";
 import { CSSProperties } from "react";
 import "./style.css";
 
 class Gallery extends React.Component<NoProps, NoState> {
   render(): React.ReactNode {
-    const allBattleGoals = officialBattleGoals.concat(communityBattleGoals);
+    const allBattleGoals = officialBattleGoals.concat(satireGamingBattleGoals);
     const style = {
       display: 'flex',
       flexDirection: 'row',

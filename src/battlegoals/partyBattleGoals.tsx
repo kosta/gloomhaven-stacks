@@ -2,7 +2,7 @@ import * as React from "react";
 import { NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
-import { BattleGoal, battleGoalByGlobalId, communityBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
+import { BattleGoal, battleGoalByGlobalId, satireGamingBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
 import BattleGoalCard from "battlegoals/battleGoalCard";
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
@@ -14,8 +14,8 @@ interface Picks {
 }
 
 interface PartyBattleGoalsState {
-  includeVanilla: boolean;
-  includeCommunity: boolean;
+  includeOfficial: boolean;
+  includeSatireGaming: boolean;
   drawnBattleGoals: BattleGoal[];
   currentPlayer: void | number;
   picks: Picks;
@@ -27,14 +27,14 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
   constructor(props: NoProps) {
     super(props);
     this.handleDrawBattleGoals = this.handleDrawBattleGoals.bind(this);
-    this.toggleVanilla = this.toggleVanilla.bind(this);
-    this.toggleCommunity = this.toggleCommunity.bind(this);
+    this.toggleIncludeOfficial = this.toggleIncludeOfficial.bind(this);
+    this.toggleIncludeSatireGaming = this.toggleIncludeSatireGaming.bind(this);
     this.logState = this.logState.bind(this);
     this.handlePlayerToggle = this.handlePlayerToggle.bind(this);
     this.handlePlayerPick = this.handlePlayerPick.bind(this);
     this.state = {
-      includeVanilla: false,
-      includeCommunity: false,
+      includeOfficial: false,
+      includeSatireGaming: false,
       drawnBattleGoals: [],
       currentPlayer: undefined,
       picks: {}
@@ -46,8 +46,8 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     if (dtoAsString !== null) {
       const dto = JSON.parse(dtoAsString);
       const stateFromStore = {
-        includeVanilla: dto.includeVanilla,
-        includeCommunity: dto.includeCommunity,
+        includeOfficial: dto.includeOfficial,
+        includeSatireGaming: dto.includeSatireGaming,
         drawnBattleGoals: dto.battleGoalIds.map(battleGoalByGlobalId),
         picks: dto.picks || {}
       };
@@ -57,29 +57,29 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
 
   componentWillUnmount(): void {
     const dto = {
-      includeCommunity: this.state.includeCommunity,
-      includeVanilla: this.state.includeVanilla,
+      includeSatireGaming: this.state.includeSatireGaming,
+      includeOfficial: this.state.includeOfficial,
       battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId),
       picks: this.state.picks
     };
     this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
   }
 
-  private toggleVanilla(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ includeVanilla: event.target.checked, drawnBattleGoals: [] }, this.logState);
+  private toggleIncludeOfficial(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ includeOfficial: event.target.checked, drawnBattleGoals: [] }, this.logState);
   }
 
-  private toggleCommunity(event: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ includeCommunity: event.target.checked, drawnBattleGoals: [] }, this.logState);
+  private toggleIncludeSatireGaming(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ includeSatireGaming: event.target.checked, drawnBattleGoals: [] }, this.logState);
   }
 
   private handleDrawBattleGoals() {
     const pool: BattleGoal[] = [];
-    if (this.state.includeVanilla) {
+    if (this.state.includeOfficial) {
       pool.push(...officialBattleGoals);
     }
-    if (this.state.includeCommunity) {
-      pool.push(...communityBattleGoals)
+    if (this.state.includeSatireGaming) {
+      pool.push(...satireGamingBattleGoals)
     }
     const partyGoals = drawDistinctBattleGoals(pool, 8);
     this.setState({ drawnBattleGoals: partyGoals, picks: {} }, this.logState);
@@ -164,10 +164,10 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
   }
 
   private dealer() {
-    const readyToDrawCards = this.state.includeVanilla || this.state.includeCommunity;
+    const readyToDrawCards = this.state.includeOfficial || this.state.includeSatireGaming;
     return <div key='pool-configurator'>
-      <input type='checkbox' checked={this.state.includeVanilla} onChange={this.toggleVanilla}/><label>Vanilla</label>
-      <input type='checkbox' checked={this.state.includeCommunity} onChange={this.toggleCommunity}/><label><a href='http://eepurl.com/dEDLkH' target='_blank'>Satire Gaming</a></label>
+      <input type='checkbox' checked={this.state.includeOfficial} onChange={this.toggleIncludeOfficial}/><label>Official</label>
+      <input type='checkbox' checked={this.state.includeSatireGaming} onChange={this.toggleIncludeSatireGaming}/><label><a href='http://eepurl.com/dEDLkH' target='_blank'>Satire Gaming</a></label>
       <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
     </div>;
   }

@@ -41,7 +41,7 @@ export const officialBattleGoals = [
   new BattleGoal('Scrambler', 1, 'Take only short rests during the scenario.', 281, 'scrambler'),
 ];
 
-const communityBattleGoalsAsString = 'Bully: Kill a monster afflicted by a negative condition.\n' +
+const satireGamingBattleGoalsAsString = 'Bully: Kill a monster afflicted by a negative condition.\n' +
   'Challenger: Attack only monsters who have their starting hit point values. (2 Checks)\n' +
   'Discriminating: Kill no elite monsters or bosses during the scenario.\n' +
   'Distracted: Kill a monster you are not adjacent to while adjacent to other monsters.\n' +
@@ -106,7 +106,7 @@ const communityBattleGoalsAsString = 'Bully: Kill a monster afflicted by a negat
   'Thorough: Never exit a room with monsters remaining in it.\n' +
   'Trailblazer: Enter two or more hexes of difficult terrain, hazardous terrain, or traps in a single turn.';
 
-export const communityBattleGoals = communityBattleGoalsAsString.split('\n')
+export const satireGamingBattleGoals = satireGamingBattleGoalsAsString.split('\n')
   .map(it => it.trim())
   .map(it => it.split(':'))
   .map(it => {
@@ -120,7 +120,7 @@ export const communityBattleGoals = communityBattleGoalsAsString.split('\n')
     }
   }).map((it, index) => new BattleGoal(it.displayName, it.reward, it.text, index, "empty"));
 
-const allBattleGoals = officialBattleGoals.concat(communityBattleGoals);
+const allBattleGoals = officialBattleGoals.concat(satireGamingBattleGoals);
 
 export const battleGoalByGlobalId = (globalId: number): BattleGoal => {
   const result = allBattleGoals.find(it => it.globalCardId === globalId);
