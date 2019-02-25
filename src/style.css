@@ -7,3 +7,8 @@
     font-family: 'High Tower';
     src: url(./fonts/HighTower.ttf);
 }
+
+img {
+    -moz-user-select: none;
+    user-select: none;
+}

@@ -25,7 +25,7 @@ class Gallery extends React.Component<NoProps, NoState> {
         flexDirection: 'row'
       } as CSSProperties;
       return <div style={style} key={it.globalCardId}>
-        <BattleGoalCard battleGoal={it} show={true}/>
+        <BattleGoalCard battleGoal={it} cardShadow={false}/>
         <img style={imageStyle} src={imgUrl} alt='bogus'/>
       </div>
     });

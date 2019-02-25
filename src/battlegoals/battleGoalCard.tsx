@@ -1,31 +1,16 @@
 import * as React from "react";
-import { noop } from "lang/react";
-import { battleGoalImages, BattleGoal } from "battlegoals/battleGoals";
+import { NoState } from "lang/react";
+import { BattleGoal, battleGoalImages } from "battlegoals/battleGoals";
 import { range } from "lang/ranges";
 
 interface BattleGoalCardProps {
   battleGoal: BattleGoal;
-  show?: boolean;
+  cardShadow: boolean;
 }
 
-interface BattleGoalCardState {
-  hidden: boolean,
-}
-
-export default class BattleGoalCard extends React.Component<BattleGoalCardProps, BattleGoalCardState> {
+export default class BattleGoalCard extends React.Component<BattleGoalCardProps, NoState> {
   constructor(props: BattleGoalCardProps) {
     super(props);
-    this.reveal = this.reveal.bind(this);
-    this.hide = this.hide.bind(this);
-    this.state = { hidden: true };
-  }
-
-  private reveal(): void {
-    this.setState({ hidden: false }, noop);
-  }
-
-  private hide(): void {
-    this.setState({ hidden: true }, noop);
   }
 
   public render(): React.ReactNode {
@@ -39,20 +24,19 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       borderRadius: '15px',
       height: '100%',
       width: '100%'
-    };
+    } as React.CSSProperties;
 
-    const imageUrl = (this.state.hidden && !this.props.show) ? battleGoalImages.background : battleGoalImages.foreground;
-    return <div style={battleGoalStyle} onMouseOver={this.reveal} onMouseOut={this.hide}>
-      <img style={imageStyle} src={imageUrl} alt='ups'/>
+    if (this.props.cardShadow) {
+      imageStyle.boxShadow = '0px 12px 22px 1px rgb(27, 26, 26)';
+    }
+
+    return <div style={battleGoalStyle}>
+      <img style={imageStyle} src={battleGoalImages.foreground} alt='ups'/>
       {this.renderOverlay()}
     </div>;
   }
 
   private renderOverlay(): React.ReactNode {
-    if (this.state.hidden && !this.props.show) {
-      return null;
-    }
-
     const overlayStyle = {
       position: 'absolute',
       top: '22%',
