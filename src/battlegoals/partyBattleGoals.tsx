@@ -174,12 +174,18 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     } as React.CSSProperties;
     const playerBattleGoals = battleGoalsPerPlayer[currentPlayer];
     return playerBattleGoals.map((battleGoal, index) => {
+      const pickedBattleGoal = this.state.picks[currentPlayer];
+      const playerPickedABattleGoal = pickedBattleGoal !== undefined;
+      const notPickedCurrentBattleGoal = pickedBattleGoal !== battleGoal.globalCardId;
+      const shadow = pickedBattleGoal === battleGoal.globalCardId;
+      const blur = playerPickedABattleGoal && notPickedCurrentBattleGoal;
+
       return <div key={`battle-goal-${index}`}
                   style={style}
                   onMouseOver={() => this.startHover(index)}
                   onMouseOut={() => this.stopHover(index)}
                   onClick={() => this.handlePlayerPick(currentPlayer, battleGoal)}>
-        <BattleGoalCard key={battleGoal.globalCardId} battleGoal={battleGoal} cardShadow={this.pickedByPlayer(currentPlayer, battleGoal)}/>
+        <BattleGoalCard key={battleGoal.globalCardId} battleGoal={battleGoal} cardShadow={shadow} blurCard={blur}/>
       </div>
     });
   }
@@ -194,9 +200,5 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       <input type='checkbox' checked={this.state.includeSatireGaming} onChange={this.toggleIncludeSatireGaming}/><label><a href='http://eepurl.com/dEDLkH' target='_blank'>Satire Gaming</a></label>
       <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
     </div>;
-  }
-
-  private pickedByPlayer(currentPlayer: number, battleGoal: BattleGoal) {
-    return this.state.picks[currentPlayer] === battleGoal.globalCardId;
   }
 }

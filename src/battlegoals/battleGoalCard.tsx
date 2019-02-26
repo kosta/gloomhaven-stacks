@@ -6,6 +6,7 @@ import { range } from "lang/ranges";
 interface BattleGoalCardProps {
   battleGoal: BattleGoal;
   cardShadow: boolean;
+  blurCard: boolean;
 }
 
 export default class BattleGoalCard extends React.Component<BattleGoalCardProps, NoState> {
@@ -28,6 +29,9 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
 
     if (this.props.cardShadow) {
       imageStyle.boxShadow = '0px 12px 22px 1px rgb(27, 26, 26)';
+    }
+    if(this.props.blurCard){
+      imageStyle.filter =  'blur(5px) brightness(0.5)';
     }
 
     return <div style={battleGoalStyle}>
