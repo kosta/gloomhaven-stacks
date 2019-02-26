@@ -12,3 +12,7 @@ img {
     -moz-user-select: none;
     user-select: none;
 }
+
+button:focus {
+    outline: 0;
+}
