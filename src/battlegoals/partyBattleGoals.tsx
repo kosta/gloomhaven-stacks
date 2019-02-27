@@ -1,79 +1,204 @@
 import * as React from "react";
-import { NoProps } from "lang/react";
+import { noop, NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
-import PlayerBattleGoals from "battlegoals/playerBattleGoals";
-import CommunityBattleGoalCard from "battlegoals/communityBattleGoalCard";
-import BattleGoalCard from "./battleGoalCard";
+import { BattleGoal, battleGoalByGlobalId, satireGamingBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
+import BattleGoalCard from "battlegoals/battleGoalCard";
 
-function battleGoals(): Array<number> {
-  return range(1, 24);
-}
-
-function communityBattleGoals(): Array<number> {
-  return range(1, 100);
-}
-
-function drawDistinctBattleGoals(allBattleGoals: Array<number>, count:number): Array<number> {
+function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
 }
 
-enum BattleGoalFlavour {
-  Vanilla = 'Vanilla',
-  Community = 'Community',
+interface Picks {
+  [picks: number]: number
 }
 
 interface PartyBattleGoalsState {
-  flavour: BattleGoalFlavour;
+  includeOfficial: boolean;
+  includeSatireGaming: boolean;
+  drawnBattleGoals: BattleGoal[];
+  currentPlayer: void | number;
+  picks: Picks;
+  hover: number;
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
+  private storage: Storage = window.localStorage;
 
   constructor(props: NoProps) {
     super(props);
-    this.handleFlavourChange = this.handleFlavourChange.bind(this);
+    this.handleDrawBattleGoals = this.handleDrawBattleGoals.bind(this);
+    this.toggleIncludeOfficial = this.toggleIncludeOfficial.bind(this);
+    this.toggleIncludeSatireGaming = this.toggleIncludeSatireGaming.bind(this);
+    this.storeState = this.storeState.bind(this);
+    this.handlePlayerToggle = this.handlePlayerToggle.bind(this);
+    this.handlePlayerPick = this.handlePlayerPick.bind(this);
+    this.startHover = this.startHover.bind(this);
+    this.stopHover = this.stopHover.bind(this);
     this.state = {
-      flavour: BattleGoalFlavour.Vanilla
+      includeOfficial: false,
+      includeSatireGaming: false,
+      drawnBattleGoals: [],
+      currentPlayer: undefined,
+      picks: {},
+      hover: -1
     }
   }
 
-  private handleFlavourChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    this.setState({ flavour: event.target.value as BattleGoalFlavour }, () => {
-      console.log(this.state)
-    });
+  componentDidMount() {
+    const dtoAsString = this.storage.getItem('partyBattleGoalState');
+    if (dtoAsString !== null) {
+      const dto = JSON.parse(dtoAsString);
+      const stateFromStore = {
+        includeOfficial: dto.includeOfficial,
+        includeSatireGaming: dto.includeSatireGaming,
+        drawnBattleGoals: dto.battleGoalIds.map(battleGoalByGlobalId),
+        picks: dto.picks || {}
+      };
+      this.setState(stateFromStore, noop);
+    }
+  }
+
+  private startHover(cardIndex: number): void {
+    this.setState({ hover: cardIndex }, noop);
+  }
+
+  private stopHover(cardIndex: number): void {
+    if (this.state.hover !== cardIndex) {
+      return;
+    }
+    this.setState({ hover: -1 }, noop);
+  }
+
+  private toggleIncludeOfficial(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ includeOfficial: event.target.checked, drawnBattleGoals: [] }, this.storeState);
+  }
+
+  private toggleIncludeSatireGaming(event: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ includeSatireGaming: event.target.checked, drawnBattleGoals: [] }, this.storeState);
+  }
+
+  private handleDrawBattleGoals() {
+    const pool: BattleGoal[] = [];
+    if (this.state.includeOfficial) {
+      pool.push(...officialBattleGoals);
+    }
+    if (this.state.includeSatireGaming) {
+      pool.push(...satireGamingBattleGoals)
+    }
+    const partyGoals = drawDistinctBattleGoals(pool, 8);
+    this.setState({ drawnBattleGoals: partyGoals, picks: {} }, this.storeState);
+  }
+
+  private handlePlayerToggle(player: number) {
+    const newCurrentPlayer = this.state.currentPlayer === player ? undefined : player;
+    this.setState({ currentPlayer: newCurrentPlayer }, noop);
+  }
+
+  private handlePlayerPick(player: number, battleGoal: BattleGoal) {
+    const pick = this.state.picks[player] !== battleGoal.globalCardId;
+    const newPicks = { ...this.state.picks };
+    if (pick) {
+      newPicks[player] = battleGoal.globalCardId;
+    } else {
+      delete newPicks[player];
+    }
+    this.setState({ picks: newPicks }, this.storeState);
+  }
+
+  private storeState() {
+    const dto = {
+      includeSatireGaming: this.state.includeSatireGaming,
+      includeOfficial: this.state.includeOfficial,
+      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId),
+      picks: this.state.picks
+    };
+    this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
   }
 
   public render(): React.ReactNode {
-    const vanilla = this.state.flavour === BattleGoalFlavour.Vanilla;
-
-    const allBattleGoals = vanilla ? battleGoals() : communityBattleGoals();
-    const battleGoalsPerPlayer = partition(2, drawDistinctBattleGoals(allBattleGoals, 8));
-    const containerStyle = {
-      'display': 'flex',
-      'flex-direction': 'row'
-    };
-    const playerBattleGoalsStyle = {
-      'display': 'flex',
-      'flex-direction': 'column',
-      'padding': '0 0.25em 0 '
-    };
-
-    const kind = vanilla ? BattleGoalCard : CommunityBattleGoalCard;
     return [
-      <select value={this.state.flavour} onChange={this.handleFlavourChange}>
-        <option key={BattleGoalFlavour.Vanilla} value={BattleGoalFlavour.Vanilla}>vanilla</option>
-        <option key={BattleGoalFlavour.Community} value={BattleGoalFlavour.Community}>community</option>
-      </select>,
-      <div style={containerStyle}>
-        {battleGoalsPerPlayer.map((battleGoals, index) => {
-          const first = battleGoals[0];
-          const second = battleGoals[1];
-          const playerNumber = index + 1;
-          return <div style={playerBattleGoalsStyle} key={playerNumber}>
-            <h4>Player {playerNumber}</h4>
-            <PlayerBattleGoals kind={kind} key={playerNumber} first={first} second={second}/>
-          </div>;
-        })}
-      </div>];
+      this.dealer(),
+      this.picker()
+    ];
+  }
+
+  private picker() {
+    const battleGoalsPerPlayer = partition(2, this.state.drawnBattleGoals);
+    if (battleGoalsPerPlayer.length === 0) {
+      return null;
+    }
+
+    const battleGoalSelectorStyle = {
+      display: 'flex',
+      width: '50%',
+      height: '300px',
+      justifyContent: 'space-between'
+    } as React.CSSProperties;
+
+    return <div key='battle-goal-selector' style={battleGoalSelectorStyle}>
+      {this.playerSelection()}
+      {this.battleGoalPicker(battleGoalsPerPlayer)}
+    </div>;
+  }
+
+  private playerSelection() {
+    const playerSelectionStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
+      width: '200px'
+    } as React.CSSProperties;
+    const buttonStyle = {
+      borderRadius: '25px',
+      height: '50px'
+    } as React.CSSProperties;
+    return <div key='player-selection-container' style={playerSelectionStyle}>
+      {range(0, 4).map(player => {
+        const style = { ...buttonStyle };
+        if (this.state.currentPlayer === player) {
+          style.background = 'greenyellow'
+        }
+        return <button key={`select-player-${player}`} style={style} onClick={() => this.handlePlayerToggle(player)}>Player {player + 1}</button>;
+      })}
+    </div>
+  }
+
+  private battleGoalPicker(battleGoalsPerPlayer: Array<Array<BattleGoal>>) {
+    const currentPlayer = this.state.currentPlayer;
+    if (currentPlayer === undefined) {
+      return null;
+    }
+    const style = {
+      cursor: 'grab'
+    } as React.CSSProperties;
+    const playerBattleGoals = battleGoalsPerPlayer[currentPlayer];
+    return playerBattleGoals.map((battleGoal, index) => {
+      const pickedBattleGoal = this.state.picks[currentPlayer];
+      const playerPickedABattleGoal = pickedBattleGoal !== undefined;
+      const notPickedCurrentBattleGoal = pickedBattleGoal !== battleGoal.globalCardId;
+      const shadow = pickedBattleGoal === battleGoal.globalCardId;
+      const blur = playerPickedABattleGoal && notPickedCurrentBattleGoal;
+
+      return <div key={`battle-goal-${index}`}
+                  style={style}
+                  onMouseOver={() => this.startHover(index)}
+                  onMouseOut={() => this.stopHover(index)}
+                  onClick={() => this.handlePlayerPick(currentPlayer, battleGoal)}>
+        <BattleGoalCard key={battleGoal.globalCardId} battleGoal={battleGoal} cardShadow={shadow} blurCard={blur}/>
+      </div>
+    });
+  }
+
+  private dealer() {
+    const readyToDrawCards = this.state.includeOfficial || this.state.includeSatireGaming;
+    const style = {
+      margin: '25px 0 25px 25px'
+    } as React.CSSProperties;
+    return <div style={style} key='pool-configurator'>
+      <input type='checkbox' checked={this.state.includeOfficial} onChange={this.toggleIncludeOfficial}/><label>Official</label>
+      <input type='checkbox' checked={this.state.includeSatireGaming} onChange={this.toggleIncludeSatireGaming}/><label><a href='http://eepurl.com/dEDLkH' target='_blank'>Satire Gaming</a></label>
+      <button disabled={!readyToDrawCards} onClick={this.handleDrawBattleGoals}>draw</button>
+    </div>;
   }
 }

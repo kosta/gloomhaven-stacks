@@ -2,9 +2,12 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 const config = {
-  entry: "./src/index.tsx",
+  entry: {
+    main: "./src/index.tsx",
+    gallery: "./src/gallery.tsx"
+  },
   output: {
-    filename: "bundle.js",
+    filename: '[name].js',
     path: __dirname + "/dist"
   },
 
@@ -17,16 +20,45 @@ const config = {
   module: {
     rules: [
       // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-      {test: [/\.ts$/, /\.tsx$/], loader: "awesome-typescript-loader"},
-
+      {
+        test: [/\.ts$/, /\.tsx$/],
+        use: [
+          {loader: "awesome-typescript-loader"}
+        ]
+      },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      {enforce: "pre", test: /\.js$/, loader: "source-map-loader"}
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        use: [
+          {loader: "source-map-loader"}
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {loader: "style-loader"},
+          {loader: "css-loader"}
+        ]
+      },
+      {
+        test: /\.ttf$/,
+        use: [
+          'file-loader'
+        ]
+      }
     ]
   },
   plugins: [
     new HtmlWebPackPlugin({
+      chunks: ['main'],
       template: "./src/index.html",
-      filename: "./index.html"
+      filename: "index.html"
+    }),
+    new HtmlWebPackPlugin({
+      chunks: ['gallery'],
+      template: "./src/index.html",
+      filename: "gallery.html"
     })
   ]
 };

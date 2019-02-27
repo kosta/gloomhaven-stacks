@@ -15,7 +15,10 @@ export default class EventCard extends React.Component<EventCardProps, NoState> 
   }
 
   render() {
-    return <img key='image-front' src={this.eventCardImageUrl()}/>
+    const style = {
+      borderRadius: '15px'
+    } as React.CSSProperties;
+    return <img key='image-front' style={style} src={this.eventCardImageUrl()} alt='event card'/>
   }
 
   eventCardImageUrl() {
