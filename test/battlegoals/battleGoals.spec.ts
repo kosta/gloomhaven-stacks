@@ -1,4 +1,5 @@
 import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from "battlegoals/battleGoals";
+import CardIdentifier from "../../src/cards/cardIdentifier";
 
 function battleGoalWithTwoRewards() {
   return satireGamingBattleGoals[1];
@@ -16,7 +17,7 @@ describe('battle goals', () => {
   describe('official', () => {
     it('should be 24 available', () => {
       expect(officialBattleGoals).toHaveLength(24);
-      expect(officialBattleGoals[officialBattleGoals.length - 1].globalCardId - officialBattleGoals[0].globalCardId).toEqual(23);
+      expect(officialBattleGoals[officialBattleGoals.length - 1].globalCardId.id - officialBattleGoals[0].globalCardId.id).toEqual(23);
     });
   });
   describe('satire gaming', () => {
@@ -47,7 +48,8 @@ describe('battle goals', () => {
       expect(battleGoalByGlobalId(battleGoal.globalCardId).globalCardId).toEqual(battleGoal.globalCardId);
     });
     it('should raise an error for unknown battle goals', () => {
-      expect(() => battleGoalByGlobalId(-1)).toThrowError('There is no battle goal with globalId=-1')
+      const notExisting = new CardIdentifier('bogus', -1);
+      expect(() => battleGoalByGlobalId(notExisting)).toThrowError('There is no battle goal with globalId=bogus--1')
     });
   });
 });

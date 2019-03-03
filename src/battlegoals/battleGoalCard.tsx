@@ -95,7 +95,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       <h3 style={titleStyle}>{battleGoal.displayName}</h3>
       <section style={descriptionStyle}>{battleGoal.text}</section>
       <div key='perks' style={perksStyle}>{range(0, battleGoal.reward).map(() => '✓').join('')}</div>
-      <div key='globalCardId' style={cardNumberStyle}>{battleGoal.globalCardId}</div>
+      <div key='globalCardId' style={cardNumberStyle}>{battleGoal.globalCardId.displayString()}</div>
     </div>;
   }
 }

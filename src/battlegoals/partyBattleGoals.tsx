@@ -2,15 +2,16 @@ import * as React from "react";
 import { noop, NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
-import { BattleGoal, battleGoalByGlobalId, satireGamingBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
+import { BattleGoal, battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from "battlegoals/battleGoals";
 import BattleGoalCard from "battlegoals/battleGoalCard";
+import CardIdentifier from "cards/cardIdentifier";
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
 }
 
 interface Picks {
-  [picks: number]: number
+  [picks: number]: CardIdentifier | void
 }
 
 interface PartyBattleGoalsState {
@@ -174,18 +175,20 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     } as React.CSSProperties;
     const playerBattleGoals = battleGoalsPerPlayer[currentPlayer];
     return playerBattleGoals.map((battleGoal, index) => {
-      const pickedBattleGoal = this.state.picks[currentPlayer];
-      const playerPickedABattleGoal = pickedBattleGoal !== undefined;
-      const notPickedCurrentBattleGoal = pickedBattleGoal !== battleGoal.globalCardId;
-      const shadow = pickedBattleGoal === battleGoal.globalCardId;
-      const blur = playerPickedABattleGoal && notPickedCurrentBattleGoal;
-
+      const pickedBattleGoalId = this.state.picks[currentPlayer];
+      const playerPickedABattleGoal = pickedBattleGoalId !== undefined;
+      const playerPickedCurrentBattleGoal = pickedBattleGoalId !== undefined && pickedBattleGoalId.equals(battleGoal.globalCardId);
+      const notPickedCurrentBattleGoal = !playerPickedCurrentBattleGoal;
       return <div key={`battle-goal-${index}`}
                   style={style}
                   onMouseOver={() => this.startHover(index)}
                   onMouseOut={() => this.stopHover(index)}
                   onClick={() => this.handlePlayerPick(currentPlayer, battleGoal)}>
-        <BattleGoalCard key={battleGoal.globalCardId} battleGoal={battleGoal} cardShadow={shadow} blurCard={blur}/>
+        <BattleGoalCard key={battleGoal.globalCardId.toString()}
+                        battleGoal={battleGoal}
+                        cardShadow={playerPickedCurrentBattleGoal}
+                        blurCard={playerPickedABattleGoal && notPickedCurrentBattleGoal}
+        />
       </div>
     });
   }
