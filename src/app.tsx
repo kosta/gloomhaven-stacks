@@ -1,6 +1,6 @@
 import * as React from "react"
 import { range, rangeFromTo } from "lang/ranges";
-import { removeFromArray, shuffle } from "lang/arrays";
+import { removeFromArray, shuffle, unique } from "lang/arrays";
 import { noop, NoState } from "lang/react";
 import StackPopped from "stacks/stackPopped";
 import BringEventToConclusion from "events/bringEventToConclusion";
@@ -687,13 +687,13 @@ export class App extends React.Component<AppProps, AppState> {
         throw "Unknown name for addCards: " + cardType;
       }
 
-      const notAlreadyContainedCards = cardIdsToAdd.filter((it) => !stack.stack.includes(it));
+      const notAlreadyContainedCards = unique(cardIdsToAdd).filter((it) => !stack.stack.includes(it));
       if(notAlreadyContainedCards.length === 0 ) {
         return;
       }
 
       this.setState((prevState) => {
-        stack.stack = stack.stack.concat(cardIdsToAdd);
+        stack.stack = stack.stack.concat(notAlreadyContainedCards);
         shuffle(stack.stack);
 
         stack.history.push({

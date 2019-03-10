@@ -38,6 +38,12 @@ describe('App', () => {
       expect(app.state.stacks.itemDesigns.list).toContain(1);
     });
 
+    it('add the same card only once', () => {
+      const app = appComponentInstance();
+      app.addCards('City Events', [1, 1]);
+      expect(app.state.stacks.cityEvents.stack).toEqual([1]);
+    });
+
     it('filter out already contained card', () => {
       const app = appComponentInstance();
       app.addCards('City Events', [1]);
