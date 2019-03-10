@@ -46,6 +46,9 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/scripts/testSetup.ts"
-    ]
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    }
   }
 }
