@@ -32,10 +32,24 @@ describe('App', () => {
       return wrapper.instance() as App;
     }
 
-    it('should ', () => {
+    it('add previously not contained card', () => {
       const app = appComponentInstance();
       app.addCards('Item Designs', [1]);
       expect(app.state.stacks.itemDesigns.list).toContain(1);
+    });
+
+    it('filter out already contained card', () => {
+      const app = appComponentInstance();
+      app.addCards('City Events', [1]);
+      app.addCards('City Events', [1, 2]);
+      expect(app.state.stacks.cityEvents.stack).toContain(2);
+    });
+
+    it('do not add a already contained card', () => {
+      const app = appComponentInstance();
+      app.addCards('City Events', [1]);
+      app.addCards('City Events', [1]);
+      expect(app.state.stacks.cityEvents.stack).toEqual([1]);
     });
   });
 });

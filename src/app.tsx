@@ -686,6 +686,12 @@ export class App extends React.Component<AppProps, AppState> {
       if (!stack || typeof stack === "number") {
         throw "Unknown name for addCards: " + cardType;
       }
+
+      const notAlreadyContainedCards = cardIdsToAdd.filter((it) => !stack.stack.includes(it));
+      if(notAlreadyContainedCards.length === 0 ) {
+        return;
+      }
+
       this.setState((prevState) => {
         stack.stack = stack.stack.concat(cardIdsToAdd);
         shuffle(stack.stack);
@@ -738,7 +744,6 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   save() {
-    console.log("saving", this.state.stacks);
     window.localStorage.setItem("state", JSON.stringify(this.state.stacks))
   }
 
