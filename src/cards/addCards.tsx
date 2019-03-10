@@ -7,6 +7,7 @@ export interface AddCardsProps {
 
 export default class AddCards extends React.Component<AddCardsProps, NoState> {
   private readonly inputs: any;
+
   constructor(props: AddCardsProps) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -19,7 +20,7 @@ export default class AddCards extends React.Component<AddCardsProps, NoState> {
     return stringCardIds.map((s) => parseInt(s, 10)).filter((x) => x === x);
   }
 
-  handleClick(e: React.MouseEvent, cardType:string) {
+  handleClick(e: React.MouseEvent, cardType: string) {
     e.preventDefault();
     const cardIdsToAdd = this.parseCardIdsFromInputFor(cardType);
     this.props.onAddCards(cardType, cardIdsToAdd);
@@ -27,14 +28,17 @@ export default class AddCards extends React.Component<AddCardsProps, NoState> {
   }
 
   render() {
-    return [
-      <h2 key="h2">Add Cards</h2>,
-    ].concat(["City Events", "Road Events", "Item Designs", "Single Items"].map((cardType) =>
-      <div key={"div" + cardType}>
-        <button key={cardType} type="button" onClick={(e) => this.handleClick(e, cardType)}>{cardType}</button>
-        :
-        <input ref={(i) => this.inputs[cardType] = i}/>
-      </div>
-    ));
+    return <React.Fragment>
+      <h2 key="h2">Add Cards</h2>
+      {
+        ["City Events", "Road Events", "Item Designs", "Single Items"].map((cardType) =>
+          <div key={"div" + cardType}>
+            <button key={cardType} type="button" onClick={(e) => this.handleClick(e, cardType)}>{cardType}</button>
+            :
+            <input ref={(i) => this.inputs[cardType] = i}/>
+          </div>
+        )
+      }
+    </React.Fragment>;
   }
 }

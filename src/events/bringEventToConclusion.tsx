@@ -85,8 +85,8 @@ export default class BringEventToConclusion extends React.Component<BringEventTo
       'flexDirection': 'column',
       'padding': '0 1em 0 '
     } as React.CSSProperties;
-    return [
-      <h2 key="h2">{this.props.name} Event {this.props.number}</h2>,
+    return <React.Fragment>
+      <h2 key="h2">{this.props.name} Event {this.props.number}</h2>
       <div key='event-conclusion-container' style={containerStyle}>
         <EventCard key='event-card-front' eventCardId={this.props.number} side={Side.Front} name={this.props.name}/>
         <div key='choice-container' style={choiceStyle}>
@@ -103,6 +103,6 @@ export default class BringEventToConclusion extends React.Component<BringEventTo
           </div>
         ]}
       </div>
-    ];
+    </React.Fragment>;
   }
 }

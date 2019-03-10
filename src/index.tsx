@@ -178,14 +178,13 @@ class RandomItemDesigns extends React.Component<RandomItemDesignsProps, NoState>
   render() {
     if (this.props.list.length === 0) {
       return null
-    } else {
-      return [
-        <h2 key="h2">Random Item Designs</h2>,
-        <div key="cards">
-          {this.props.list.map(i => itemToDiv(i))}
-        </div>
-      ]
     }
+    return <React.Fragment>
+      <h2 key="h2">Random Item Designs</h2>
+      <div key="cards">
+        {this.props.list.map(i => itemToDiv(i))}
+      </div>
+    </React.Fragment>;
   }
 }
 
@@ -203,8 +202,8 @@ class RandomCard extends React.Component<RandomCardProps, NoState> {
   }
 
   render() {
-    return [
-      <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>,
+    return <React.Fragment>
+      <h2 key="h2">Drawn {this.props.name}: {this.props.drawnCards.join(" ")}</h2>
       <div key="button-div">
         {this.props.drawnCards.map(cardNumber => {
           const styles = {
@@ -220,8 +219,8 @@ class RandomCard extends React.Component<RandomCardProps, NoState> {
             {cardToDiv(cardNumber, this.props.cardProps)}
           </div>
         })}
-      </div>,
-    ]
+      </div>
+    </React.Fragment>;
   }
 }
 
@@ -459,18 +458,18 @@ class ImportExport extends React.Component<ImportExportProps, ImportExportState>
   };
 
   render() {
-    return [
-      <h2 key="h2">Import / Export</h2>,
+    return <React.Fragment>
+      <h2 key="h2">Import / Export</h2>
       <textarea
         key="textarea" rows={20} cols={20}
         defaultValue={this.stacksToJsonString()}
         onChange={this.onTextChange}
-      />,
-      <button key="to-clipboard" hidden={!ImportExport.supportForCopyToClipboard()} type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>,
-      <button key="from-clipboard" hidden={!ImportExport.supportForImportFromClipboard()} type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>,
-      <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>,
-      <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>,
-    ];
+      />
+      <button key="to-clipboard" hidden={!ImportExport.supportForCopyToClipboard()} type="submit" onClick={this.copyToClipboard}>Copy to Clipboard</button>
+      <button key="from-clipboard" hidden={!ImportExport.supportForImportFromClipboard()} type="submit" onClick={this.importFromClipboard}>Import from Clipboard</button>
+      <button key="import" type="submit" onClick={this.importClicked}>{"Import"}</button>
+      <button key="cancel" type="submit" onClick={this.props.cancel}>{"Cancel"}</button>
+    </React.Fragment>;
   }
 }
 
@@ -496,6 +495,7 @@ interface CardStacks {
   singleItems: CardStack;
   personalGoals: CardStack;
   prosperity: number;
+
   [key: string]: CardStacks[keyof CardStacks]; // https://stackoverflow.com/a/47465004
 }
 
@@ -738,7 +738,7 @@ class App extends React.Component<NoProps, AppState> {
 
   render() {
     let prosperity = this.state.stacks.prosperity;
-    return [
+    return <React.Fragment>
       <div key="button-frame" className="frame">
         <Pop key="city" name="City" cards={this.state.stacks.cityEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} onAddCards={this.addCards}/>
         <Pop key="road" name="Road" cards={this.state.stacks.roadEvents} setDialog={this.setDialog} stackPopped={this.stackPopped} onAddCards={this.addCards}/>
@@ -748,22 +748,22 @@ class App extends React.Component<NoProps, AppState> {
         <button type="button" onClick={this.showAddCards}>Add Cards</button>
         <button type="button" onClick={this.showImportExport}>Import / Export</button>
         <button type="button" onClick={this.onDrawBattleGoals}>Draw Battle Goals</button>
-      </div>,
+      </div>
       <div key="dialog-frame" className="frame">
         {this.state.dialog}
-      </div>,
+      </div>
       <div key="random-items-div">
         <RandomItemDesigns list={this.state.stacks.randomItemDesigns.list}/>
-      </div>,
+      </div>
       <div key="item-designs-div">
         {itemsAboveProsperity("Item Designs", this.state.stacks.itemDesigns.list, prosperity)}
-      </div>,
+      </div>
       <div key="single-items-div">
         {itemsAboveProsperity("Single Items", this.state.stacks.singleItems.list, prosperity)}
-      </div>,
-      <ProsperityInput key="prosperity-input" prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>,
+      </div>
+      <ProsperityInput key="prosperity-input" prosperity={prosperity} onIncreaseProsperity={this.increaseProsperity}/>
       <Shop key="shop" prosperity={prosperity}/>
-    ];
+    </React.Fragment>;
   }
 }
 
