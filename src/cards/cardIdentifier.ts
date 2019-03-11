@@ -1,31 +1,31 @@
 export default class CardIdentifier {
 
-  public static official(id: number) {
-    return new CardIdentifier('official', id);
+  public static official(cardNumber: number) {
+    return new CardIdentifier('official', cardNumber);
   }
 
-  public static satireGaming(id: number) {
-    return new CardIdentifier('satire-gaming', id);
+  public static satireGaming(cardNumber: number) {
+    return new CardIdentifier('satire-gaming', cardNumber);
   }
 
-  constructor(readonly origin: string, readonly id: number) {
+  constructor(readonly origin: string, readonly cardNumber: number) {
   }
 
   public equals(other: CardIdentifier | void) {
     if (other === undefined) {
       return false;
     }
-    return this.origin === other.origin && this.id == other.id;
+    return this.origin === other.origin && this.cardNumber == other.cardNumber;
   }
 
   public asString() {
-    return `${this.origin}-${this.id}`;
+    return `${this.origin}-${this.cardNumber}`;
   }
 
   public displayString() {
     if (this.origin === 'satire-gaming') {
-      return `SG-${this.id}`;
+      return `SG-${this.cardNumber}`;
     }
-    return `${this.id}`;
+    return `${this.cardNumber}`;
   }
 }

@@ -3,7 +3,7 @@ import CardIdentifier from "../../src/cards/cardIdentifier";
 describe('card identifier', () => {
 
   describe('equals', () => {
-    it('should equal if origin and id are the same', () => {
+    it('should equal if origin and cardNumber are the same', () => {
       const one = CardIdentifier.official(1);
       const two = CardIdentifier.official(1);
 
