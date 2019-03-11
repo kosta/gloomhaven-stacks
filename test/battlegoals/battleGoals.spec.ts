@@ -17,7 +17,7 @@ describe('battle goals', () => {
   describe('official', () => {
     it('should be 24 available', () => {
       expect(officialBattleGoals).toHaveLength(24);
-      expect(officialBattleGoals[officialBattleGoals.length - 1].globalCardId.id - officialBattleGoals[0].globalCardId.id).toEqual(23);
+      expect(officialBattleGoals[officialBattleGoals.length - 1].globalCardId.cardNumber - officialBattleGoals[0].globalCardId.cardNumber).toEqual(23);
     });
   });
   describe('satire gaming', () => {
