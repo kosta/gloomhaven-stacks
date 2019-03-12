@@ -118,10 +118,10 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
   }
 
   public render(): React.ReactNode {
-    return [
-      this.dealer(),
-      this.picker()
-    ];
+    return <React.Fragment>
+      {this.dealer()}
+      {this.picker()}
+    </React.Fragment>;
   }
 
   private picker() {

@@ -4,7 +4,7 @@
     "sourceMap": true,
     "strict": true,
     "module": "commonjs",
-    "target": "ES5",
+    "target": "ES6",
     // lib should not be needed but https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15140
     "lib": [
       "es2015",

@@ -32,3 +32,7 @@ export function partition<T>(partitionSize: number, array: Array<T>): Array<Arra
 
   return partitions;
 }
+
+export function unique<T>(array: Array<T>): Array<T> {
+  return [...new Set(array)];
+}
