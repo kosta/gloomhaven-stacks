@@ -1,7 +1,6 @@
 import CardIdentifier from "../../src/cards/cardIdentifier";
 
 describe('card identifier', () => {
-
   describe('equals', () => {
     it('should equal if origin and cardNumber are the same', () => {
       const one = CardIdentifier.official(1);
@@ -27,9 +26,29 @@ describe('card identifier', () => {
     });
   });
 
+  describe('constructor', () => {
+    it('should reject NaN as cardNumber', () => {
+      expect(() => CardIdentifier.create('does-not-matter', NaN)).toThrowError();
+    });
+  });
+
   describe('asString', () => {
     expect(CardIdentifier.official(42).asString()).toEqual('official-42');
     expect(CardIdentifier.satireGaming(42).asString()).toEqual('satire-gaming-42');
+  });
+
+  describe('parseFrom', () => {
+    it('should parse origin', () => {
+      expect(CardIdentifier.parseFrom('source-34').origin).toEqual('source');
+    });
+    it('should parse card number', () => {
+      expect(CardIdentifier.parseFrom('source-17').cardNumber).toEqual(17);
+    });
+    it('should parse origin that contains a -', () => {
+      const parsed = CardIdentifier.parseFrom('first-second-43');
+      expect(parsed.origin).toEqual('first-second');
+      expect(parsed.cardNumber).toEqual(43);
+    });
   });
 
   describe('display string', () => {
@@ -40,5 +59,4 @@ describe('card identifier', () => {
       expect(CardIdentifier.satireGaming(7).displayString()).toEqual('SG-7');
     });
   });
-
 });

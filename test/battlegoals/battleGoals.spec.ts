@@ -48,7 +48,7 @@ describe('battle goals', () => {
       expect(battleGoalByGlobalId(battleGoal.globalCardId).globalCardId).toEqual(battleGoal.globalCardId);
     });
     it('should raise an error for unknown battle goals', () => {
-      const notExisting = new CardIdentifier('bogus', -1);
+      const notExisting = CardIdentifier.create('bogus', -1);
       expect(() => battleGoalByGlobalId(notExisting)).toThrowError('There is no battle goal with globalId=bogus--1')
     });
   });
