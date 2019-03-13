@@ -48,7 +48,9 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       includeSatireGaming: this.state.includeSatireGaming,
       includeOfficial: this.state.includeOfficial,
       battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId.asString()),
-      picks: [...this.state.picks].map(it => [it[0], it[1].asString()]).map(it => `${it[0]}${PartyBattleGoals.pickStorageSeparator}${it[1]}`)
+      picks: [...this.state.picks] // [[2, CardIdentifier],[4, CardIdentifier]]
+        .map(it => [it[0], it[1].asString()]) // [[2, 'official-36'][4, 'satire-gaming-12']]
+        .map(it => `${it[0]}${PartyBattleGoals.pickStorageSeparator}${it[1]}`) // [['2:official-36']['4:satire-gaming-12']]
     };
     this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
   }
