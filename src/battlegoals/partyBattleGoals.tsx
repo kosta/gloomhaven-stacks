@@ -2,15 +2,12 @@ import * as React from "react";
 import { noop, NoProps } from "lang/react";
 import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
-import { BattleGoal, battleGoalByGlobalId, satireGamingBattleGoals, officialBattleGoals } from "battlegoals/battleGoals";
+import { BattleGoal, battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from "battlegoals/battleGoals";
 import BattleGoalCard from "battlegoals/battleGoalCard";
+import CardIdentifier from "cards/cardIdentifier";
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
-}
-
-interface Picks {
-  [picks: number]: number
 }
 
 interface PartyBattleGoalsState {
@@ -18,11 +15,12 @@ interface PartyBattleGoalsState {
   includeSatireGaming: boolean;
   drawnBattleGoals: BattleGoal[];
   currentPlayer: void | number;
-  picks: Picks;
+  picks: Map<number, CardIdentifier>;
   hover: number;
 }
 
 export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
+  private static pickStorageSeparator = ':';
   private storage: Storage = window.localStorage;
 
   constructor(props: NoProps) {
@@ -40,22 +38,47 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       includeSatireGaming: false,
       drawnBattleGoals: [],
       currentPlayer: undefined,
-      picks: {},
+      picks: new Map(),
       hover: -1
     }
   }
 
+  private storeState() {
+    const dto = {
+      includeSatireGaming: this.state.includeSatireGaming,
+      includeOfficial: this.state.includeOfficial,
+      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId.asString()),
+      picks: [...this.state.picks] // [[2, CardIdentifier],[4, CardIdentifier]]
+        .map(it => [it[0], it[1].asString()]) // [[2, 'official-36'][4, 'satire-gaming-12']]
+        .map(it => `${it[0]}${PartyBattleGoals.pickStorageSeparator}${it[1]}`) // [['2:official-36']['4:satire-gaming-12']]
+    };
+    this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
+  }
+
   componentDidMount() {
     const dtoAsString = this.storage.getItem('partyBattleGoalState');
-    if (dtoAsString !== null) {
+    if (dtoAsString === null) {
+      return;
+    }
+
+    try {
       const dto = JSON.parse(dtoAsString);
+      const serializedPicks = dto.picks as Array<string>;
+      const picks = new Map();
+      serializedPicks.map(it => it.split(PartyBattleGoals.pickStorageSeparator)).forEach(it => {
+        const player = parseInt(it[0], 10);
+        const id = CardIdentifier.parseFrom(it[1]);
+        picks.set(player, id);
+      });
       const stateFromStore = {
         includeOfficial: dto.includeOfficial,
         includeSatireGaming: dto.includeSatireGaming,
-        drawnBattleGoals: dto.battleGoalIds.map(battleGoalByGlobalId),
-        picks: dto.picks || {}
+        drawnBattleGoals: dto.battleGoalIds.map(CardIdentifier.parseFrom).map(battleGoalByGlobalId),
+        picks
       };
       this.setState(stateFromStore, noop);
+    } catch (e) {
+      console.log('loading party battle goals failed: ' + e);
     }
   }
 
@@ -87,7 +110,7 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
       pool.push(...satireGamingBattleGoals)
     }
     const partyGoals = drawDistinctBattleGoals(pool, 8);
-    this.setState({ drawnBattleGoals: partyGoals, picks: {} }, this.storeState);
+    this.setState({ drawnBattleGoals: partyGoals, picks: new Map() }, this.storeState);
   }
 
   private handlePlayerToggle(player: number) {
@@ -96,24 +119,14 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
   }
 
   private handlePlayerPick(player: number, battleGoal: BattleGoal) {
-    const pick = this.state.picks[player] !== battleGoal.globalCardId;
-    const newPicks = { ...this.state.picks };
+    const pick = this.state.picks.get(player) !== battleGoal.globalCardId;
+    const newPicks = new Map(this.state.picks);
     if (pick) {
-      newPicks[player] = battleGoal.globalCardId;
+      newPicks.set(player, battleGoal.globalCardId);
     } else {
-      delete newPicks[player];
+      newPicks.delete(player);
     }
     this.setState({ picks: newPicks }, this.storeState);
-  }
-
-  private storeState() {
-    const dto = {
-      includeSatireGaming: this.state.includeSatireGaming,
-      includeOfficial: this.state.includeOfficial,
-      battleGoalIds: this.state.drawnBattleGoals.map(it => it.globalCardId),
-      picks: this.state.picks
-    };
-    this.storage.setItem('partyBattleGoalState', JSON.stringify(dto));
   }
 
   public render(): React.ReactNode {
@@ -174,18 +187,20 @@ export default class PartyBattleGoals extends React.Component<NoProps, PartyBatt
     } as React.CSSProperties;
     const playerBattleGoals = battleGoalsPerPlayer[currentPlayer];
     return playerBattleGoals.map((battleGoal, index) => {
-      const pickedBattleGoal = this.state.picks[currentPlayer];
-      const playerPickedABattleGoal = pickedBattleGoal !== undefined;
-      const notPickedCurrentBattleGoal = pickedBattleGoal !== battleGoal.globalCardId;
-      const shadow = pickedBattleGoal === battleGoal.globalCardId;
-      const blur = playerPickedABattleGoal && notPickedCurrentBattleGoal;
-
+      const pickedBattleGoalId = this.state.picks.get(currentPlayer);
+      const playerPickedABattleGoal = pickedBattleGoalId !== undefined;
+      const playerPickedCurrentBattleGoal = pickedBattleGoalId !== undefined && pickedBattleGoalId.equals(battleGoal.globalCardId);
+      const notPickedCurrentBattleGoal = !playerPickedCurrentBattleGoal;
       return <div key={`battle-goal-${index}`}
                   style={style}
                   onMouseOver={() => this.startHover(index)}
                   onMouseOut={() => this.stopHover(index)}
                   onClick={() => this.handlePlayerPick(currentPlayer, battleGoal)}>
-        <BattleGoalCard key={battleGoal.globalCardId} battleGoal={battleGoal} cardShadow={shadow} blurCard={blur}/>
+        <BattleGoalCard key={battleGoal.globalCardId.toString()}
+                        battleGoal={battleGoal}
+                        cardShadow={playerPickedCurrentBattleGoal}
+                        blurCard={playerPickedABattleGoal && notPickedCurrentBattleGoal}
+        />
       </div>
     });
   }
