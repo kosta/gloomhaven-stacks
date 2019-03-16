@@ -1,7 +1,7 @@
 import * as React from "react";
 import { NoState } from "lang/react";
 import { StackPopped } from "stacks/Pop";
-import EventCard from "events/eventCard";
+import EventCard from "events/EventCard";
 import Side from "cards/side";
 
 interface ButtonWithSelectionHighlightProps {

@@ -3,7 +3,7 @@ import { NoState } from 'lang/react';
 import { OpenDialog } from 'app/OpenDialog';
 import { AddCards, AddCardsProps } from 'cards/addCards';
 import { CardStack } from 'cards/cards';
-import { BringEventToConclusion } from 'events/bringEventToConclusion'
+import { BringEventToConclusion } from 'events/BringEventToConclusion'
 
 export interface StackPopped {
   stackPopped: (name: string, returnToBottom: boolean) => void,
