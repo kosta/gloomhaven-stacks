@@ -1,5 +1,6 @@
-import * as React from "react"
-import { App, AppState, CardStack, CardStacks } from "app";
+import * as React from 'react'
+import { App, AppState, CardStacks } from 'app';
+import { CardStack} from 'cards/cards';
 import { shallow } from 'enzyme';
 
 const emptyCardStack = (): CardStack => {
