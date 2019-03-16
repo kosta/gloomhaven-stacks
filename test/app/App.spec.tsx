@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { App, AppState, CardStacks } from 'app';
-import { CardStack} from 'cards/cards';
+import { App, AppState } from 'app/App';
+import { CardStack } from 'cards/cards';
+import { CardStacks } from 'app/GloomHaven';
 import { shallow } from 'enzyme';
 
 const emptyCardStack = (): CardStack => {
