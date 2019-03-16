@@ -2,9 +2,12 @@ import * as React from 'react';
 import { NoState } from 'lang/react';
 import { OpenDialog } from 'app/OpenDialog';
 import { AddCards, AddCardsProps } from 'cards/addCards';
-import StackPopped from 'stacks/stackPopped';
 import { CardStack } from 'cards/cards';
 import { BringEventToConclusion } from 'events/bringEventToConclusion'
+
+export interface StackPopped {
+  stackPopped: (name: string, returnToBottom: boolean) => void,
+}
 
 interface PopProps extends OpenDialog, AddCardsProps, StackPopped {
   name: string,
