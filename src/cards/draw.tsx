@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NoState } from 'lang/react';
 import { CardStack } from 'cards/cards';
 import { CardRenderProps, isPersonalGoalProps } from 'cards/CardRenderProps';
-import { OpenDialog } from 'app/app';
+import { OpenDialog } from 'app/OpenDialog';
 import { cardToDiv } from 'cards/cards';
 
 export interface DrawnCallback {

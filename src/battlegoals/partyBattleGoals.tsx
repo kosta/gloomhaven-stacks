@@ -19,7 +19,7 @@ interface PartyBattleGoalsState {
   hover: number;
 }
 
-export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
+export class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
   private static pickStorageSeparator = ':';
   private storage: Storage = window.localStorage;
 

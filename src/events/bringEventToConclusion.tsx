@@ -35,7 +35,7 @@ interface BringEventToConclusionState {
   selected: Choice | undefined
 }
 
-export default class BringEventToConclusion extends React.Component<BringEventToConclusionProps, BringEventToConclusionState> {
+export class BringEventToConclusion extends React.Component<BringEventToConclusionProps, BringEventToConclusionState> {
   constructor(props: BringEventToConclusionProps) {
     super(props);
 
