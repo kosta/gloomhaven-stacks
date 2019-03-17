@@ -2,7 +2,7 @@ import * as React from 'react'
 import { removeFromArray, shuffle, unique } from 'lang/arrays';
 import { PartyBattleGoals } from 'battlegoals/partyBattleGoals';
 import { AddCards } from 'cards/addCards';
-import { Draw } from 'cards/draw';
+import { Draw } from 'cards/Draw';
 import { CardStack } from 'cards/cards';
 import { RandomItemDesignProps, PersonalGoalProps, RandomSideScenarioProps } from 'cards/CardRenderProps';
 import { Pop } from 'stacks/Pop';
