@@ -1,4 +1,4 @@
-import CardIdentifier from "../cards/cardIdentifier";
+import CardIdentifier from "cards/CardIdentifier";
 
 export class BattleGoal {
   constructor(
