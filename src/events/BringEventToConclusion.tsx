@@ -2,7 +2,7 @@ import * as React from "react";
 import { NoState } from "lang/react";
 import { StackPopped } from "stacks/Pop";
 import EventCard from "events/EventCard";
-import Side from "cards/side";
+import Side from "cards/Side";
 
 interface ButtonWithSelectionHighlightProps {
   onClick: React.MouseEventHandler;
