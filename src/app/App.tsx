@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { removeFromArray, shuffle, unique } from 'lang/arrays';
-import { PartyBattleGoals } from 'battlegoals/partyBattleGoals';
+import { PartyBattleGoals } from 'battlegoals/PartyBattleGoals';
 import { AddCards } from 'cards/addCards';
 import { Draw } from 'cards/Draw';
 import { CardStack } from 'cards/cards';
