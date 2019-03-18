@@ -11,7 +11,7 @@
     "@types/jest": "24.0.11",
     "@types/react-dom": "16.8.2",
     "awesome-typescript-loader": "5.2.1",
-    "css-loader": "2.1.0",
+    "css-loader": "2.1.1",
     "enzyme": "3.9.0",
     "enzyme-adapter-react-16": "1.9.1",
     "file-loader": "3.0.1",
@@ -21,9 +21,9 @@
     "style-loader": "0.23.1",
     "ts-jest": "24.0.0",
     "typescript": "3.3.3333",
-    "webpack": "4.29.5",
-    "webpack-cli": "3.2.3",
-    "webpack-dev-server": "3.2.0"
+    "webpack": "4.29.6",
+    "webpack-cli": "3.3.0",
+    "webpack-dev-server": "3.2.1"
   },
   "dependencies": {
     "react": "16.8.3",
