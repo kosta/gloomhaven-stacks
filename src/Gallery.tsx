@@ -6,11 +6,42 @@ import BattleGoalCard from 'battlegoals/BattleGoalCard';
 import { CSSProperties } from 'react';
 import './style.css';
 
+interface ScanFilenameLookupTable {
+  [key: number]: string
+}
+
+const scanFilenameLookupTable: ScanFilenameLookupTable = {
+  258: 'streamliner',
+  259: 'layabout',
+  260: 'workhorse',
+  261: 'zealot',
+  262: 'masochist',
+  263: 'fasthealer',
+  264: 'neutralizer',
+  265: 'plunderer',
+  266: 'protector',
+  267: 'explorer',
+  268: 'hoarder',
+  269: 'indigent',
+  270: 'pacifist',
+  271: 'sadist',
+  272: 'hunter',
+  273: 'professional',
+  274: 'aggressor',
+  275: 'dynamo',
+  276: 'purist',
+  277: 'opener',
+  278: 'diehard',
+  279: 'executioner',
+  280: 'straggler',
+  281: 'scrambler'
+};
+
 function urlToScanFor(it: BattleGoal) {
-  if (it.globalCardId.origin !== 'official') {
-    return 'empty';
+  if (it.globalCardId.origin === 'official') {
+    return scanFilenameLookupTable[it.globalCardId.cardNumber];
   }
-  return it.name;
+  return 'empty';
 }
 
 class Gallery extends React.Component<NoProps, NoState> {
