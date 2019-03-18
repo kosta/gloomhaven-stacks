@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NoState } from "lang/react";
-import Side from "cards/side";
+import Side from "cards/Side";
 
 interface EventCardProps {
   eventCardId: number,

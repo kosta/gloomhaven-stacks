@@ -1,9 +1,8 @@
 import * as React from "react";
 import { NoState } from "lang/react";
-import StackPopped from "stacks/stackPopped";
-import EventCard from "events/eventCard";
-import Side from "cards/side";
-
+import { StackPopped } from "stacks/Pop";
+import EventCard from "events/EventCard";
+import Side from "cards/Side";
 
 interface ButtonWithSelectionHighlightProps {
   onClick: React.MouseEventHandler;
@@ -35,7 +34,7 @@ interface BringEventToConclusionState {
   selected: Choice | undefined
 }
 
-export default class BringEventToConclusion extends React.Component<BringEventToConclusionProps, BringEventToConclusionState> {
+export class BringEventToConclusion extends React.Component<BringEventToConclusionProps, BringEventToConclusionState> {
   constructor(props: BringEventToConclusionProps) {
     super(props);
 

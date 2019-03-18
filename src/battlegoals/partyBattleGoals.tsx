@@ -4,7 +4,7 @@ import { partition, shuffle } from "lang/arrays";
 import { range } from "lang/ranges";
 import { BattleGoal, battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from "battlegoals/battleGoals";
 import BattleGoalCard from "battlegoals/battleGoalCard";
-import CardIdentifier from "cards/cardIdentifier";
+import CardIdentifier from "cards/CardIdentifier";
 
 function drawDistinctBattleGoals(allBattleGoals: Array<BattleGoal>, count: number): Array<BattleGoal> {
   return shuffle(allBattleGoals).slice(0, count);
@@ -19,7 +19,7 @@ interface PartyBattleGoalsState {
   hover: number;
 }
 
-export default class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
+export class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsState> {
   private static pickStorageSeparator = ':';
   private storage: Storage = window.localStorage;
 

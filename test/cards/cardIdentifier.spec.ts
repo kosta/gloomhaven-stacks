@@ -1,4 +1,4 @@
-import CardIdentifier from "../../src/cards/cardIdentifier";
+import CardIdentifier from "cards/CardIdentifier";
 
 describe('card identifier', () => {
   describe('equals', () => {

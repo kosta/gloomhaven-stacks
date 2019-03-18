@@ -1,5 +1,5 @@
-import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from "battlegoals/battleGoals";
-import CardIdentifier from "../../src/cards/cardIdentifier";
+import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals';
+import CardIdentifier from 'cards/CardIdentifier';
 
 function battleGoalWithTwoRewards() {
   return satireGamingBattleGoals[1];

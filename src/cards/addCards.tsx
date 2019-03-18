@@ -5,7 +5,7 @@ export interface AddCardsProps {
   onAddCards: (cardType: string, cardIdsToAdd: Array<number>) => void
 }
 
-export default class AddCards extends React.Component<AddCardsProps, NoState> {
+export class AddCards extends React.Component<AddCardsProps, NoState> {
   private readonly inputs: any;
 
   constructor(props: AddCardsProps) {
