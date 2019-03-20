@@ -3,7 +3,7 @@ import { NoState } from 'lang/react';
 import { OpenDialog } from 'app/OpenDialog';
 import { AddCards, AddCardsProps } from 'cards/addCards';
 import { CardStack } from 'cards/cards';
-import { BringEventToConclusion } from 'events/BringEventToConclusion'
+import { BringEventToConclusion } from 'events/BringEventToConclusion';
 
 export interface StackPopped {
   stackPopped: (name: string, returnToBottom: boolean) => void,
@@ -33,6 +33,6 @@ export class Pop extends React.Component<PopProps, NoState> {
   }
 
   render() {
-    return <button type="button" onClick={this.clicked} disabled={this.props.cards.stack.length === 0}>{"Draw " + this.props.name + " Event"}</button>
+    return <button type="button" onClick={this.clicked} disabled={this.props.cards.stack.length === 0}>{'Draw ' + this.props.name + ' Event'}</button>;
   }
 }

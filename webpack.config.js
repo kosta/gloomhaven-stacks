@@ -4,7 +4,7 @@ const path = require("path");
 const config = {
   entry: {
     main: "./src/index.tsx",
-    gallery: "./src/gallery.tsx"
+    gallery: "./src/Gallery.tsx"
   },
   output: {
     filename: '[name].js',
