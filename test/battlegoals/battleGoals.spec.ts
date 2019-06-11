@@ -1,8 +1,8 @@
-import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals';
+import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals, satireGamingBattleGoalsNewAsCsvString } from 'battlegoals/battleGoals';
 import CardIdentifier from 'cards/CardIdentifier';
 
 function battleGoalWithTwoRewards() {
-  return satireGamingBattleGoals[1];
+  return satireGamingBattleGoals[13];
 }
 
 function anySatireGamingBattleGoal() {
@@ -20,21 +20,22 @@ describe('battle goals', () => {
       expect(officialBattleGoals[officialBattleGoals.length - 1].globalCardId.cardNumber - officialBattleGoals[0].globalCardId.cardNumber).toEqual(23);
     });
   });
+
   describe('satire gaming', () => {
     it('should be available', () => {
-      expect(satireGamingBattleGoals).toHaveLength(64);
+      expect(satireGamingBattleGoals).toHaveLength(54);
     });
     it('should properly detect one rewards', () => {
       expect(satireGamingBattleGoals[0].reward).toBe(1);
     });
     it('parse name', () => {
-      expect(satireGamingBattleGoals[0].displayName).toEqual('Bully');
+      expect(satireGamingBattleGoals[0].displayName).toEqual('Acrobatic');
     });
     it('should properly detect two rewards', () => {
       expect(battleGoalWithTwoRewards().reward).toBe(2);
     });
-    it('strip reward amount from text', () => {
-      expect(battleGoalWithTwoRewards().text).not.toContain('(2 Checks)');
+    it('should ', () => {
+      console.log(satireGamingBattleGoalsNewAsCsvString.split('\n').filter(line => line.endsWith(';0')).join('\n'));
     });
   });
 
