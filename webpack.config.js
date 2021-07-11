@@ -4,7 +4,8 @@ const path = require("path");
 const config = {
   entry: {
     main: "./src/index.tsx",
-    gallery: "./src/Gallery.tsx"
+    gallery: "./src/Gallery.tsx",
+    staging: "./src/StagingRoom.tsx"
   },
   output: {
     filename: '[name].js',
@@ -59,6 +60,11 @@ const config = {
       chunks: ['gallery'],
       template: "./src/index.html",
       filename: "gallery.html"
+    }),
+    new HtmlWebPackPlugin({
+      chunks: ['staging'],
+      template: "./src/index.html",
+      filename: "staging.html"
     })
   ]
 };
