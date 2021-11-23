@@ -23,8 +23,9 @@ const config = {
       {
         test: [/\.ts$/, /\.tsx$/],
         use: [
-          {loader: "awesome-typescript-loader"}
-        ]
+          {loader: "ts-loader"}
+        ],
+        exclude: /node_modules/,
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
