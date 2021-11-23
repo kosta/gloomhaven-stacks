@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { App, AppState } from 'app/App';
+import { App } from 'app/App';
 import { CardStack } from 'cards/cards';
 import { CardStacks } from 'app/GloomHaven';
 import { shallow } from 'enzyme';
