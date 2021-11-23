@@ -33,7 +33,8 @@
     "build": "webpack --mode development",
     "start": "webpack-dev-server --open --mode development",
     "test": "jest",
-    "deploy": "webpack --mode production"
+    "deploy": "webpack --mode production",
+    "typecheck": "tsc --noEmit"
   },
   "jest": {
     "preset": "ts-jest",
