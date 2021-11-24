@@ -6,6 +6,8 @@
   "author": "Kosta <theoneandonlykosta@gmail.com>",
   "private": true,
   "devDependencies": {
+    "@testing-library/react": "12.1.2",
+    "@testing-library/user-event": "13.5.0",
     "@types/enzyme": "3.9.0",
     "@types/enzyme-adapter-react-16": "1.0.5",
     "@types/jest": "27.0.3",
