@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CardStacks } from 'app/Gloomhaven';
+import { CardStacks } from 'app/GloomHaven';
 import { CancelDialog } from 'app/CancelDialog';
 
 interface ImportExportProps extends CancelDialog {
