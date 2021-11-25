@@ -38,7 +38,7 @@
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
     "roots": [
-      "<rootDir>/test"
+      "<rootDir>/src"
     ],
     "moduleDirectories": [
       "node_modules",
