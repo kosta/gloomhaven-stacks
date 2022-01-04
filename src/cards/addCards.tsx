@@ -31,12 +31,14 @@ export class AddCards extends React.Component<AddCardsProps, NoState> {
     return <React.Fragment>
       <h2 key="h2">Add Cards</h2>
       {
-        ["City Events", "Road Events", "Item Designs", "Single Items"].map((cardType) =>
-          <div key={"div" + cardType}>
-            <button key={cardType} type="button" onClick={(e) => this.handleClick(e, cardType)}>{cardType}</button>
+        ["City Events", "Road Events", "Item Designs", "Single Items"].map((cardType) => {
+          const buttonId = `add-${cardType}-id`.replace(/\s/g, '-');
+          return <div key={'div' + cardType}>
+            <button id={buttonId} key={cardType} type="button" onClick={(e) => this.handleClick(e, cardType)}>{cardType}</button>
             :
-            <input ref={(i) => this.inputs[cardType] = i}/>
-          </div>
+            <input aria-labelledby={buttonId} type="text" ref={(i) => this.inputs[cardType] = i}/>
+          </div>;
+          }
         )
       }
     </React.Fragment>;

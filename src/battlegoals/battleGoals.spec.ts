@@ -1,4 +1,4 @@
-import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals, satireGamingBattleGoalsNewAsCsvString } from 'battlegoals/battleGoals';
+import { battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals';
 import CardIdentifier from 'cards/CardIdentifier';
 
 function battleGoalWithTwoRewards() {
@@ -33,9 +33,6 @@ describe('battle goals', () => {
     });
     it('should properly detect two rewards', () => {
       expect(battleGoalWithTwoRewards().reward).toBe(2);
-    });
-    it('should ', () => {
-      console.log(satireGamingBattleGoalsNewAsCsvString.split('\n').filter(line => line.endsWith(';0')).join('\n'));
     });
   });
 

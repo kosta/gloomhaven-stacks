@@ -1,16 +1,16 @@
-import * as React from 'react'
-import { removeFromArray, shuffle, unique } from 'lang/arrays';
+import { CardStacks, GloomHaven } from 'app/GloomHaven';
+import { ImportExport } from 'app/ImportExport';
+import { itemsAboveProsperity } from 'app/Propsperity';
+import { ProsperityInput, Shop } from 'app/Shop';
 import { PartyBattleGoals } from 'battlegoals/PartyBattleGoals';
 import { AddCards } from 'cards/addCards';
-import { Draw } from 'cards/Draw';
+import { PersonalGoalProps, RandomItemDesignProps, RandomSideScenarioProps } from 'cards/CardRenderProps';
 import { CardStack } from 'cards/cards';
-import { RandomItemDesignProps, PersonalGoalProps, RandomSideScenarioProps } from 'cards/CardRenderProps';
-import { Pop } from 'stacks/Pop';
-import { Shop, ProsperityInput } from 'app/Shop';
-import { itemsAboveProsperity } from 'app/Propsperity';
-import { ImportExport } from 'app/ImportExport';
+import { Draw } from 'cards/Draw';
 import { RandomItemDesigns } from 'designs/RandomItemDesigns';
-import { GloomHaven, CardStacks } from "app/GloomHaven";
+import { removeFromArray, shuffle, unique } from 'lang/arrays';
+import * as React from 'react';
+import { Pop } from 'stacks/Pop';
 
 
 export interface AppState {
@@ -21,6 +21,14 @@ export interface AppState {
 export interface AppProps {
   initialCardStacks: CardStacks;
 }
+
+const extractMessageFrom = (e: unknown) => {
+  if (e instanceof Error) {
+    return e.message;
+  } else {
+    return JSON.stringify(e, null, 2);
+  }
+};
 
 export class App extends React.Component<AppProps, AppState> {
 
@@ -104,7 +112,7 @@ export class App extends React.Component<AppProps, AppState> {
       }, this.save);
     } catch (e) {
       //TODO :(
-      alert(e.message)
+      alert(extractMessageFrom(e))
     }
     this.cancel();
   }
