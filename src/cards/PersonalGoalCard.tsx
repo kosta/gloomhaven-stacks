@@ -13,6 +13,6 @@ export class PersonalGoalCard extends React.Component<PersonalGoalCardProps, NoS
       borderRadius: '20px'
     } as React.CSSProperties;
     const cardId = this.props.cardId;
-    return <img key={cardId} style={style} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-goals/pg-" + cardId + ".png"} alt='personal goal'/>
+    return <img key={cardId} style={style} src={"https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/personal-quests/gloomhaven/gh-pq-" + cardId + ".png"} alt='personal goal'/>
   }
 }
