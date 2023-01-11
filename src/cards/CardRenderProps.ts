@@ -45,5 +45,8 @@ export function isRandomSideScenarioProps(arg: CardRenderProps): arg is RandomSi
 export function isItemProps(arg: CardRenderProps): arg is ItemProps {
   return arg.kind === 'item-props';
 }
+export function isRandomItemDesignProps(arg: CardRenderProps): arg is RandomItemDesignProps {
+  return arg.kind === 'random-item-design-props';
+}
 
 export type CardRenderProps = RandomItemDesignProps | ItemProps | PersonalGoalProps | RandomSideScenarioProps;
