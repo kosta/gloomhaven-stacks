@@ -1,5 +1,6 @@
+import { ItemCard } from 'cards/ItemCard';
 import { gloomhavenItems } from 'cards/items-data';
-import { ItemCard, PersonalGoalCard } from 'cards/PersonalGoalCard';
+import { PersonalGoalCard } from 'cards/PersonalGoalCard';
 import * as React from 'react';
 import { CardRenderProps, isItemProps, isPersonalGoalProps, isRandomItemDesignProps, isRandomSideScenarioProps, ItemProps } from './CardRenderProps';
 
