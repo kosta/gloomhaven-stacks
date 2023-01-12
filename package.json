@@ -6,6 +6,7 @@
   "author": "Kosta <theoneandonlykosta@gmail.com>",
   "private": true,
   "devDependencies": {
+    "@signed/prettier-config": "0.1.0",
     "@testing-library/react": "13.4.0",
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "29.2.5",
@@ -15,6 +16,7 @@
     "html-webpack-plugin": "5.5.0",
     "jest": "29.3.1",
     "jest-environment-jsdom": "29.3.1",
+    "prettier": "2.8.2",
     "source-map-loader": "4.0.1",
     "style-loader": "3.3.1",
     "ts-jest": "29.0.4",
@@ -35,6 +37,7 @@
     "deploy": "webpack --mode production",
     "typecheck": "tsc --noEmit"
   },
+  "prettier": "@signed/prettier-config",
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
