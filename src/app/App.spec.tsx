@@ -72,19 +72,19 @@ describe('App', () => {
 const addCards = async (cardType: string, ... cardIds: number[]) => {
   const cardRegex = new RegExp(cardType, 'i')
   const cardIdsAsString = cardIds.join(' ');
-  userEvent.click(await screen.findByRole('button', { name: 'Add Cards' }));
+  await userEvent.click(await screen.findByRole('button', { name: 'Add Cards' }));
   const itemDesignsInput = await screen.findByRole('textbox', {
     name: cardRegex
   });
-  userEvent.type(itemDesignsInput, cardIdsAsString);
+  await userEvent.type(itemDesignsInput, cardIdsAsString);
   const itemDesignsAddButton = await screen.findByRole('button', {
     name: cardRegex
   });
-  userEvent.click(itemDesignsAddButton);
+  await userEvent.click(itemDesignsAddButton);
 };
 
 const exportedStacks = async () => {
-  userEvent.click(await screen.findByRole('button', {
+  await userEvent.click(await screen.findByRole('button', {
     name: /import \/ export/i
   }));
   const textElement = await screen.findByRole('textbox') as HTMLTextAreaElement;
