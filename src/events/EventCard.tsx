@@ -2,9 +2,11 @@ import * as React from 'react'
 import { NoState } from 'lang/react'
 import Side from 'cards/Side'
 
+export type EventType = 'City' | 'Road'
+
 interface EventCardProps {
   eventCardId: number
-  name: string
+  name: EventType
   side: Side
 }
 

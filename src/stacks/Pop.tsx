@@ -1,3 +1,4 @@
+import { EventType } from 'events/EventCard'
 import * as React from 'react'
 import { NoState } from 'lang/react'
 import { OpenDialog } from 'app/OpenDialog'
@@ -10,7 +11,7 @@ export interface StackPopped {
 }
 
 interface PopProps extends OpenDialog, AddCardsProps, StackPopped {
-  name: string
+  name: EventType
   cards: CardStack
 }
 
