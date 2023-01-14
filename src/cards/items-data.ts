@@ -9,6 +9,7 @@ export type ItemData = {
 }
 
 // pulled in from https://raw.githubusercontent.com/any2cards/gloomhaven/master/data/items.js
+//prettier-ignore
 export const itemData: readonly ItemData[] = [
   {
     'name': 'item 1',
@@ -13502,12 +13503,15 @@ export const itemData: readonly ItemData[] = [
 ] as const;
 
 // this could be done as part of a script in package json that generates a ts-file to reduce file size
-export const gloomhavenItems = itemData.filter(item => item.expansion === 'Gloomhaven' && !item.image.endsWith('-back.png')).map( item => {
-  const fileName = item.image.substring(item.image.lastIndexOf('/'));
-  const cardId = Number.parseInt(fileName.substring(4, 7), 10);
-  const path = item.image
-  return {
-    cardId,
-    path
-  };
-}).reduce((acc, cur) => acc.set(cur.cardId, cur.path), new Map<number, string>());
+export const gloomhavenItems = itemData
+  .filter((item) => item.expansion === 'Gloomhaven' && !item.image.endsWith('-back.png'))
+  .map((item) => {
+    const fileName = item.image.substring(item.image.lastIndexOf('/'))
+    const cardId = Number.parseInt(fileName.substring(4, 7), 10)
+    const path = item.image
+    return {
+      cardId,
+      path,
+    }
+  })
+  .reduce((acc, cur) => acc.set(cur.cardId, cur.path), new Map<number, string>())

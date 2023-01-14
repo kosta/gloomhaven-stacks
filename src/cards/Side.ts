@@ -1,6 +1,6 @@
 enum Side {
-  Front = "FRONT",
-  Back = "BACK",
+  Front = 'FRONT',
+  Back = 'BACK',
 }
 
-export default Side;
+export default Side

@@ -1,28 +1,32 @@
-import * as React from 'react';
-import { NoState } from 'lang/react';
-import { StackPopped } from 'stacks/Pop';
-import EventCard from 'events/EventCard';
-import Side from 'cards/Side';
+import * as React from 'react'
+import { NoState } from 'lang/react'
+import { StackPopped } from 'stacks/Pop'
+import EventCard from 'events/EventCard'
+import Side from 'cards/Side'
 
 interface ButtonWithSelectionHighlightProps {
-  onClick: React.MouseEventHandler;
-  selected: boolean;
-  text: string;
+  onClick: React.MouseEventHandler
+  selected: boolean
+  text: string
 }
 
 class ButtonWithSelectionHighlight extends React.Component<ButtonWithSelectionHighlightProps, NoState> {
   render() {
-    const style = {} as React.CSSProperties;
+    const style = {} as React.CSSProperties
     if (this.props.selected) {
-      style.borderColor = 'red';
+      style.borderColor = 'red'
     }
-    return <button key={this.props.text} style={style} type="button" onClick={this.props.onClick}>{this.props.text}</button>;
+    return (
+      <button key={this.props.text} style={style} type="button" onClick={this.props.onClick}>
+        {this.props.text}
+      </button>
+    )
   }
 }
 
 interface BringEventToConclusionProps extends StackPopped {
-  name: string,
-  number: number,
+  name: string
+  number: number
   children: React.ReactNode
 }
 
@@ -32,78 +36,85 @@ enum Choice {
 }
 
 interface BringEventToConclusionState {
-  selected: Choice | undefined;
-  
+  selected: Choice | undefined
 }
 
 export class BringEventToConclusion extends React.Component<BringEventToConclusionProps, BringEventToConclusionState> {
   constructor(props: BringEventToConclusionProps) {
-    super(props);
-    
-    this.selectA = this.selectA.bind(this);
-    this.selectB = this.selectB.bind(this);
-    this.returnToBottom = this.returnToBottom.bind(this);
-    this.removeFromGame = this.removeFromGame.bind(this);
-    this.state = { selected: undefined };
+    super(props)
+
+    this.selectA = this.selectA.bind(this)
+    this.selectB = this.selectB.bind(this)
+    this.returnToBottom = this.returnToBottom.bind(this)
+    this.removeFromGame = this.removeFromGame.bind(this)
+    this.state = { selected: undefined }
   }
-  
+
   selectA(e: React.MouseEvent) {
-    this.setState({ selected: Choice.A });
-    e.preventDefault();
-    return false;
+    this.setState({ selected: Choice.A })
+    e.preventDefault()
+    return false
   }
-  
+
   selectB(e: React.MouseEvent) {
-    this.setState({ selected: Choice.B });
-    e.preventDefault();
-    return false;
+    this.setState({ selected: Choice.B })
+    e.preventDefault()
+    return false
   }
-  
+
   returnToBottom(e: React.MouseEvent) {
-    this.props.stackPopped(this.props.name, true);
-    e.preventDefault();
-    return false;
+    this.props.stackPopped(this.props.name, true)
+    e.preventDefault()
+    return false
   }
-  
+
   removeFromGame(e: React.MouseEvent) {
-    this.props.stackPopped(this.props.name, false);
-    e.preventDefault();
-    return false;
+    this.props.stackPopped(this.props.name, false)
+    e.preventDefault()
+    return false
   }
-  
+
   render() {
     const containerStyle = {
-      'display': 'flex',
-      'flexDirection': 'row'
-    } as React.CSSProperties;
+      display: 'flex',
+      flexDirection: 'row',
+    } as React.CSSProperties
     const choiceStyle = {
-      'display': 'flex',
-      'flexDirection': 'column',
-      'padding': '0 1em 0'
-    } as React.CSSProperties;
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '0 1em 0',
+    } as React.CSSProperties
     const resolutionStyle = {
-      'display': 'flex',
-      'flexDirection': 'column',
-      'padding': '0 1em 0 '
-    } as React.CSSProperties;
-    return <React.Fragment>
-      <h2 key="h2">{this.props.name} Event {this.props.number}</h2>
-      <div key="event-conclusion-container" style={containerStyle}>
-        <EventCard key="event-card-front" eventCardId={this.props.number} side={Side.Front} name={this.props.name}/>
-        <div key="choice-container" style={choiceStyle}>
-          <ButtonWithSelectionHighlight onClick={this.selectA} selected={this.state.selected === Choice.A} text="A"/>
-          <ButtonWithSelectionHighlight onClick={this.selectB} selected={this.state.selected === Choice.B} text="B"/>
-        </div>
-        {this.state.selected && [
-          <EventCard key="event-card-back" eventCardId={this.props.number} side={Side.Back} name={this.props.name}/>,
-          <div key="resolution-container" style={resolutionStyle}>
-            {this.props.children}
-            <h3>Conclusion</h3>
-            <button key="ret" type="button" onClick={this.returnToBottom}>Return to bottom</button>
-            <button key="rem" type="button" onClick={this.removeFromGame}>Remove from game</button>
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '0 1em 0 ',
+    } as React.CSSProperties
+    return (
+      <React.Fragment>
+        <h2 key="h2">
+          {this.props.name} Event {this.props.number}
+        </h2>
+        <div key="event-conclusion-container" style={containerStyle}>
+          <EventCard key="event-card-front" eventCardId={this.props.number} side={Side.Front} name={this.props.name} />
+          <div key="choice-container" style={choiceStyle}>
+            <ButtonWithSelectionHighlight onClick={this.selectA} selected={this.state.selected === Choice.A} text="A" />
+            <ButtonWithSelectionHighlight onClick={this.selectB} selected={this.state.selected === Choice.B} text="B" />
           </div>
-        ]}
-      </div>
-    </React.Fragment>;
+          {this.state.selected && [
+            <EventCard key="event-card-back" eventCardId={this.props.number} side={Side.Back} name={this.props.name} />,
+            <div key="resolution-container" style={resolutionStyle}>
+              {this.props.children}
+              <h3>Conclusion</h3>
+              <button key="ret" type="button" onClick={this.returnToBottom}>
+                Return to bottom
+              </button>
+              <button key="rem" type="button" onClick={this.removeFromGame}>
+                Remove from game
+              </button>
+            </div>,
+          ]}
+        </div>
+      </React.Fragment>
+    )
   }
 }

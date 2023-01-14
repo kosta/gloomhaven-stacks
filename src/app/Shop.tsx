@@ -1,35 +1,39 @@
-import * as React from 'react';
-import { noop, NoState } from 'lang/react';
-import { rangeFromTo } from 'lang/ranges';
-import { itemToDiv } from 'cards/cards';
-import { itemIdsByProsperityLevel} from "app/Propsperity";
+import * as React from 'react'
+import { noop, NoState } from 'lang/react'
+import { rangeFromTo } from 'lang/ranges'
+import { itemToDiv } from 'cards/cards'
+import { itemIdsByProsperityLevel } from 'app/Propsperity'
 
 interface ProsperityInputProps {
-  onIncreaseProsperity: () => void,
-  prosperity: number,
+  onIncreaseProsperity: () => void
+  prosperity: number
 }
 
 export class ProsperityInput extends React.Component<ProsperityInputProps, NoState> {
   constructor(props: ProsperityInputProps) {
-    super(props);
-    this.increaseProsperity = this.increaseProsperity.bind(this);
+    super(props)
+    this.increaseProsperity = this.increaseProsperity.bind(this)
   }
 
   increaseProsperity() {
-    this.props.onIncreaseProsperity();
+    this.props.onIncreaseProsperity()
   }
 
   render() {
-    const prosperity = this.props.prosperity;
-    return <h2 key="h2">
-      Prosperity {prosperity}
-      <button disabled={(prosperity >= 9)} type="button" onClick={this.increaseProsperity}>+</button>
-    </h2>;
+    const prosperity = this.props.prosperity
+    return (
+      <h2 key="h2">
+        Prosperity {prosperity}
+        <button disabled={prosperity >= 9} type="button" onClick={this.increaseProsperity}>
+          +
+        </button>
+      </h2>
+    )
   }
 }
 
 interface ShopProps {
-  prosperity: number,
+  prosperity: number
 }
 
 enum ShopItemFilter {
@@ -46,52 +50,60 @@ export class Shop extends React.Component<ShopProps, ShopState> {
   }
 
   constructor(props: ShopProps) {
-    super(props);
-    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this);
-    this.itemsToDisplay = this.itemsToDisplay.bind(this);
+    super(props)
+    this.handleShopItemFilterChange = this.handleShopItemFilterChange.bind(this)
+    this.itemsToDisplay = this.itemsToDisplay.bind(this)
 
     this.state = {
-      shopItemFilter: ShopItemFilter.All
-    };
+      shopItemFilter: ShopItemFilter.All,
+    }
   }
 
   handleShopItemFilterChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    this.setState({ shopItemFilter: event.target.value as ShopItemFilter }, noop);
-    event.preventDefault();
+    this.setState({ shopItemFilter: event.target.value as ShopItemFilter }, noop)
+    event.preventDefault()
   }
 
   itemsToDisplay() {
-    const filterAsString = this.state.shopItemFilter;
+    const filterAsString = this.state.shopItemFilter
     switch (filterAsString) {
       case 'all':
-        return rangeFromTo(1, this.props.prosperity + 1).map(level => Shop.levelWithItems(level, itemIdsByProsperityLevel[level]));
+        return rangeFromTo(1, this.props.prosperity + 1).map((level) =>
+          Shop.levelWithItems(level, itemIdsByProsperityLevel[level]),
+        )
       default:
-        const maybeProsperity = parseInt(filterAsString, 10);
-        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity;
-        return [Shop.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])];
+        const maybeProsperity = parseInt(filterAsString, 10)
+        const prosperityLevel = isNaN(maybeProsperity) ? 1 : maybeProsperity
+        return [Shop.levelWithItems(prosperityLevel, itemIdsByProsperityLevel[prosperityLevel])]
     }
   }
 
   render() {
-    const prosperity = this.props.prosperity;
-    return <div key="cards">
-      <div>
-        <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
-          <option key='all' value="all">all</option>
-          {rangeFromTo(1, prosperity + 1).map(level => <option key={level} value={level}>{level}</option>)}
-        </select>
-      </div>
+    const prosperity = this.props.prosperity
+    return (
+      <div key="cards">
+        <div>
+          <select value={this.state.shopItemFilter} onChange={this.handleShopItemFilterChange}>
+            <option key="all" value="all">
+              all
+            </option>
+            {rangeFromTo(1, prosperity + 1).map((level) => (
+              <option key={level} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {
-        this.itemsToDisplay().map(category => {
+        {this.itemsToDisplay().map((category) => {
           return (
             <div key={category.level}>
-              <h3 key={"h3-" + category.level}>Prosperity {category.level}</h3>
+              <h3 key={'h3-' + category.level}>Prosperity {category.level}</h3>
               {category.items.map(itemToDiv)}
             </div>
           )
-        })
-      }
-    </div>;
+        })}
+      </div>
+    )
   }
 }
