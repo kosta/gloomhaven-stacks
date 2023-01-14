@@ -1,3 +1,3 @@
 export interface CancelDialog {
-  cancel: () => void;
+  cancel: () => void
 }

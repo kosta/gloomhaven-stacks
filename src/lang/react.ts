@@ -1,8 +1,5 @@
-export interface NoState {
-}
+export interface NoState {}
 
-export interface NoProps {
-}
+export interface NoProps {}
 
-export function noop() {
-}
+export function noop() {}

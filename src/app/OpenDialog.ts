@@ -1,3 +1,3 @@
 export interface OpenDialog {
-  setDialog: (component: JSX.Element) => void;
+  setDialog: (component: JSX.Element) => void
 }

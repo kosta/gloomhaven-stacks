@@ -1,20 +1,20 @@
-import CardIdentifier from 'cards/CardIdentifier';
+import CardIdentifier from 'cards/CardIdentifier'
 
 export class BattleGoal {
   constructor(
     readonly displayName: string,
     readonly reward: number,
     readonly text: string,
-    readonly globalCardId: CardIdentifier
-  ) {
-  }
+    readonly globalCardId: CardIdentifier,
+  ) {}
 }
 
 export const battleGoalImages = {
   background: 'https://lh3.googleusercontent.com/u/0/d/14yNwcdD1fUPuRE4WPIn9cYNpeZJinujR=w1440-h766-iv1',
-  foreground: 'https://lh3.googleusercontent.com/u/0/d/19x3kdXZF2oEME3WipHeAXISfWkGtgmEA=w1440-h766-iv1'
-};
+  foreground: 'https://lh3.googleusercontent.com/u/0/d/19x3kdXZF2oEME3WipHeAXISfWkGtgmEA=w1440-h766-iv1',
+}
 
+//prettier-ignore
 export const officialBattleGoals = [
   new BattleGoal('Streamliner', 1, 'Have five or more total cards in your hand and discard at the end of the scenario.', CardIdentifier.official(258)),
   new BattleGoal('Layabout', 2, 'Gain 7 or fewer experience points during the scenario.', CardIdentifier.official(259)),
@@ -42,6 +42,7 @@ export const officialBattleGoals = [
   new BattleGoal('Scrambler', 1, 'Take only short rests during the scenario.', CardIdentifier.official(281))
 ];
 
+//prettier-ignore
 export const satireGamingBattleGoalsNewAsCsvString = 'Name;Text;NumChecksmarks\n' +
   'Acrobatic;Lose a card to negate 5 or more damage.;1\n' +
   'Ambusher;Open a door and end your move action adjacent to a monster in the revealed room.;1\n' +
@@ -98,25 +99,26 @@ export const satireGamingBattleGoalsNewAsCsvString = 'Name;Text;NumChecksmarks\n
   'Wasteful;Lose a card to negate 2 or less damage from an attack.;1\n' +
   'Winded;Never have fewer than one card in your hand.;1';
 
-export const satireGamingBattleGoals = satireGamingBattleGoalsNewAsCsvString.split('\n')
+export const satireGamingBattleGoals = satireGamingBattleGoalsNewAsCsvString
+  .split('\n')
   .slice(1)
-  .map(line => line.trim())
-  .map(line => line.split(';'))
-  .map(it => {
+  .map((line) => line.trim())
+  .map((line) => line.split(';'))
+  .map((it) => {
     return {
       displayName: it[0],
       text: it[1],
-      reward: it[2] === '2' ? 2 : 1
-    };
-  }).map((it, index) => new BattleGoal(it.displayName, it.reward, it.text, CardIdentifier.satireGaming(index)))
-;
+      reward: it[2] === '2' ? 2 : 1,
+    }
+  })
+  .map((it, index) => new BattleGoal(it.displayName, it.reward, it.text, CardIdentifier.satireGaming(index)))
 
-const allBattleGoals = officialBattleGoals.concat(satireGamingBattleGoals);
+const allBattleGoals = officialBattleGoals.concat(satireGamingBattleGoals)
 
 export const battleGoalByGlobalId = (globalId: CardIdentifier): BattleGoal => {
-  const result = allBattleGoals.find(it => it.globalCardId.equals(globalId));
+  const result = allBattleGoals.find((it) => it.globalCardId.equals(globalId))
   if (result === undefined) {
-    throw new Error('There is no battle goal with globalId=' + globalId.asString());
+    throw new Error('There is no battle goal with globalId=' + globalId.asString())
   }
-  return result;
-};
+  return result
+}
