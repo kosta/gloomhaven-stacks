@@ -1,9 +1,6 @@
 export class RandomItemDesignProps {
   readonly kind: string = 'random-item-design-props'
-  readonly width: number = 409
-  readonly height: number = 636
   readonly offset: number = 71
-  readonly cols: number = 10
   readonly n: number = 25
 }
 
