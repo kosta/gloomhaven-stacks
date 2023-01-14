@@ -6,7 +6,7 @@ Sorry for the extremely horrible look! If you're good at CSS, send a Pull Reques
 
 [Gloomhaven TTS](https://github.com/saizai/gloomhaven_tts/)
 [Assets](https://drive.google.com/drive/folders/1SiXb3u2mJbN-Dg2j3Rb-y5amnRJSXIDc)
-[Scans](https://github.com/any2cards/gloomhaven)
+[Scans](https://github.com/any2cards/worldhaven)
 [Some](https://boardgamegeek.com/thread/1733586/files-creation) [font](https://www.reddit.com/r/Gloomhaven/comments/8abglc/which_font_is_used_for_what/) related links.
 
 # Developer Documentation

@@ -1,6 +1,5 @@
 export class RandomItemDesignProps {
   readonly kind: string = 'random-item-design-props'
-  readonly url: string = 'https://lh3.googleusercontent.com/u/0/d/1ubPFoTJ1_Ly-Eqn_yMvNhG0Dwq_tuw5c=s4800-k-iv1'
   readonly width: number = 409
   readonly height: number = 636
   readonly offset: number = 71

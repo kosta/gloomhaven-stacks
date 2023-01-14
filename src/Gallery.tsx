@@ -57,7 +57,7 @@ class Gallery extends React.Component<NoProps, NoState> {
       height: 300,
     }
     const cards = allBattleGoals.map((it) => {
-      const imgUrl = `https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/battle-goals/gloomhaven/${urlToScanFor(
+      const imgUrl = `https://raw.githubusercontent.com/any2cards/worldhaven/master/images/battle-goals/gloomhaven/gh-${urlToScanFor(
         it,
       )}.png`
       const style = {
