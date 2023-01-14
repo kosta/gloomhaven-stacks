@@ -16,7 +16,7 @@ const scanFilenameLookupTable: ScanFilenameLookupTable = {
   260: 'workhorse',
   261: 'zealot',
   262: 'masochist',
-  263: 'fasthealer',
+  263: 'fast-healer',
   264: 'neutralizer',
   265: 'plunderer',
   266: 'protector',
