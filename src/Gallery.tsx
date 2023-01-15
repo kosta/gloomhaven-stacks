@@ -1,4 +1,4 @@
-import BattleGoalCard from 'battlegoals/BattleGoalCard'
+import { BattleGoalCard } from 'battlegoals/BattleGoalCard'
 import { BattleGoal, battleGoalImages, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
 import { css } from 'lang/react'
 import * as React from 'react'

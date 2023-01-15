@@ -1,35 +1,28 @@
-import * as React from 'react'
-import { noop, NoState } from 'lang/react'
-import { rangeFromTo } from 'lang/ranges'
-import { itemToDiv } from 'cards/cards'
 import { itemIdsByProsperityLevel } from 'app/Propsperity'
+import { itemToDiv } from 'cards/cards'
+import { rangeFromTo } from 'lang/ranges'
+import { noop } from 'lang/react'
+import * as React from 'react'
 
 interface ProsperityInputProps {
   onIncreaseProsperity: () => void
   prosperity: number
 }
 
-export class ProsperityInput extends React.Component<ProsperityInputProps, NoState> {
-  constructor(props: ProsperityInputProps) {
-    super(props)
-    this.increaseProsperity = this.increaseProsperity.bind(this)
+export const ProsperityInput = (props: ProsperityInputProps) => {
+  const increaseProsperity = () => {
+    props.onIncreaseProsperity()
   }
 
-  increaseProsperity() {
-    this.props.onIncreaseProsperity()
-  }
-
-  render() {
-    const prosperity = this.props.prosperity
-    return (
-      <h2 key="h2">
-        Prosperity {prosperity}
-        <button disabled={prosperity >= 9} type="button" onClick={this.increaseProsperity}>
-          +
-        </button>
-      </h2>
-    )
-  }
+  const prosperity = props.prosperity
+  return (
+    <h2 key="h2">
+      Prosperity {prosperity}
+      <button disabled={prosperity >= 9} type="button" onClick={increaseProsperity}>
+        +
+      </button>
+    </h2>
+  )
 }
 
 interface ShopProps {
