@@ -1,8 +1,8 @@
-import * as React from 'react'
-import { css, NoState } from 'lang/react'
-import { StackPopped } from 'stacks/Pop'
-import { EventCard, EventType } from 'events/EventCard'
 import Side from 'cards/Side'
+import { EventCard, EventType } from 'events/EventCard'
+import { css } from 'lang/react'
+import * as React from 'react'
+import { StackPopped } from 'stacks/Pop'
 
 interface ButtonWithSelectionHighlightProps {
   onClick: React.MouseEventHandler
@@ -10,18 +10,16 @@ interface ButtonWithSelectionHighlightProps {
   text: string
 }
 
-class ButtonWithSelectionHighlight extends React.Component<ButtonWithSelectionHighlightProps, NoState> {
-  render() {
-    const style = css({})
-    if (this.props.selected) {
-      style.borderColor = 'red'
-    }
-    return (
-      <button key={this.props.text} style={style} type="button" onClick={this.props.onClick}>
-        {this.props.text}
-      </button>
-    )
+const ButtonWithSelectionHighlight = (props: ButtonWithSelectionHighlightProps) => {
+  const style = css({})
+  if (props.selected) {
+    style.borderColor = 'red'
   }
+  return (
+    <button key={props.text} style={style} type="button" onClick={props.onClick}>
+      {props.text}
+    </button>
+  )
 }
 
 interface BringEventToConclusionProps extends StackPopped {

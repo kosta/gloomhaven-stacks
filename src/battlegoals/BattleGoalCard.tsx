@@ -9,18 +9,18 @@ interface BattleGoalCardProps {
   blurCard: boolean
 }
 
+const battleGoalStyle = css({
+  position: 'relative',
+  height: 300,
+  width: 200,
+})
+
 export default class BattleGoalCard extends React.Component<BattleGoalCardProps, NoState> {
   constructor(props: BattleGoalCardProps) {
     super(props)
   }
 
   public render(): React.ReactNode {
-    const battleGoalStyle = css({
-      position: 'relative',
-      height: 300,
-      width: 200,
-    })
-
     const imageStyle = css({
       borderRadius: '15px',
       height: '100%',
