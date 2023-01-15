@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NoState } from 'lang/react'
+import { css, NoState } from 'lang/react'
 import { CardStack } from 'cards/cards'
 import { CardRenderProps, isPersonalGoalProps } from 'cards/CardRenderProps'
 import { OpenDialog } from 'app/OpenDialog'
@@ -30,9 +30,9 @@ export class RandomCard extends React.Component<RandomCardProps, NoState> {
         </h2>
         <div key="button-div">
           {this.props.drawnCards.map((cardNumber) => {
-            const styles = {
+            const styles = css({
               display: 'inline-block',
-            } as React.CSSProperties
+            })
             if (isPersonalGoalProps(this.props.cardProps)) {
               styles.width = this.props.cardProps.divWidth
             }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NoState } from 'lang/react'
+import { css, NoState } from 'lang/react'
 import { StackPopped } from 'stacks/Pop'
 import EventCard, { EventType } from 'events/EventCard'
 import Side from 'cards/Side'
@@ -12,7 +12,7 @@ interface ButtonWithSelectionHighlightProps {
 
 class ButtonWithSelectionHighlight extends React.Component<ButtonWithSelectionHighlightProps, NoState> {
   render() {
-    const style = {} as React.CSSProperties
+    const style = css({})
     if (this.props.selected) {
       style.borderColor = 'red'
     }
@@ -75,20 +75,20 @@ export class BringEventToConclusion extends React.Component<BringEventToConclusi
   }
 
   render() {
-    const containerStyle = {
+    const containerStyle = css({
       display: 'flex',
       flexDirection: 'row',
-    } as React.CSSProperties
-    const choiceStyle = {
+    })
+    const choiceStyle = css({
       display: 'flex',
       flexDirection: 'column',
       padding: '0 1em 0',
-    } as React.CSSProperties
-    const resolutionStyle = {
+    })
+    const resolutionStyle = css({
       display: 'flex',
       flexDirection: 'column',
       padding: '0 1em 0 ',
-    } as React.CSSProperties
+    })
     return (
       <React.Fragment>
         <h2 key="h2">

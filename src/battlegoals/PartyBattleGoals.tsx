@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { noop, NoProps } from 'lang/react'
+import { css, noop, NoProps } from 'lang/react'
 import { partition, shuffle } from 'lang/arrays'
 import { range } from 'lang/ranges'
 import { BattleGoal, battleGoalByGlobalId, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
@@ -146,12 +146,12 @@ export class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsS
       return null
     }
 
-    const battleGoalSelectorStyle = {
+    const battleGoalSelectorStyle = css({
       display: 'flex',
       width: '50%',
       height: '300px',
       justifyContent: 'space-between',
-    } as React.CSSProperties
+    })
 
     return (
       <div key="battle-goal-selector" style={battleGoalSelectorStyle}>
@@ -162,16 +162,16 @@ export class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsS
   }
 
   private playerSelection() {
-    const playerSelectionStyle = {
+    const playerSelectionStyle = css({
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-evenly',
       width: '200px',
-    } as React.CSSProperties
-    const buttonStyle = {
+    })
+    const buttonStyle = css({
       borderRadius: '25px',
       height: '50px',
-    } as React.CSSProperties
+    })
     return (
       <div key="player-selection-container" style={playerSelectionStyle}>
         {range(0, 4).map((player) => {
@@ -194,9 +194,9 @@ export class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsS
     if (currentPlayer === undefined) {
       return null
     }
-    const style = {
+    const style = css({
       cursor: 'grab',
-    } as React.CSSProperties
+    })
     const playerBattleGoals = battleGoalsPerPlayer[currentPlayer]
     return playerBattleGoals.map((battleGoal, index) => {
       const pickedBattleGoalId = this.state.picks.get(currentPlayer)
@@ -225,9 +225,9 @@ export class PartyBattleGoals extends React.Component<NoProps, PartyBattleGoalsS
 
   private dealer() {
     const readyToDrawCards = this.state.includeOfficial || this.state.includeSatireGaming
-    const style = {
+    const style = css({
       margin: '25px 0 25px 25px',
-    } as React.CSSProperties
+    })
     return (
       <div style={style} key="pool-configurator">
         <input type="checkbox" checked={this.state.includeOfficial} onChange={this.toggleIncludeOfficial} />

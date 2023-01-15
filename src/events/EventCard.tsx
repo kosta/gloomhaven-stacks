@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NoState } from 'lang/react'
+import { css, NoState } from 'lang/react'
 import Side from 'cards/Side'
 
 export type EventType = 'City' | 'Road'
@@ -17,9 +17,9 @@ export default class EventCard extends React.Component<EventCardProps, NoState> 
   }
 
   render() {
-    const style = {
+    const style = css({
       borderRadius: '15px',
-    } as React.CSSProperties
+    })
     return <img key="image-front" style={style} src={this.eventCardImageUrl()} alt="event card" />
   }
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NoState } from 'lang/react'
+import { css, NoState } from 'lang/react'
 import { BattleGoal, battleGoalImages } from 'battlegoals/battleGoals'
 import { range } from 'lang/ranges'
 
@@ -15,17 +15,17 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
   }
 
   public render(): React.ReactNode {
-    const battleGoalStyle = {
+    const battleGoalStyle = css({
       position: 'relative',
       height: 300,
       width: 200,
-    } as React.CSSProperties
+    })
 
-    const imageStyle = {
+    const imageStyle = css({
       borderRadius: '15px',
       height: '100%',
       width: '100%',
-    } as React.CSSProperties
+    })
 
     if (this.props.cardShadow) {
       imageStyle.boxShadow = '0px 12px 22px 1px rgb(27, 26, 26)'
@@ -43,7 +43,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
   }
 
   private renderOverlay(): React.ReactNode {
-    const overlayStyle = {
+    const overlayStyle = css({
       position: 'absolute',
       top: '22%',
       width: '64%',
@@ -52,16 +52,16 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       display: 'flex',
       flexDirection: 'column',
       textAlign: 'center',
-    } as React.CSSProperties
+    })
 
-    const titleStyle = {
+    const titleStyle = css({
       margin: '0',
       fontFamily: 'Pirata One',
       fontSize: '1.35em',
       fontWeight: 'normal',
-    } as React.CSSProperties
+    })
 
-    const descriptionStyle = {
+    const descriptionStyle = css({
       display: 'flex',
       alignItems: 'center',
       fontFamily: 'High Tower',
@@ -69,9 +69,9 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       lineHeight: '1.2em',
       height: '52%',
       padding: '0 7% 0 7%',
-    } as React.CSSProperties
+    })
 
-    const perksStyle = {
+    const perksStyle = css({
       position: 'absolute',
       bottom: '12.5%',
       left: '50%',
@@ -79,9 +79,9 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       margin: '0 0 0 -30%',
       fontSize: '2em',
       fontWeight: 'bold',
-    } as React.CSSProperties
+    })
 
-    const cardNumberStyle = {
+    const cardNumberStyle = css({
       position: 'absolute',
       bottom: '3%',
       left: '50%',
@@ -89,7 +89,7 @@ export default class BattleGoalCard extends React.Component<BattleGoalCardProps,
       margin: '0 0 0 -15%',
       color: 'white',
       fontSize: 'xx-small',
-    } as React.CSSProperties
+    })
 
     const battleGoal = this.props.battleGoal
 
