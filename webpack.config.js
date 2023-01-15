@@ -36,10 +36,6 @@ const config = {
         test: /\.css$/,
         use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
       },
-      {
-        test: /\.ttf$/,
-        use: ['file-loader'],
-      },
     ],
   },
   plugins: [
