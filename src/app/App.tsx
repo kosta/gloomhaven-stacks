@@ -191,7 +191,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   setDialog(dialog: JSX.Element) {
-    // first remove, then add so that the component doesnt get recycled
+    // first remove, then add so that the component doesn't get recycled
     this.setState(
       {
         dialog: null,
@@ -217,7 +217,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   render() {
-    let prosperity = this.state.stacks.prosperity
+    const prosperity = this.state.stacks.prosperity
     return (
       <React.Fragment>
         <div key="button-frame" className="frame">

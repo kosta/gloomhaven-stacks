@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { css, NoState } from 'lang/react'
 import { StackPopped } from 'stacks/Pop'
-import EventCard, { EventType } from 'events/EventCard'
+import { EventCard, EventType } from 'events/EventCard'
 import Side from 'cards/Side'
 
 interface ButtonWithSelectionHighlightProps {
