@@ -1,5 +1,5 @@
 import BattleGoalCard from 'battlegoals/BattleGoalCard'
-import { BattleGoal, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
+import { BattleGoal, battleGoalImages, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
 import { css, NoProps, NoState } from 'lang/react'
 import * as React from 'react'
 import { CSSProperties } from 'react'
@@ -58,14 +58,12 @@ class Gallery extends React.Component<NoProps, NoState> {
     }
     const cards = allBattleGoals.map((it) => {
       const nameInRepository = urlToScanFor(it)
-      const imgUrl = `https://raw.githubusercontent.com/any2cards/worldhaven/master/images/battle-goals/gloomhaven/gh-${nameInRepository}.png`
+      const battleCardGoalurl = `https://raw.githubusercontent.com/any2cards/worldhaven/master/images/battle-goals/gloomhaven/gh-${nameInRepository}.png`
+      const imgUrl = nameInRepository === 'empty' ? battleGoalImages.background : battleCardGoalurl
       const style = css({
         display: 'flex',
         flexDirection: 'row',
       })
-      if (nameInRepository === 'empty') {
-        return <div>Hello</div>
-      }
       return (
         <div style={style} key={it.globalCardId.asString()}>
           <BattleGoalCard battleGoal={it} cardShadow={false} blurCard={false} />
