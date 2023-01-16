@@ -12,7 +12,6 @@
     "@types/jest": "29.2.5",
     "@types/react-dom": "18.0.10",
     "css-loader": "6.7.3",
-    "file-loader": "6.2.0",
     "html-webpack-plugin": "5.5.0",
     "jest": "29.3.1",
     "jest-environment-jsdom": "29.3.1",
@@ -21,6 +20,7 @@
     "style-loader": "3.3.1",
     "ts-jest": "29.0.4",
     "ts-loader": "9.4.2",
+    "ts-node": "10.9.1",
     "typescript": "4.9.4",
     "webpack": "5.75.0",
     "webpack-cli": "5.0.1",
@@ -35,7 +35,8 @@
     "start": "webpack-dev-server --open --mode development",
     "test": "jest",
     "deploy": "webpack --mode production",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "update-item-data": "ts-node scripts/update-item-data.ts"
   },
   "prettier": "@signed/prettier-config",
   "jest": {

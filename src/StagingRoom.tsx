@@ -1,7 +1,10 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import { PartyBattleGoals } from 'battlegoals/PartyBattleGoals'
+import * as React from 'react'
+import { createRoot } from 'react-dom/client'
 import './style.css'
 
-let app = <PartyBattleGoals />
-ReactDOM.render(app, document.getElementById('root'))
+const container = document.getElementById('root')
+if (container === null) {
+  throw new Error('root element not found')
+}
+createRoot(container).render(<PartyBattleGoals />)

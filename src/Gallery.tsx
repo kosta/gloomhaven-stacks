@@ -1,9 +1,8 @@
+import { BattleGoalCard } from 'battlegoals/BattleGoalCard'
+import { BattleGoal, battleGoalImages, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
+import { css } from 'lang/react'
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
-import { NoProps, NoState } from 'lang/react'
-import { BattleGoal, officialBattleGoals, satireGamingBattleGoals } from 'battlegoals/battleGoals'
-import BattleGoalCard from 'battlegoals/BattleGoalCard'
-import { CSSProperties } from 'react'
+import { createRoot } from 'react-dom/client'
 import './style.css'
 
 interface ScanFilenameLookupTable {
@@ -16,7 +15,7 @@ const scanFilenameLookupTable: ScanFilenameLookupTable = {
   260: 'workhorse',
   261: 'zealot',
   262: 'masochist',
-  263: 'fasthealer',
+  263: 'fast-healer',
   264: 'neutralizer',
   265: 'plunderer',
   266: 'protector',
@@ -44,35 +43,38 @@ function urlToScanFor(it: BattleGoal) {
   return 'empty'
 }
 
-class Gallery extends React.Component<NoProps, NoState> {
-  render(): React.ReactNode {
-    const allBattleGoals = officialBattleGoals.concat(satireGamingBattleGoals)
-    const style = {
-      display: 'flex',
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-    } as CSSProperties
-    const imageStyle = {
-      width: 200,
-      height: 300,
-    }
-    const cards = allBattleGoals.map((it) => {
-      const imgUrl = `https://raw.githubusercontent.com/any2cards/gloomhaven/master/images/battle-goals/gloomhaven/${urlToScanFor(
-        it,
-      )}.png`
-      const style = {
-        display: 'flex',
-        flexDirection: 'row',
-      } as CSSProperties
-      return (
-        <div style={style} key={it.globalCardId.asString()}>
-          <BattleGoalCard battleGoal={it} cardShadow={false} blurCard={false} />
-          <img style={imageStyle} src={imgUrl} alt="empty" />
-        </div>
-      )
-    })
-    return <div style={style}>{cards}</div>
-  }
+const galleryStyle = css({
+  display: 'flex',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+})
+const imageStyle = css({
+  width: 200,
+  height: 300,
+})
+const battleGoalContainerStyles = css({
+  display: 'flex',
+  flexDirection: 'row',
+})
+
+const Gallery = () => {
+  const allBattleGoals = officialBattleGoals.concat(satireGamingBattleGoals)
+  const cards = allBattleGoals.map((it) => {
+    const nameInRepository = urlToScanFor(it)
+    const battleCardGoalurl = `https://raw.githubusercontent.com/any2cards/worldhaven/master/images/battle-goals/gloomhaven/gh-${nameInRepository}.png`
+    const imgUrl = nameInRepository === 'empty' ? battleGoalImages.background : battleCardGoalurl
+    return (
+      <div style={battleGoalContainerStyles} key={it.globalCardId.asString()}>
+        <BattleGoalCard battleGoal={it} cardShadow={false} blurCard={false} />
+        <img style={imageStyle} src={imgUrl} alt="empty" />
+      </div>
+    )
+  })
+  return <div style={galleryStyle}>{cards}</div>
 }
 
-ReactDOM.render(<Gallery />, document.getElementById('root'))
+const container = document.getElementById('root')
+if (container === null) {
+  throw new Error('root element not found')
+}
+createRoot(container).render(<Gallery />)

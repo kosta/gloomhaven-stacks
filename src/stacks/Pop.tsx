@@ -1,43 +1,32 @@
-import * as React from 'react'
-import { NoState } from 'lang/react'
 import { OpenDialog } from 'app/OpenDialog'
 import { AddCards, AddCardsProps } from 'cards/addCards'
 import { CardStack } from 'cards/cards'
 import { BringEventToConclusion } from 'events/BringEventToConclusion'
+import { EventType } from 'events/EventCard'
+import * as React from 'react'
 
 export interface StackPopped {
   stackPopped: (name: string, returnToBottom: boolean) => void
 }
 
 interface PopProps extends OpenDialog, AddCardsProps, StackPopped {
-  name: string
+  name: EventType
   cards: CardStack
 }
 
 // Pop draws the _top_ card of the deck
-export class Pop extends React.Component<PopProps, NoState> {
-  constructor(props: PopProps) {
-    super(props)
-    this.clicked = this.clicked.bind(this)
-  }
-
-  clicked() {
-    this.props.setDialog(
-      <BringEventToConclusion
-        name={this.props.name}
-        number={this.props.cards.stack[0]}
-        stackPopped={this.props.stackPopped}
-      >
-        <AddCards onAddCards={this.props.onAddCards} />
+export const Pop = (props: PopProps) => {
+  const clicked = () => {
+    props.setDialog(
+      <BringEventToConclusion name={props.name} number={props.cards.stack[0]} stackPopped={props.stackPopped}>
+        <AddCards onAddCards={props.onAddCards} />
       </BringEventToConclusion>,
     )
   }
 
-  render() {
-    return (
-      <button type="button" onClick={this.clicked} disabled={this.props.cards.stack.length === 0}>
-        {'Draw ' + this.props.name + ' Event'}
-      </button>
-    )
-  }
+  return (
+    <button type="button" onClick={clicked} disabled={props.cards.stack.length === 0}>
+      {'Draw ' + props.name + ' Event'}
+    </button>
+  )
 }
